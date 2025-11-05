@@ -1,0 +1,144 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "../generated/prisma"
+  engineType             = "client"
+  runtime                = "nodejs"
+  generatedFileExtension = "mts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  username      String
+  walletAddress String   @unique
+  email         String?  @unique
+  avatarUrl     String?
+  bio           String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  nftsCreated          Nft[]         @relation("NFTCreatedBy")
+  nftsOwned            Nft[]         @relation("NFTOwnedBy")
+  collections          Collection[]
+  listings             Listing[]
+  bids                 Bid[]
+  transactionsAsBuyer  Transaction[] @relation("TxBuyer")
+  transactionsAsSeller Transaction[] @relation("TxSeller")
+  royalties            Royalty[]
+}
+
+model Nft {
+  id              String   @id @default(uuid())
+  tokenId         BigInt?
+  contractAddress String
+  name            String
+  description     String?
+  imageUrl        String?
+  metadataUrl     String?
+  metadata        Json?
+  chain           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  creator   User   @relation("NFTCreatedBy", fields: [creatorId], references: [id])
+  creatorId String
+  owner     User   @relation("NFTOwnedBy", fields: [ownerId], references: [id])
+  ownerId   String
+
+  collection   Collection?   @relation(fields: [collectionId], references: [id])
+  collectionId String?
+  listings     Listing[]
+  transactions Transaction[]
+  bids         Bid[]
+  royalties    Royalty[]
+}
+
+model Collection {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  coverUrl        String?
+  chain           String?
+  contractAddress String?
+  createdAt       DateTime @default(now())
+
+  creator   User   @relation(fields: [creatorId], references: [id])
+  creatorId String
+  nfts      Nft[]
+}
+
+model Listing {
+  id        String        @id @default(uuid())
+  price     Decimal
+  currency  String
+  status    ListingStatus @default(ACTIVE)
+  expiresAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  nft      Nft    @relation(fields: [nftId], references: [id])
+  nftId    String
+  seller   User   @relation(fields: [sellerId], references: [id])
+  sellerId String
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  CANCELLED
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  price     Decimal?
+  txHash    String?
+  chain     String?
+  type      TxType
+  createdAt DateTime @default(now())
+
+  nft      Nft    @relation(fields: [nftId], references: [id])
+  nftId    String
+  buyer    User   @relation("TxBuyer", fields: [buyerId], references: [id])
+  buyerId  String
+  seller   User   @relation("TxSeller", fields: [sellerId], references: [id])
+  sellerId String
+}
+
+enum TxType {
+  MINT
+  SALE
+  TRANSFER
+}
+
+model Bid {
+  id        String    @id @default(uuid())
+  price     Decimal
+  status    BidStatus @default(PENDING)
+  createdAt DateTime  @default(now())
+
+  nft      Nft    @relation(fields: [nftId], references: [id])
+  nftId    String
+  bidder   User   @relation(fields: [bidderId], references: [id])
+  bidderId String
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Royalty {
+  id         String   @id @default(uuid())
+  percentage Float
+  createdAt  DateTime @default(now())
+
+  nft        Nft    @relation(fields: [nftId], references: [id])
+  nftId      String
+  receiver   User   @relation(fields: [receiverId], references: [id])
+  receiverId String
+}
