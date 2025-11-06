@@ -6,23 +6,23 @@ import { UpsertUserDto } from './dtos/upser.dto';
 export class UsersService {
   constructor(private dbService: PrismaService) {}
 
-  public async upsertUser(walletAddress: string, upserUserDto: UpsertUserDto) {
+  public async upsert(walletAddress: string, upsertUserDto: UpsertUserDto) {
     return this.dbService.user.upsert({
       where: {
         walletAddress: walletAddress,
       },
       update: {
-        username: upserUserDto.username,
-        email: upserUserDto.email,
-        avatarUrl: upserUserDto.avatarUrl,
-        bio: upserUserDto.bio,
+        username: upsertUserDto.username,
+        email: upsertUserDto.email,
+        avatarUrl: upsertUserDto.avatarUrl,
+        bio: upsertUserDto.bio,
       },
       create: {
         walletAddress: walletAddress,
-        username: upserUserDto.username,
-        email: upserUserDto.email,
-        avatarUrl: upserUserDto.avatarUrl,
-        bio: upserUserDto.bio,
+        username: upsertUserDto.username!,
+        email: upsertUserDto.email,
+        avatarUrl: upsertUserDto.avatarUrl,
+        bio: upsertUserDto.bio,
       },
     });
   }

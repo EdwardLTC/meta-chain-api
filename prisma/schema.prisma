@@ -21,124 +21,116 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  nftsCreated          Nft[]         @relation("NFTCreatedBy")
-  nftsOwned            Nft[]         @relation("NFTOwnedBy")
-  collections          Collection[]
-  listings             Listing[]
-  bids                 Bid[]
-  transactionsAsBuyer  Transaction[] @relation("TxBuyer")
-  transactionsAsSeller Transaction[] @relation("TxSeller")
-  royalties            Royalty[]
-}
-
-model Nft {
-  id              String   @id @default(uuid())
-  tokenId         BigInt?
-  contractAddress String
-  name            String
-  description     String?
-  imageUrl        String?
-  metadataUrl     String?
-  metadata        Json?
-  chain           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  creator   User   @relation("NFTCreatedBy", fields: [creatorId], references: [id])
-  creatorId String
-  owner     User   @relation("NFTOwnedBy", fields: [ownerId], references: [id])
-  ownerId   String
-
-  collection   Collection?   @relation(fields: [collectionId], references: [id])
-  collectionId String?
-  listings     Listing[]
-  transactions Transaction[]
-  bids         Bid[]
-  royalties    Royalty[]
+  @@map("users")
 }
 
 model Collection {
   id              String   @id @default(uuid())
-  name            String
+  contractAddress String   @unique
+  name            String?
+  symbol          String?
+  creatorAddress  String?
   description     String?
-  coverUrl        String?
-  chain           String?
-  contractAddress String?
+  image           String?
+  metadataJson    Json?
+  totalSupply     Int?
+  verified        Boolean  @default(false)
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  tokens          Token[]
 
-  creator   User   @relation(fields: [creatorId], references: [id])
-  creatorId String
-  nfts      Nft[]
+  @@map("collections")
+}
+
+model Token {
+  id              String           @id @default(uuid())
+  contractAddress String
+  tokenId         String
+  ownerAddress    String
+  tokenUri        String?
+  name            String?
+  description     String?
+  image           String?
+  metadataJson    Json?
+  mintTxHash      String?
+  firstSeenAt     DateTime?
+  lastSyncedAt    DateTime?
+  collection      Collection?      @relation(fields: [collectionId], references: [id])
+  collectionId    String?
+  listings        Listing[]
+  attributes      TokenAttribute[]
+
+  @@unique([contractAddress, tokenId])
+  @@index([contractAddress])
+  @@index([ownerAddress])
+  @@map("tokens")
+}
+
+model TokenAttribute {
+  id        String @id @default(uuid())
+  token     Token  @relation(fields: [tokenId], references: [id])
+  tokenId   String
+  traitType String
+  value     String
+  rarity    Float?
+
+  @@index([traitType])
+  @@index([value])
+  @@map("token_attributes")
 }
 
 model Listing {
-  id        String        @id @default(uuid())
-  price     Decimal
-  currency  String
-  status    ListingStatus @default(ACTIVE)
-  expiresAt DateTime?
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id            String    @id @default(uuid())
+  token         Token     @relation(fields: [tokenId], references: [id])
+  tokenId       String
+  sellerAddress String
+  price         Decimal   @db.Decimal(36, 18)
+  currency      String
+  status        String    @default("active")
+  expiresAt     DateTime?
+  source        String // "offchain" | "onchain"
+  orderData     Json?
+  txHash        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Order         Order[]
 
-  nft      Nft    @relation(fields: [nftId], references: [id])
-  nftId    String
-  seller   User   @relation(fields: [sellerId], references: [id])
-  sellerId String
+  @@index([sellerAddress])
+  @@index([status])
+  @@index([tokenId])
+  @@map("listings")
 }
 
-enum ListingStatus {
-  ACTIVE
-  SOLD
-  CANCELLED
-}
-
-model Transaction {
+model Order {
   id        String   @id @default(uuid())
-  price     Decimal?
-  txHash    String?
-  chain     String?
-  type      TxType
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+  buyer     String
+  seller    String
+  price     Decimal  @db.Decimal(36, 18)
+  txHash    String
+  status    String   @default("pending")
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  nft      Nft    @relation(fields: [nftId], references: [id])
-  nftId    String
-  buyer    User   @relation("TxBuyer", fields: [buyerId], references: [id])
-  buyerId  String
-  seller   User   @relation("TxSeller", fields: [sellerId], references: [id])
-  sellerId String
+  @@index([buyer])
+  @@index([seller])
+  @@index([status])
+  @@map("orders")
 }
 
-enum TxType {
-  MINT
-  SALE
-  TRANSFER
-}
+model BlockchainEvent {
+  id              String   @id @default(uuid())
+  txHash          String
+  logIndex        Int
+  eventType       String
+  contractAddress String
+  blockNumber     Int
+  timestamp       DateTime
+  rawData         Json
+  createdAt       DateTime @default(now())
 
-model Bid {
-  id        String    @id @default(uuid())
-  price     Decimal
-  status    BidStatus @default(PENDING)
-  createdAt DateTime  @default(now())
-
-  nft      Nft    @relation(fields: [nftId], references: [id])
-  nftId    String
-  bidder   User   @relation(fields: [bidderId], references: [id])
-  bidderId String
-}
-
-enum BidStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
-model Royalty {
-  id         String   @id @default(uuid())
-  percentage Float
-  createdAt  DateTime @default(now())
-
-  nft        Nft    @relation(fields: [nftId], references: [id])
-  nftId      String
-  receiver   User   @relation(fields: [receiverId], references: [id])
-  receiverId String
+  @@index([txHash])
+  @@index([contractAddress])
+  @@map("blockchain_events")
 }

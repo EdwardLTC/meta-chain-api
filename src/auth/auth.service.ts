@@ -1,22 +1,35 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ethers } from 'ethers';
 import { UsersService } from '../users/users.service';
+import { RedisService } from '../redis/redis.service';
+import { randomBytes } from 'node:crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  private nonces = new Map<string, string>(); // replace with redis
-  private provider = new ethers.JsonRpcProvider('https://mainnet.infura.io/v3/YOUR_INFURA_KEY'); // optional
+  constructor(
+    private userService: UsersService,
+    private redis: RedisService,
+    private jwtService: JwtService,
+  ) {}
 
-  constructor(private userService: UsersService) {}
+  public async getNonce(address: string) {
+    const key = `auth:nonce:${address.toLowerCase()}`;
+    const existing = await this.redis.get(key);
 
-  public getNonce(address: string) {
-    const nonce = Math.floor(Math.random() * 1_000_000).toString();
-    this.nonces.set(address.toLowerCase(), nonce);
-    return { nonce };
+    if (existing) return existing;
+
+    const nonce = randomBytes(16).toString('hex');
+    await this.redis.set(key, nonce, 300);
+
+    return {
+      message: `Sign in nonce: ${nonce}`,
+    };
   }
 
   public async verifySignature(address: string, signature: string) {
-    const nonce = this.nonces.get(address.toLowerCase());
+    const key = `auth:nonce:${address.toLowerCase()}`;
+    const nonce = await this.redis.get(key);
     if (!nonce) throw new UnauthorizedException('No nonce found');
 
     const recoveredAddress = ethers.verifyMessage(`Sign in nonce: ${nonce}`, signature);
@@ -25,20 +38,15 @@ export class AuthService {
       throw new UnauthorizedException('Invalid signature');
     }
 
-    const ensName = await this.provider.lookupAddress(address).catch(() => null);
-    const balance = await this.provider
-      .getBalance(address)
-      .then(b => ethers.formatEther(b))
-      .catch(() => null);
+    await this.redis.del(key);
 
-    await this.userService.upsertUser(address, {
-      username: ensName || undefined,
-      email: undefined,
-      avatarUrl: undefined,
-      bio: balance ? `Balance: ${balance} ETH` : undefined,
+    await this.userService.upsert(address, {
+      username: address,
     });
 
-    this.nonces.delete(address.toLowerCase());
-    return;
+    return this.jwtService.sign({
+      sub: address,
+      walletAddress: address.toLowerCase(),
+    });
   }
 }

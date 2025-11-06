@@ -20,4 +20,11 @@ export class EnvironmentService {
   public get dbConnectionString(): string {
     return <string>this.configService.get<string>('DATABASE_URL');
   }
+
+  public get redisConnection() {
+    return {
+      host: this.configService.get<string>('REDIS_HOST'),
+      port: this.configService.get<number>('REDIS_PORT'),
+    };
+  }
 }

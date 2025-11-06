@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { EnvironmentService } from '../environment/environment.service';
 import { EnvironmentModule } from '../environment/environment.module';
 import { JwtStrategy } from './jwt.strategy';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
         signOptions: { expiresIn: '7 days' },
       }),
     }),
+    UsersModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
