@@ -17,7 +17,9 @@ export class AuthService {
     const key = `auth:nonce:${address.toLowerCase()}`;
     const existing = await this.redis.get(key);
 
-    if (existing) return existing;
+    if (existing) {
+      return { message: `Sign in nonce: ${existing}` };
+    }
 
     const nonce = randomBytes(16).toString('hex');
     await this.redis.set(key, nonce, 300);
