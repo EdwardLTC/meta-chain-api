@@ -5,9 +5,9 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC2981} from "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
-contract NFTCollection is ERC721, ERC721URIStorage, Ownable, IERC2981 {
-    // simple counter instead of OpenZeppelin Counters to avoid missing import
+contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
     uint256 private _tokenIdCounter;
 
     // royalty info
@@ -22,7 +22,7 @@ contract NFTCollection is ERC721, ERC721URIStorage, Ownable, IERC2981 {
         string memory symbol_,
         address royaltyRecipient_,
         uint96 royaltyBps_  // e.g. 500 = 5%
-    ) ERC721(name_, symbol_) {
+    ) ERC721(name_, symbol_) Ownable(msg.sender) {
         _royaltyRecipient = royaltyRecipient_;
         _royaltyBasisPoints = royaltyBps_;
         _tokenIdCounter = 0;
@@ -48,22 +48,20 @@ contract NFTCollection is ERC721, ERC721URIStorage, Ownable, IERC2981 {
     function royaltyInfo(uint256, uint256 salePrice)
     external
     view
-    override
+    override(IERC2981)
     returns (address receiver, uint256 royaltyAmount)
     {
         receiver = _royaltyRecipient;
         royaltyAmount = (salePrice * _royaltyBasisPoints) / 10000;
     }
 
-    // overrides
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
+    // Note: ERC721URIStorage already implements _burn and tokenURI in a compatible way.
+    // Remove explicit override of _burn to avoid overriding a non-virtual base function.
 
     function tokenURI(uint256 tokenId)
     public
     view
-    override(ERC721, ERC721URIStorage)
+    override(ERC721URIStorage)
     returns (string memory)
     {
         return super.tokenURI(tokenId);
@@ -73,7 +71,7 @@ contract NFTCollection is ERC721, ERC721URIStorage, Ownable, IERC2981 {
     function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721)
+    override(ERC721URIStorage, IERC165)
     returns (bool)
     {
         // include IERC2981 interfaceId = 0x2a55205a

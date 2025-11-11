@@ -7,6 +7,8 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract Factory is Ownable {
     event CollectionCreated(address indexed creator, address indexed collection);
 
+    constructor() Ownable(msg.sender) {}
+
     function createCollection(
         string calldata name_,
         string calldata symbol_,

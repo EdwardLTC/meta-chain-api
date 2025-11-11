@@ -36,7 +36,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     event MarketFeeUpdated(uint96 newBps);
     event FeeRecipientUpdated(address recipient);
 
-    constructor(address feeRecipient_) {
+    constructor(address feeRecipient_) Ownable(msg.sender) {
         feeRecipient = feeRecipient_;
     }
 
