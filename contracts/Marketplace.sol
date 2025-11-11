@@ -54,7 +54,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     // ---- listing ----
     function listItem(address nftAddress, uint256 tokenId, uint256 price, address paymentToken) external nonReentrant {
-        require(price > 0, "price>0");
+        require(price > 0, "price > 0");
         IERC721 nft = IERC721(nftAddress);
         address ownerOfToken = nft.ownerOf(tokenId);
         require(ownerOfToken == msg.sender, "not owner");
