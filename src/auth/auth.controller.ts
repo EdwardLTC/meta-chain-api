@@ -15,6 +15,13 @@ export class AuthController {
 
   @Post('verify')
   public async verifySignature(@Body() loginDto: LoginDto) {
-    return this.authService.verifySignature(loginDto.walletAddress, loginDto.signature);
+    return {
+      token: await this.authService.verifySignature(loginDto.walletAddress, loginDto.signature),
+    };
+  }
+
+  @Post('dev-only/generate-jwt')
+  public async generateSignature() {
+    return this.authService.generateSignature();
   }
 }

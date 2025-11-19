@@ -56,15 +56,6 @@ async function main() {
   console.log('Marketplace deployed to', deployedAddress(marketplace));
   capture('Marketplace', marketplace);
 
-  // 4) NFTCollection (name, symbol, royaltyRecipient, royaltyBps)
-  console.log('\nDeploying NFTCollection...');
-  const NFTCollection = await hre.ethers.getContractFactory('NFTCollection');
-  const nft = await NFTCollection.deploy('MetaNFT', 'MNFT', deployer.address, 500);
-  if (nft.waitForDeployment) await nft.waitForDeployment();
-  else await nft.deployed();
-  console.log('NFTCollection deployed to', deployedAddress(nft));
-  capture('NFTCollection', nft);
-
   // Summary
   console.log('\n--- Deployment summary ---');
   Object.entries(artifactsOut).forEach(([name, info]) => console.log(`${name}: ${info.address}`));

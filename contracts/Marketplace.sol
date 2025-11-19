@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.28;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC2981} from "@openzeppelin/contracts/interfaces/IERC2981.sol";
@@ -47,6 +47,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         emit MarketFeeUpdated(bps);
     }
 
+    // ---- admin ----
     function setFeeRecipient(address recipient) external onlyOwner {
         feeRecipient = recipient;
         emit FeeRecipientUpdated(recipient);

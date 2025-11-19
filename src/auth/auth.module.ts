@@ -7,6 +7,7 @@ import { EnvironmentService } from '../environment/environment.service';
 import { EnvironmentModule } from '../environment/environment.module';
 import { JwtStrategy } from './jwt.strategy';
 import { UsersModule } from '../users/users.module';
+import { EthModule } from '../eth/eth.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UsersModule } from '../users/users.module';
       }),
     }),
     UsersModule,
+    EthModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

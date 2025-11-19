@@ -27,4 +27,8 @@ export class EnvironmentService {
       port: this.configService.get<number>('REDIS_PORT'),
     };
   }
+
+  public get ETHNodeUrl(): string {
+    return <string>this.configService.get<string>('ETH_NODE_URL');
+  }
 }

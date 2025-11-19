@@ -8,9 +8,11 @@ import { ExceptionsFilter } from '../exceptions/exceptions.filter';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AuthModule } from '../auth/auth.module';
 import { RedisModule } from '../redis/redis.module';
+import { EthModule } from '../eth/eth.module';
+import { CollectionsModule } from '../collections/collections.module';
 
 @Module({
-  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule],
+  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule],
   controllers: [AppController],
   providers: [
     AppService,

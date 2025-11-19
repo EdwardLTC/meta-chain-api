@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.28;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC2981} from "@openzeppelin/contracts/interfaces/IERC2981.sol";
@@ -55,9 +55,6 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
         royaltyAmount = (salePrice * _royaltyBasisPoints) / 10000;
     }
 
-    // Note: ERC721URIStorage already implements _burn and tokenURI in a compatible way.
-    // Remove explicit override of _burn to avoid overriding a non-virtual base function.
-
     function tokenURI(uint256 tokenId)
     public
     view
@@ -74,7 +71,6 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
     override(ERC721URIStorage, IERC165)
     returns (bool)
     {
-        // include IERC2981 interfaceId = 0x2a55205a
         return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
     }
 }

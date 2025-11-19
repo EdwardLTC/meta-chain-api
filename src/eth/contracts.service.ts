@@ -1,0 +1,66 @@
+import { Injectable } from '@nestjs/common';
+import { EthService } from './eth.service';
+import fs from 'fs';
+import path from 'path';
+import { Contract, InterfaceAbi } from 'ethers';
+
+@Injectable()
+export class ContractsService {
+  private deployments: Record<string, { address: string; abi: InterfaceAbi }> | null = null;
+
+  constructor(private eth: EthService) {
+    this.loadDeployments();
+  }
+
+  public getAbi(name: string) {
+    if (!this.deployments || !this.deployments[name]) {
+      throw new Error(`Contract ${name} not found in deployments`);
+    }
+    return this.deployments[name].abi || null;
+  }
+
+  public getProvider() {
+    return this.eth.getProvider();
+  }
+
+  public getProviderWs() {
+    return this.eth.getWsProvider();
+  }
+
+  public loadDeployments() {
+    const file = path.join(process.cwd(), 'deployments', 'localhost.json');
+    if (!fs.existsSync(file)) {
+      throw new Error('Deployments file not found: ' + file);
+    }
+    try {
+      const raw = fs.readFileSync(file, 'utf-8');
+      this.deployments = JSON.parse(raw).contracts || JSON.parse(raw);
+    } catch (e) {
+      throw new Error('Failed to parse deployments file: ' + e.message);
+    }
+  }
+
+  public getContract(name: string): Contract {
+    if (!this.deployments || !this.deployments[name]) {
+      throw new Error(`Contract ${name} not found in deployments`);
+    }
+    const info = this.deployments[name];
+    if (!info.abi || !info.address) {
+      throw new Error(`Contract ${name} is missing ABI or address`);
+    }
+
+    return new Contract(info.address, info.abi, this.getProvider());
+  }
+
+  public getContractWs(name: string): Contract {
+    if (!this.deployments || !this.deployments[name]) {
+      throw new Error(`Contract ${name} not found in deployments`);
+    }
+    const info = this.deployments[name];
+    if (!info.abi || !info.address) {
+      throw new Error(`Contract ${name} is missing ABI or address`);
+    }
+
+    return new Contract(info.address, info.abi, this.getProviderWs());
+  }
+}

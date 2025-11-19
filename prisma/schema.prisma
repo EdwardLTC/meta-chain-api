@@ -24,20 +24,28 @@ model User {
   @@map("users")
 }
 
+enum CollectionStatus {
+  NEW
+  PENDING
+  CREATED
+  FAILED
+}
+
 model Collection {
-  id              String   @id @default(uuid())
-  contractAddress String   @unique
-  name            String?
-  symbol          String?
-  creatorAddress  String?
-  description     String?
-  image           String?
-  metadataJson    Json?
-  totalSupply     Int?
-  verified        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  tokens          Token[]
+  id              String           @id @default(uuid())
+  status          CollectionStatus @default(PENDING)
+  createdBy       String
+  name            String
+  symbol          String
+  description     String
+  image           String
+  royaltyFeeBps   Int
+  txHash          String?          @unique
+  contractAddress String?          @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tokens    Token[]
 
   @@map("collections")
 }
@@ -133,4 +141,9 @@ model BlockchainEvent {
   @@index([txHash])
   @@index([contractAddress])
   @@map("blockchain_events")
+}
+
+model EventCursor {
+  id        String @id
+  lastBlock Int
 }
