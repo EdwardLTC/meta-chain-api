@@ -28,7 +28,11 @@ export class EnvironmentService {
     };
   }
 
-  public get ETHNodeUrl(): string {
-    return <string>this.configService.get<string>('ETH_NODE_URL');
+  public get ProviderNodeUrl(): string {
+    return <string>this.configService.get<string>('PROVIDER_NODE_URL');
+  }
+
+  public get isProduction(): boolean {
+    return this.environment === 'production';
   }
 }

@@ -25,6 +25,7 @@
     "sol:compile": "hardhat compile",
     "hardhat:localnode": "hardhat node --hostname 127.0.0.1 --port 8545",
     "deploy:all": "hardhat run --network localhost scripts/deploy-all.js",
+    "deploy:sepolia": "hardhat run --network sepolia scripts/deploy-all.js",
     "start:with-local-blockchain": "npm run hardhat:localnode & npm run start"
   },
   "dependencies": {

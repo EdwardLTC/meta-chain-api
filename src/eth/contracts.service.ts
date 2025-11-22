@@ -3,12 +3,16 @@ import { EthService } from './eth.service';
 import fs from 'fs';
 import path from 'path';
 import { Contract, InterfaceAbi } from 'ethers';
+import { EnvironmentService } from '../environment/environment.service';
 
 @Injectable()
 export class ContractsService {
   private deployments: Record<string, { address: string; abi: InterfaceAbi }> | null = null;
 
-  constructor(private eth: EthService) {
+  constructor(
+    private eth: EthService,
+    private environmentService: EnvironmentService,
+  ) {
     this.loadDeployments();
   }
 
@@ -23,12 +27,8 @@ export class ContractsService {
     return this.eth.getProvider();
   }
 
-  public getProviderWs() {
-    return this.eth.getWsProvider();
-  }
-
   public loadDeployments() {
-    const file = path.join(process.cwd(), 'deployments', 'localhost.json');
+    const file = path.join(process.cwd(), 'deployments', this.environmentService.isProduction ? 'sepolia.json' : 'localhost.json');
     if (!fs.existsSync(file)) {
       throw new Error('Deployments file not found: ' + file);
     }
@@ -50,17 +50,5 @@ export class ContractsService {
     }
 
     return new Contract(info.address, info.abi, this.getProvider());
-  }
-
-  public getContractWs(name: string): Contract {
-    if (!this.deployments || !this.deployments[name]) {
-      throw new Error(`Contract ${name} not found in deployments`);
-    }
-    const info = this.deployments[name];
-    if (!info.abi || !info.address) {
-      throw new Error(`Contract ${name} is missing ABI or address`);
-    }
-
-    return new Contract(info.address, info.abi, this.getProviderWs());
   }
 }

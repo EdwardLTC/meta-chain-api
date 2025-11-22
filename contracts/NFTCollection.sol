@@ -14,8 +14,8 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
     address private _royaltyRecipient;
     uint96 private _royaltyBasisPoints; // using basis points: 10000 = 100%
 
-    event Minted(address indexed to, uint256 indexed tokenId, string uri);
-    event RoyaltySet(address indexed recipient, uint96 bps);
+    event Minted(address indexed to, uint256 indexed tokenId, string uri, string transactionCode);
+    event RoyaltySet(address indexed recipient, uint96 bps, string transactionCode);
 
     constructor(
         string memory name_,
@@ -28,20 +28,20 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
         _tokenIdCounter = 0;
     }
 
-    function mint(address to, string memory tokenURI_) external onlyOwner returns (uint256) {
+    function mint(address to, string memory tokenURI_, string calldata transactionCode) external onlyOwner returns (uint256) {
         _tokenIdCounter += 1;
         uint256 tid = _tokenIdCounter;
         _safeMint(to, tid);
         _setTokenURI(tid, tokenURI_);
-        emit Minted(to, tid, tokenURI_);
+        emit Minted(to, tid, tokenURI_, transactionCode);
         return tid;
     }
 
-    function setRoyalty(address recipient, uint96 bps) external onlyOwner {
+    function setRoyalty(address recipient, uint96 bps, string calldata transactionCode) external onlyOwner {
         require(bps <= 10000, "Invalid bps");
         _royaltyRecipient = recipient;
         _royaltyBasisPoints = bps;
-        emit RoyaltySet(recipient, bps);
+        emit RoyaltySet(recipient, bps,transactionCode);
     }
 
     // IERC2981

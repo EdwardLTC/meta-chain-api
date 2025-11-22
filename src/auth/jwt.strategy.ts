@@ -14,7 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   validate(payload: any) {
-    // payload là dữ liệu được mã hoá trong token khi login
     return { sub: payload.sub, walletAddress: payload.walletAddress };
   }
 }

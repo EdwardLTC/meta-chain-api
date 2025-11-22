@@ -30,31 +30,31 @@ contract Marketplace is ReentrancyGuard, Ownable {
     // to prevent double-listing easily: nftAddress -> tokenId -> listingId
     mapping(address => mapping(uint256 => uint256)) public activeListingOf;
 
-    event Listed(uint256 indexed listingId, address indexed seller, address indexed nft, uint256 tokenId, uint256 price, address paymentToken);
+    event Listed(uint256 indexed listingId, address indexed seller, address indexed nft, uint256 tokenId, uint256 price, address paymentToken, string transactionCode);
     event Cancelled(uint256 indexed listingId, address indexed seller);
     event Bought(uint256 indexed listingId, address indexed buyer, uint256 price, address paymentToken);
-    event MarketFeeUpdated(uint96 newBps);
-    event FeeRecipientUpdated(address recipient);
+    event MarketFeeUpdated(uint96 newBps, string transactionCode);
+    event FeeRecipientUpdated(address recipient, string transactionCode);
 
     constructor(address feeRecipient_) Ownable(msg.sender) {
         feeRecipient = feeRecipient_;
     }
 
     // ---- admin ----
-    function setMarketFee(uint96 bps) external onlyOwner {
+    function setMarketFee(uint96 bps, string calldata transactionCode) external onlyOwner {
         require(bps <= 10000, "invalid bps");
         marketFeeBps = bps;
-        emit MarketFeeUpdated(bps);
+        emit MarketFeeUpdated(bps,transactionCode);
     }
 
     // ---- admin ----
-    function setFeeRecipient(address recipient) external onlyOwner {
+    function setFeeRecipient(address recipient,string calldata transactionCode) external onlyOwner {
         feeRecipient = recipient;
-        emit FeeRecipientUpdated(recipient);
+        emit FeeRecipientUpdated(recipient,transactionCode);
     }
 
     // ---- listing ----
-    function listItem(address nftAddress, uint256 tokenId, uint256 price, address paymentToken) external nonReentrant {
+    function listItem(address nftAddress, uint256 tokenId, uint256 price, address paymentToken,string calldata transactionCode) external nonReentrant {
         require(price > 0, "price > 0");
         IERC721 nft = IERC721(nftAddress);
         address ownerOfToken = nft.ownerOf(tokenId);
@@ -76,7 +76,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         });
         activeListingOf[nftAddress][tokenId] = lid;
 
-        emit Listed(lid, msg.sender, nftAddress, tokenId, price, paymentToken);
+        emit Listed(lid, msg.sender, nftAddress, tokenId, price, paymentToken,transactionCode);
     }
 
     function cancelListing(uint256 listingId) external nonReentrant {

@@ -24,4 +24,9 @@ export class AuthController {
   public async generateSignature() {
     return this.authService.generateSignature();
   }
+
+  @Post('dev-only/generate-jwt-private-key/:privateKey')
+  public signatureWithPrivateKey(@Query('privateKey') address: string) {
+    return this.authService.signatureWithPrivateKey(address);
+  }
 }

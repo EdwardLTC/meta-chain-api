@@ -29,16 +29,7 @@ async function main() {
     return addr;
   }
 
-  // 1) PaymentSplitter
-  console.log('\nDeploying PaymentSplitter...');
-  const PaymentSplitter = await hre.ethers.getContractFactory('PaymentSplitter');
-  const paymentSplitter = await PaymentSplitter.deploy([deployer.address], [100]);
-  if (paymentSplitter.waitForDeployment) await paymentSplitter.waitForDeployment();
-  else await paymentSplitter.deployed();
-  console.log('PaymentSplitter deployed to', deployedAddress(paymentSplitter));
-  capture('PaymentSplitter', paymentSplitter);
-
-  // 2) Factory
+  // 1) Factory
   console.log('\nDeploying Factory...');
   const Factory = await hre.ethers.getContractFactory('Factory');
   const factory = await Factory.deploy();
@@ -47,7 +38,7 @@ async function main() {
   console.log('Factory deployed to', deployedAddress(factory));
   capture('Factory', factory);
 
-  // 3) Marketplace (pass deployer as feeRecipient by default)
+  // 2) Marketplace (pass deployer as feeRecipient by default)
   console.log('\nDeploying Marketplace...');
   const Marketplace = await hre.ethers.getContractFactory('Marketplace');
   const marketplace = await Marketplace.deploy(deployer.address);

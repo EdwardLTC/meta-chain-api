@@ -62,4 +62,13 @@ export class AuthService {
       walletAddress: signer.address.toLowerCase(),
     });
   }
+
+  public signatureWithPrivateKey(privateKey: string) {
+    const wallet = new ethers.Wallet(privateKey);
+
+    return this.jwtService.sign({
+      sub: wallet.address,
+      walletAddress: wallet.address.toLowerCase(),
+    });
+  }
 }

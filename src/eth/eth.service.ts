@@ -1,23 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { JsonRpcProvider, JsonRpcSigner, Wallet, WebSocketProvider } from 'ethers';
+import { JsonRpcProvider, JsonRpcSigner, Wallet } from 'ethers';
 import { EnvironmentService } from '../environment/environment.service';
 
 @Injectable()
 export class EthService {
   private readonly provider: JsonRpcProvider;
-  private readonly wsProvider: WebSocketProvider;
 
   constructor(private readonly environmentService: EnvironmentService) {
-    this.provider = new JsonRpcProvider(this.environmentService.ETHNodeUrl);
-    this.wsProvider = new WebSocketProvider('ws://localhost:8545');
+    this.provider = new JsonRpcProvider(this.environmentService.ProviderNodeUrl);
   }
 
   public getProvider() {
     return this.provider;
-  }
-
-  public getWsProvider() {
-    return this.wsProvider;
   }
 
   public async getSigner(indexOrPrivateKey?: number | string): Promise<JsonRpcSigner> {
