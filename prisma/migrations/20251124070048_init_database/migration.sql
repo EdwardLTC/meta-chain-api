@@ -1,19 +1,33 @@
 -- CreateEnum
-CREATE TYPE "CollectionStatus" AS ENUM ('PENDING', 'CREATED', 'FAILED');
+CREATE TYPE "CollectionStatus" AS ENUM ('NEW', 'PENDING', 'CREATED', 'FAILED');
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "walletAddress" TEXT NOT NULL,
+    "email" TEXT,
+    "avatarUrl" TEXT,
+    "bio" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "collections" (
     "id" TEXT NOT NULL,
-    "contractAddress" TEXT,
     "status" "CollectionStatus" NOT NULL DEFAULT 'PENDING',
+    "userId" TEXT NOT NULL,
+    "creatorAddress" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "symbol" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "metadataJson" JSONB,
-    "totalSupply" INTEGER,
-    "verified" BOOLEAN NOT NULL DEFAULT false,
-    "txHash" TEXT NOT NULL,
+    "royaltyFeeBps" INTEGER NOT NULL,
+    "txHash" TEXT,
+    "contractAddress" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -84,25 +98,24 @@ CREATE TABLE "orders" (
 );
 
 -- CreateTable
-CREATE TABLE "blockchain_events" (
+CREATE TABLE "event_cursors" (
     "id" TEXT NOT NULL,
-    "txHash" TEXT NOT NULL,
-    "logIndex" INTEGER NOT NULL,
-    "eventType" TEXT NOT NULL,
-    "contractAddress" TEXT NOT NULL,
-    "blockNumber" INTEGER NOT NULL,
-    "timestamp" TIMESTAMP(3) NOT NULL,
-    "rawData" JSONB NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastBlock" INTEGER NOT NULL,
 
-    CONSTRAINT "blockchain_events_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "event_cursors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "collections_contractAddress_key" ON "collections"("contractAddress");
+CREATE UNIQUE INDEX "users_walletAddress_key" ON "users"("walletAddress");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "collections_txHash_key" ON "collections"("txHash");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "collections_contractAddress_key" ON "collections"("contractAddress");
 
 -- CreateIndex
 CREATE INDEX "tokens_contractAddress_idx" ON "tokens"("contractAddress");
@@ -137,11 +150,8 @@ CREATE INDEX "orders_seller_idx" ON "orders"("seller");
 -- CreateIndex
 CREATE INDEX "orders_status_idx" ON "orders"("status");
 
--- CreateIndex
-CREATE INDEX "blockchain_events_txHash_idx" ON "blockchain_events"("txHash");
-
--- CreateIndex
-CREATE INDEX "blockchain_events_contractAddress_idx" ON "blockchain_events"("contractAddress");
+-- AddForeignKey
+ALTER TABLE "collections" ADD CONSTRAINT "collections_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "collections"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -63,11 +63,16 @@ export class AuthService {
     });
   }
 
-  public signatureWithPrivateKey(privateKey: string) {
+  public async signatureWithPrivateKey(privateKey: string) {
     const wallet = new ethers.Wallet(privateKey);
+
+    const user = await this.userService.upsert(wallet.address, {
+      username: wallet.address,
+    });
 
     return this.jwtService.sign({
       sub: wallet.address,
+      userId: user.id,
       walletAddress: wallet.address.toLowerCase(),
     });
   }

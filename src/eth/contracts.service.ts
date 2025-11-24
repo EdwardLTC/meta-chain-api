@@ -8,6 +8,7 @@ import { EnvironmentService } from '../environment/environment.service';
 @Injectable()
 export class ContractsService {
   private deployments: Record<string, { address: string; abi: InterfaceAbi }> | null = null;
+  private contractCache: Record<string, Contract> = {};
 
   constructor(
     private eth: EthService,
@@ -41,6 +42,10 @@ export class ContractsService {
   }
 
   public getContract(name: string): Contract {
+    if (this.contractCache[name]) {
+      return this.contractCache[name];
+    }
+
     if (!this.deployments || !this.deployments[name]) {
       throw new Error(`Contract ${name} not found in deployments`);
     }
@@ -49,6 +54,7 @@ export class ContractsService {
       throw new Error(`Contract ${name} is missing ABI or address`);
     }
 
-    return new Contract(info.address, info.abi, this.getProvider());
+    this.contractCache[name] = new Contract(info.address, info.abi, this.getProvider());
+    return this.contractCache[name];
   }
 }

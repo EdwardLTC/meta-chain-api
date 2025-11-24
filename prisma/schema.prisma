@@ -12,14 +12,16 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String  @id @default(uuid())
   username      String
-  walletAddress String   @unique
-  email         String?  @unique
+  walletAddress String  @unique
+  email         String? @unique
   avatarUrl     String?
   bio           String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  collections Collection[]
 
   @@map("users")
 }
@@ -34,7 +36,8 @@ enum CollectionStatus {
 model Collection {
   id              String           @id @default(uuid())
   status          CollectionStatus @default(PENDING)
-  createdBy       String
+  userId          String
+  creatorAddress  String
   name            String
   symbol          String
   description     String
@@ -46,6 +49,7 @@ model Collection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tokens    Token[]
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("collections")
 }
@@ -127,23 +131,9 @@ model Order {
   @@map("orders")
 }
 
-model BlockchainEvent {
-  id              String   @id @default(uuid())
-  txHash          String
-  logIndex        Int
-  eventType       String
-  contractAddress String
-  blockNumber     Int
-  timestamp       DateTime
-  rawData         Json
-  createdAt       DateTime @default(now())
-
-  @@index([txHash])
-  @@index([contractAddress])
-  @@map("blockchain_events")
-}
-
 model EventCursor {
   id        String @id
   lastBlock Int
+
+  @@map("event_cursors")
 }
