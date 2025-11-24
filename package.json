@@ -26,7 +26,8 @@
     "hardhat:localnode": "hardhat node --hostname 127.0.0.1 --port 8545",
     "deploy:all": "hardhat run --network localhost scripts/deploy-all.js",
     "deploy:sepolia": "hardhat run --network sepolia scripts/deploy-all.js",
-    "start:with-local-blockchain": "npm run hardhat:localnode & npm run start"
+    "start:with-local-blockchain": "npm run hardhat:localnode & npm run start",
+    "pm2:start": "npm run build && pm2 reload ecosystem.config.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -71,6 +72,7 @@
     "globals": "^16.0.0",
     "hardhat": "^2.27.0",
     "jest": "^30.0.0",
+    "pm2": "^6.0.13",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
