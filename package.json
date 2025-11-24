@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "npm run build && pm2 reload ecosystem.config.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -26,8 +26,7 @@
     "hardhat:localnode": "hardhat node --hostname 127.0.0.1 --port 8545",
     "deploy:all": "hardhat run --network localhost scripts/deploy-all.js",
     "deploy:sepolia": "hardhat run --network sepolia scripts/deploy-all.js",
-    "start:with-local-blockchain": "npm run hardhat:localnode & npm run start",
-    "pm2:start": "npm run build && pm2 reload ecosystem.config.js"
+    "start:with-local-blockchain": "npm run hardhat:localnode & npm run start"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -81,7 +80,11 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.4.0",
+    "@swc/jest": "^0.2.32",
+    "rimraf": "^5.0.0"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -92,7 +95,7 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": "@swc/jest"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
