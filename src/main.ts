@@ -26,14 +26,12 @@ async function bootstrap() {
     }),
   );
 
-  if (env.environment === 'development') {
-    const documentBuilder = new DocumentBuilder().setTitle(`Meta Chain API - ${env.environment}`).addBearerAuth();
+  const documentBuilder = new DocumentBuilder().setTitle(`Meta Chain API - ${env.environment}`).addBearerAuth();
 
-    const document = SwaggerModule.createDocument(app, documentBuilder.build());
-    SwaggerModule.setup('docs', app, document);
+  const document = SwaggerModule.createDocument(app, documentBuilder.build());
+  SwaggerModule.setup('docs', app, document);
 
-    logger.debug(`Documentation: http://localhost:${env.port}/docs`);
-  }
+  logger.debug(`Documentation: http://localhost:${env.port}/docs`);
 
   await app.listen(env.port);
   logger.debug(`Application is running on: ${await app.getUrl()} - ${env.environment}`);
