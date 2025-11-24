@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { ContractsService } from '../eth/contracts.service';
 import { Contract, Log } from 'ethers';
-import { CollectionStatus } from '../generated/prisma/enums';
+import { CollectionStatus } from '../../generated/prisma/enums.mjs';
 
 @Injectable()
 export class CollectionsListenerService implements OnModuleInit, OnModuleDestroy {

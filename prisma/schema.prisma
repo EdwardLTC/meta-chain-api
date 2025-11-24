@@ -1,9 +1,9 @@
 generator client {
   provider               = "prisma-client"
-  output                 = "../src/generated/prisma"
+  output                 = "../generated/prisma"
   engineType             = "client"
   runtime                = "nodejs"
-  generatedFileExtension = "ts"
+  generatedFileExtension = "mts"
 }
 
 datasource db {

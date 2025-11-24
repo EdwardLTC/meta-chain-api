@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ContractsService } from '../eth/contracts.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { CollectionStatus } from '../generated/prisma/enums';
+import { CollectionStatus } from '../../generated/prisma/enums.mjs';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { EthService } from '../eth/eth.service';
 
