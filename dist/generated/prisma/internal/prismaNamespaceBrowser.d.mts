@@ -29,7 +29,6 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Collection: "Collection";
     readonly Token: "Token";
-    readonly TokenAttribute: "TokenAttribute";
     readonly Listing: "Listing";
     readonly Order: "Order";
     readonly EventCursor: "EventCursor";
@@ -71,6 +70,7 @@ export declare const CollectionScalarFieldEnum: {
 export type CollectionScalarFieldEnum = (typeof CollectionScalarFieldEnum)[keyof typeof CollectionScalarFieldEnum];
 export declare const TokenScalarFieldEnum: {
     readonly id: "id";
+    readonly collectionId: "collectionId";
     readonly contractAddress: "contractAddress";
     readonly tokenId: "tokenId";
     readonly ownerAddress: "ownerAddress";
@@ -78,21 +78,12 @@ export declare const TokenScalarFieldEnum: {
     readonly name: "name";
     readonly description: "description";
     readonly image: "image";
-    readonly metadataJson: "metadataJson";
     readonly mintTxHash: "mintTxHash";
-    readonly firstSeenAt: "firstSeenAt";
-    readonly lastSyncedAt: "lastSyncedAt";
-    readonly collectionId: "collectionId";
+    readonly status: "status";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
 };
 export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum];
-export declare const TokenAttributeScalarFieldEnum: {
-    readonly id: "id";
-    readonly tokenId: "tokenId";
-    readonly traitType: "traitType";
-    readonly value: "value";
-    readonly rarity: "rarity";
-};
-export type TokenAttributeScalarFieldEnum = (typeof TokenAttributeScalarFieldEnum)[keyof typeof TokenAttributeScalarFieldEnum];
 export declare const ListingScalarFieldEnum: {
     readonly id: "id";
     readonly tokenId: "tokenId";

@@ -27,7 +27,6 @@ export const ModelName = {
     User: 'User',
     Collection: 'Collection',
     Token: 'Token',
-    TokenAttribute: 'TokenAttribute',
     Listing: 'Listing',
     Order: 'Order',
     EventCursor: 'EventCursor'
@@ -65,6 +64,7 @@ export const CollectionScalarFieldEnum = {
 };
 export const TokenScalarFieldEnum = {
     id: 'id',
+    collectionId: 'collectionId',
     contractAddress: 'contractAddress',
     tokenId: 'tokenId',
     ownerAddress: 'ownerAddress',
@@ -72,18 +72,10 @@ export const TokenScalarFieldEnum = {
     name: 'name',
     description: 'description',
     image: 'image',
-    metadataJson: 'metadataJson',
     mintTxHash: 'mintTxHash',
-    firstSeenAt: 'firstSeenAt',
-    lastSyncedAt: 'lastSyncedAt',
-    collectionId: 'collectionId'
-};
-export const TokenAttributeScalarFieldEnum = {
-    id: 'id',
-    tokenId: 'tokenId',
-    traitType: 'traitType',
-    value: 'value',
-    rarity: 'rarity'
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 };
 export const ListingScalarFieldEnum = {
     id: 'id',

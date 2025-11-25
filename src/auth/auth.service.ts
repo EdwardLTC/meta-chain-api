@@ -1,16 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ethers } from 'ethers';
-import { UsersService } from '../users/users.service';
 import { RedisService } from '../redis/redis.service';
 import { randomBytes } from 'node:crypto';
 import { JwtService } from '@nestjs/jwt';
-import { EthService } from '../eth/eth.service';
+import { UsersService } from '../core/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private ethService: EthService,
     private redis: RedisService,
     private jwtService: JwtService,
   ) {}
@@ -51,15 +49,6 @@ export class AuthService {
     return this.jwtService.sign({
       sub: address,
       walletAddress: address.toLowerCase(),
-    });
-  }
-
-  public async generateSignature() {
-    const signer = await this.ethService.getSigner(0);
-
-    return this.jwtService.sign({
-      sub: signer.address,
-      walletAddress: signer.address.toLowerCase(),
     });
   }
 

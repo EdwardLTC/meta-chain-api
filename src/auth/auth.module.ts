@@ -6,8 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { EnvironmentService } from '../environment/environment.service';
 import { EnvironmentModule } from '../environment/environment.module';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersModule } from '../users/users.module';
-import { EthModule } from '../eth/eth.module';
+import { UsersModule } from '../core/users/users.module';
 
 @Module({
   imports: [
@@ -22,7 +21,6 @@ import { EthModule } from '../eth/eth.module';
       }),
     }),
     UsersModule,
-    EthModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

@@ -37,9 +37,6 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get token(): Prisma.TokenDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
-    get tokenAttribute(): Prisma.TokenAttributeDelegate<ExtArgs, {
-        omit: OmitOpts;
-    }>;
     get listing(): Prisma.ListingDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;

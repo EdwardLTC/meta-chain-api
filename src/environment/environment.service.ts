@@ -35,4 +35,15 @@ export class EnvironmentService {
   public get isProduction(): boolean {
     return this.environment === 'production';
   }
+
+  public get nftStorageApiKey(): string {
+    return <string>this.configService.get<string>('NFT_STORAGE_API_KEY');
+  }
+
+  public get pinata(): { apiKey: string; gateway: string } {
+    return {
+      apiKey: <string>this.configService.get<string>('PINATA_API_KEY_JWT'),
+      gateway: <string>this.configService.get<string>('PINATA_GATEWAY_URL'),
+    };
+  }
 }

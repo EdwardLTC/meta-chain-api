@@ -30,9 +30,6 @@ let AuthController = class AuthController {
             token: await this.authService.verifySignature(loginDto.walletAddress, loginDto.signature),
         };
     }
-    async generateSignature() {
-        return this.authService.generateSignature();
-    }
     signatureWithPrivateKey(address) {
         return this.authService.signatureWithPrivateKey(address);
     }
@@ -52,12 +49,6 @@ __decorate([
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifySignature", null);
-__decorate([
-    (0, common_1.Post)('dev-only/generate-jwt'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "generateSignature", null);
 __decorate([
     (0, common_1.Post)('dev-only/generate-jwt-private-key/:privateKey'),
     __param(0, (0, common_1.Query)('privateKey')),

@@ -12,4 +12,9 @@ export declare class EnvironmentService {
     };
     get ProviderNodeUrl(): string;
     get isProduction(): boolean;
+    get nftStorageApiKey(): string;
+    get pinata(): {
+        apiKey: string;
+        gateway: string;
+    };
 }

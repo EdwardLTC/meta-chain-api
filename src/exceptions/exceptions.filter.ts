@@ -21,7 +21,7 @@ export class ExceptionsFilter implements ExceptionFilter {
       responseBody = {
         statusCode: exception.getStatus(),
         timestamp: new Date(),
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-enum-comparison
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         message: exception.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR ? 'Something went wrong' : exception.getResponse()['message'],
         cause: exception?.cause || null,
       };

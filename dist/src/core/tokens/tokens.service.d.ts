@@ -1,0 +1,81 @@
+import { MintTokenDto } from './dtos/mint.dto';
+import { CollectionsService } from '../collections/collections.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { NftStorageService } from '../../nft-storage/nft-storage.service';
+import { EthService } from '../../eth/eth.service';
+import { TokenStatus } from '../../../generated/prisma/enums.mjs';
+import { SignTokenDto } from './dtos/sign-token.dto';
+import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
+export declare class TokensService {
+    private dbService;
+    private collectionService;
+    private nftStorageService;
+    private ethService;
+    constructor(dbService: PrismaService, collectionService: CollectionsService, nftStorageService: NftStorageService, ethService: EthService);
+    mintToken(data: MintTokenDto, creatorAddress: string, userId: string): Promise<{
+        token: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            status: TokenStatus;
+            name: string;
+            description: string;
+            image: string;
+            contractAddress: string | null;
+            collectionId: string;
+            tokenId: string | null;
+            ownerAddress: string;
+            tokenUri: string;
+            mintTxHash: string | null;
+        };
+        txData: {
+            nonce: string;
+            chainId: string;
+            gasLimit: string;
+            to: string;
+            data: string;
+            from?: string;
+            type?: number;
+            gasPrice?: bigint;
+            maxPriorityFeePerGas?: bigint;
+            maxFeePerGas?: bigint;
+            value?: bigint;
+            accessList?: import("ethers").AccessList;
+            authorizationList?: Array<import("ethers").Authorization>;
+            customData?: any;
+            blockTag?: import("ethers").BlockTag;
+            enableCcipRead?: boolean;
+        };
+    }>;
+    getTokens(getTokensFilterDto: GetTokensFilterDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: TokenStatus;
+        name: string;
+        description: string;
+        image: string;
+        contractAddress: string | null;
+        collectionId: string;
+        tokenId: string | null;
+        ownerAddress: string;
+        tokenUri: string;
+        mintTxHash: string | null;
+    }[]>;
+    getToken(tokenId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: TokenStatus;
+        name: string;
+        description: string;
+        image: string;
+        contractAddress: string | null;
+        collectionId: string;
+        tokenId: string | null;
+        ownerAddress: string;
+        tokenUri: string;
+        mintTxHash: string | null;
+    }>;
+    signTokenTransfer(txData: SignTokenDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
+}

@@ -9,10 +9,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AuthModule } from '../auth/auth.module';
 import { RedisModule } from '../redis/redis.module';
 import { EthModule } from '../eth/eth.module';
-import { CollectionsModule } from '../collections/collections.module';
+import { CollectionsModule } from '../core/collections/collections.module';
+import { TokensModule } from '../core/tokens/tokens.module';
 
 @Module({
-  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule],
+  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule, TokensModule],
   controllers: [AppController],
   providers: [
     AppService,

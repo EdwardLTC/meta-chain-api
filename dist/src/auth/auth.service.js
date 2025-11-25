@@ -12,19 +12,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const ethers_1 = require("ethers");
-const users_service_1 = require("../users/users.service");
 const redis_service_1 = require("../redis/redis.service");
 const node_crypto_1 = require("node:crypto");
 const jwt_1 = require("@nestjs/jwt");
-const eth_service_1 = require("../eth/eth.service");
+const users_service_1 = require("../core/users/users.service");
 let AuthService = class AuthService {
     userService;
-    ethService;
     redis;
     jwtService;
-    constructor(userService, ethService, redis, jwtService) {
+    constructor(userService, redis, jwtService) {
         this.userService = userService;
-        this.ethService = ethService;
         this.redis = redis;
         this.jwtService = jwtService;
     }
@@ -58,13 +55,6 @@ let AuthService = class AuthService {
             walletAddress: address.toLowerCase(),
         });
     }
-    async generateSignature() {
-        const signer = await this.ethService.getSigner(0);
-        return this.jwtService.sign({
-            sub: signer.address,
-            walletAddress: signer.address.toLowerCase(),
-        });
-    }
     async signatureWithPrivateKey(privateKey) {
         const wallet = new ethers_1.ethers.Wallet(privateKey);
         const user = await this.userService.upsert(wallet.address, {
@@ -81,7 +71,6 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
-        eth_service_1.EthService,
         redis_service_1.RedisService,
         jwt_1.JwtService])
 ], AuthService);

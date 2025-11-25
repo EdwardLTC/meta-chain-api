@@ -15,8 +15,7 @@ const jwt_1 = require("@nestjs/jwt");
 const environment_service_1 = require("../environment/environment.service");
 const environment_module_1 = require("../environment/environment.module");
 const jwt_strategy_1 = require("./jwt.strategy");
-const users_module_1 = require("../users/users.module");
-const eth_module_1 = require("../eth/eth.module");
+const users_module_1 = require("../core/users/users.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -34,7 +33,6 @@ exports.AuthModule = AuthModule = __decorate([
                 }),
             }),
             users_module_1.UsersModule,
-            eth_module_1.EthModule,
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],

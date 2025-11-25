@@ -4,4 +4,10 @@ export const CollectionStatus = {
     CREATED: 'CREATED',
     FAILED: 'FAILED'
 };
+export const TokenStatus = {
+    NEW: 'NEW',
+    PENDING: 'PENDING',
+    MINTED: 'MINTED',
+    FAILED: 'FAILED'
+};
 //# sourceMappingURL=enums.mjs.map

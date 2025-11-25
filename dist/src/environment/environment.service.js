@@ -41,6 +41,15 @@ let EnvironmentService = class EnvironmentService {
     get isProduction() {
         return this.environment === 'production';
     }
+    get nftStorageApiKey() {
+        return this.configService.get('NFT_STORAGE_API_KEY');
+    }
+    get pinata() {
+        return {
+            apiKey: this.configService.get('PINATA_API_KEY_JWT'),
+            gateway: this.configService.get('PINATA_GATEWAY_URL'),
+        };
+    }
 };
 exports.EnvironmentService = EnvironmentService;
 exports.EnvironmentService = EnvironmentService = __decorate([

@@ -179,7 +179,6 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Collection: "Collection";
     readonly Token: "Token";
-    readonly TokenAttribute: "TokenAttribute";
     readonly Listing: "Listing";
     readonly Order: "Order";
     readonly EventCursor: "EventCursor";
@@ -195,7 +194,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "collection" | "token" | "tokenAttribute" | "listing" | "order" | "eventCursor";
+        modelProps: "user" | "collection" | "token" | "listing" | "order" | "eventCursor";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -418,80 +417,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.TokenCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.TokenCountAggregateOutputType> | number;
-                };
-            };
-        };
-        TokenAttribute: {
-            payload: Prisma.$TokenAttributePayload<ExtArgs>;
-            fields: Prisma.TokenAttributeFieldRefs;
-            operations: {
-                findUnique: {
-                    args: Prisma.TokenAttributeFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload> | null;
-                };
-                findUniqueOrThrow: {
-                    args: Prisma.TokenAttributeFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                findFirst: {
-                    args: Prisma.TokenAttributeFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload> | null;
-                };
-                findFirstOrThrow: {
-                    args: Prisma.TokenAttributeFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                findMany: {
-                    args: Prisma.TokenAttributeFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>[];
-                };
-                create: {
-                    args: Prisma.TokenAttributeCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                createMany: {
-                    args: Prisma.TokenAttributeCreateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                createManyAndReturn: {
-                    args: Prisma.TokenAttributeCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>[];
-                };
-                delete: {
-                    args: Prisma.TokenAttributeDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                update: {
-                    args: Prisma.TokenAttributeUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                deleteMany: {
-                    args: Prisma.TokenAttributeDeleteManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateMany: {
-                    args: Prisma.TokenAttributeUpdateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateManyAndReturn: {
-                    args: Prisma.TokenAttributeUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>[];
-                };
-                upsert: {
-                    args: Prisma.TokenAttributeUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenAttributePayload>;
-                };
-                aggregate: {
-                    args: Prisma.TokenAttributeAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateTokenAttribute>;
-                };
-                groupBy: {
-                    args: Prisma.TokenAttributeGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.TokenAttributeGroupByOutputType>[];
-                };
-                count: {
-                    args: Prisma.TokenAttributeCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.TokenAttributeCountAggregateOutputType> | number;
                 };
             };
         };
@@ -777,6 +702,7 @@ export declare const CollectionScalarFieldEnum: {
 export type CollectionScalarFieldEnum = (typeof CollectionScalarFieldEnum)[keyof typeof CollectionScalarFieldEnum];
 export declare const TokenScalarFieldEnum: {
     readonly id: "id";
+    readonly collectionId: "collectionId";
     readonly contractAddress: "contractAddress";
     readonly tokenId: "tokenId";
     readonly ownerAddress: "ownerAddress";
@@ -784,21 +710,12 @@ export declare const TokenScalarFieldEnum: {
     readonly name: "name";
     readonly description: "description";
     readonly image: "image";
-    readonly metadataJson: "metadataJson";
     readonly mintTxHash: "mintTxHash";
-    readonly firstSeenAt: "firstSeenAt";
-    readonly lastSyncedAt: "lastSyncedAt";
-    readonly collectionId: "collectionId";
+    readonly status: "status";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
 };
 export type TokenScalarFieldEnum = (typeof TokenScalarFieldEnum)[keyof typeof TokenScalarFieldEnum];
-export declare const TokenAttributeScalarFieldEnum: {
-    readonly id: "id";
-    readonly tokenId: "tokenId";
-    readonly traitType: "traitType";
-    readonly value: "value";
-    readonly rarity: "rarity";
-};
-export type TokenAttributeScalarFieldEnum = (typeof TokenAttributeScalarFieldEnum)[keyof typeof TokenAttributeScalarFieldEnum];
 export declare const ListingScalarFieldEnum: {
     readonly id: "id";
     readonly tokenId: "tokenId";
@@ -890,12 +807,14 @@ export type EnumCollectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumCollectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CollectionStatus[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+export type EnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus'>;
+export type ListEnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus[]'>;
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>;
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>;
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
 export type BatchPayload = {
     count: number;
 };
@@ -925,7 +844,6 @@ export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
     collection?: Prisma.CollectionOmit;
     token?: Prisma.TokenOmit;
-    tokenAttribute?: Prisma.TokenAttributeOmit;
     listing?: Prisma.ListingOmit;
     order?: Prisma.OrderOmit;
     eventCursor?: Prisma.EventCursorOmit;

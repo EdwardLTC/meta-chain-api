@@ -18,13 +18,14 @@ const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const auth_module_1 = require("../auth/auth.module");
 const redis_module_1 = require("../redis/redis.module");
 const eth_module_1 = require("../eth/eth.module");
-const collections_module_1 = require("../collections/collections.module");
+const collections_module_1 = require("../core/collections/collections.module");
+const tokens_module_1 = require("../core/tokens/tokens.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [environment_module_1.EnvironmentModule, prisma_module_1.PrismaModule, redis_module_1.RedisModule, auth_module_1.AuthModule, eth_module_1.EthModule, collections_module_1.CollectionsModule],
+        imports: [environment_module_1.EnvironmentModule, prisma_module_1.PrismaModule, redis_module_1.RedisModule, auth_module_1.AuthModule, eth_module_1.EthModule, collections_module_1.CollectionsModule, tokens_module_1.TokensModule],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,

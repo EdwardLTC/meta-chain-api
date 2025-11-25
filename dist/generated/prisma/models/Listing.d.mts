@@ -446,6 +446,9 @@ export type DecimalFieldUpdateOperationsInput = {
     multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string;
     divide?: runtime.Decimal | runtime.DecimalJsLike | number | string;
 };
+export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null;
+};
 export type ListingCreateNestedOneWithoutOrderInput = {
     create?: Prisma.XOR<Prisma.ListingCreateWithoutOrderInput, Prisma.ListingUncheckedCreateWithoutOrderInput>;
     connectOrCreate?: Prisma.ListingCreateOrConnectWithoutOrderInput;

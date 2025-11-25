@@ -54,41 +54,40 @@ model Collection {
   @@map("collections")
 }
 
+enum TokenStatus {
+  NEW
+  PENDING
+  MINTED
+  FAILED
+}
+
 model Token {
-  id              String           @id @default(uuid())
-  contractAddress String
-  tokenId         String
+  id String @id @default(uuid())
+
+  collection   Collection @relation(fields: [collectionId], references: [id])
+  collectionId String
+
+  contractAddress String?
+  tokenId         String?
   ownerAddress    String
-  tokenUri        String?
-  name            String?
-  description     String?
-  image           String?
-  metadataJson    Json?
-  mintTxHash      String?
-  firstSeenAt     DateTime?
-  lastSyncedAt    DateTime?
-  collection      Collection?      @relation(fields: [collectionId], references: [id])
-  collectionId    String?
-  listings        Listing[]
-  attributes      TokenAttribute[]
+  tokenUri        String
+
+  name        String
+  description String
+  image       String
+
+  mintTxHash String?
+  status     TokenStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listings Listing[]
 
   @@unique([contractAddress, tokenId])
   @@index([contractAddress])
   @@index([ownerAddress])
   @@map("tokens")
-}
-
-model TokenAttribute {
-  id        String @id @default(uuid())
-  token     Token  @relation(fields: [tokenId], references: [id])
-  tokenId   String
-  traitType String
-  value     String
-  rarity    Float?
-
-  @@index([traitType])
-  @@index([value])
-  @@map("token_attributes")
 }
 
 model Listing {

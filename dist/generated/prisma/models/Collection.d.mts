@@ -426,9 +426,9 @@ export type CollectionMinOrderByAggregateInput = {
 export type CollectionSumOrderByAggregateInput = {
     royaltyFeeBps?: Prisma.SortOrder;
 };
-export type CollectionNullableScalarRelationFilter = {
-    is?: Prisma.CollectionWhereInput | null;
-    isNot?: Prisma.CollectionWhereInput | null;
+export type CollectionScalarRelationFilter = {
+    is?: Prisma.CollectionWhereInput;
+    isNot?: Prisma.CollectionWhereInput;
 };
 export type CollectionCreateNestedManyWithoutUserInput = {
     create?: Prisma.XOR<Prisma.CollectionCreateWithoutUserInput, Prisma.CollectionUncheckedCreateWithoutUserInput> | Prisma.CollectionCreateWithoutUserInput[] | Prisma.CollectionUncheckedCreateWithoutUserInput[];
@@ -483,12 +483,10 @@ export type CollectionCreateNestedOneWithoutTokensInput = {
     connectOrCreate?: Prisma.CollectionCreateOrConnectWithoutTokensInput;
     connect?: Prisma.CollectionWhereUniqueInput;
 };
-export type CollectionUpdateOneWithoutTokensNestedInput = {
+export type CollectionUpdateOneRequiredWithoutTokensNestedInput = {
     create?: Prisma.XOR<Prisma.CollectionCreateWithoutTokensInput, Prisma.CollectionUncheckedCreateWithoutTokensInput>;
     connectOrCreate?: Prisma.CollectionCreateOrConnectWithoutTokensInput;
     upsert?: Prisma.CollectionUpsertWithoutTokensInput;
-    disconnect?: Prisma.CollectionWhereInput | boolean;
-    delete?: Prisma.CollectionWhereInput | boolean;
     connect?: Prisma.CollectionWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.CollectionUpdateToOneWithWhereWithoutTokensInput, Prisma.CollectionUpdateWithoutTokensInput>, Prisma.CollectionUncheckedUpdateWithoutTokensInput>;
 };

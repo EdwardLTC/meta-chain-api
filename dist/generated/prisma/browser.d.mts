@@ -5,7 +5,6 @@ export * from './enums.mjs';
 export type User = Prisma.UserModel;
 export type Collection = Prisma.CollectionModel;
 export type Token = Prisma.TokenModel;
-export type TokenAttribute = Prisma.TokenAttributeModel;
 export type Listing = Prisma.ListingModel;
 export type Order = Prisma.OrderModel;
 export type EventCursor = Prisma.EventCursorModel;

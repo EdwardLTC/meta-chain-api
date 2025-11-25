@@ -9,6 +9,5 @@ export declare class AuthController {
     verifySignature(loginDto: LoginDto): Promise<{
         token: string;
     }>;
-    generateSignature(): Promise<string>;
     signatureWithPrivateKey(address: string): Promise<string>;
 }
