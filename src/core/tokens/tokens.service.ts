@@ -40,8 +40,7 @@ export class TokensService {
         creatorAddress: creatorAddress,
         collectionAddress: collection.contractAddress,
       },
-      data.name,
-      collection.contractAddress!,
+      `${collection.contractAddress}-${data.name}`,
     );
 
     const createdToken = await this.dbService.token.create({

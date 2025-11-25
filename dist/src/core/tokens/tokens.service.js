@@ -47,7 +47,7 @@ let TokensService = class TokensService {
             image: data.image,
             creatorAddress: creatorAddress,
             collectionAddress: collection.contractAddress,
-        }, data.name, collection.contractAddress);
+        }, `${collection.contractAddress}-${data.name}`);
         const createdToken = await this.dbService.token.create({
             data: {
                 collectionId: data.collectionId,
