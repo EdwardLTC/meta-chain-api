@@ -3,7 +3,7 @@ import { CreateCollectionDto } from './dtos/create.dto';
 import { ContractsService } from 'src/eth/contracts.service';
 import { EthService } from 'src/eth/eth.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
+import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 import { CollectionStatus } from '../../../generated/prisma/enums.mjs';
 
 @Injectable()
@@ -38,32 +38,13 @@ export class CollectionsService {
       createBody.royaltyFeeBps,
     );
 
-    const update = await this.prisma.collection.update({
+    return this.prisma.collection.update({
       where: { id: create.id },
       data: {
         status: CollectionStatus.PENDING,
+        txData: txData as unknown as InputJsonValue,
       },
     });
-
-    const metaTxData = await Promise.all([
-      this.eth.getProvider().getTransactionCount(creatorAddress),
-      this.eth.getProvider().getNetwork(),
-      this.eth.getProvider().estimateGas({
-        to: txData.to,
-        data: txData.data,
-        from: creatorAddress,
-      }),
-    ]);
-
-    return {
-      collection: update,
-      txData: {
-        ...txData,
-        nonce: metaTxData[0].toString(),
-        chainId: metaTxData[1].chainId.toString(),
-        gasLimit: metaTxData[2].toString(),
-      },
-    };
   }
 
   public async getCollections() {

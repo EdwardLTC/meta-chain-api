@@ -11,6 +11,7 @@ export declare class EnvironmentService {
         port: number | undefined;
     };
     get ProviderNodeUrl(): string;
+    get ProviderWsNodeUrl(): string;
     get isProduction(): boolean;
     get nftStorageApiKey(): string;
     get pinata(): {

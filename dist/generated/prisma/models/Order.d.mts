@@ -44,6 +44,7 @@ export type OrderCountAggregateOutputType = {
     price: number;
     txHash: number;
     status: number;
+    txData: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -84,6 +85,7 @@ export type OrderCountAggregateInputType = {
     price?: true;
     txHash?: true;
     status?: true;
+    txData?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -124,6 +126,7 @@ export type OrderGroupByOutputType = {
     price: runtime.Decimal;
     txHash: string;
     status: string;
+    txData: runtime.JsonValue | null;
     createdAt: Date;
     updatedAt: Date;
     _count: OrderCountAggregateOutputType | null;
@@ -146,6 +149,7 @@ export type OrderWhereInput = {
     price?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFilter<"Order"> | string;
     status?: Prisma.StringFilter<"Order"> | string;
+    txData?: Prisma.JsonNullableFilter<"Order">;
     createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
     listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>;
@@ -158,6 +162,7 @@ export type OrderOrderByWithRelationInput = {
     price?: Prisma.SortOrder;
     txHash?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     listing?: Prisma.ListingOrderByWithRelationInput;
@@ -173,6 +178,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
     price?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFilter<"Order"> | string;
     status?: Prisma.StringFilter<"Order"> | string;
+    txData?: Prisma.JsonNullableFilter<"Order">;
     createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
     listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>;
@@ -185,6 +191,7 @@ export type OrderOrderByWithAggregationInput = {
     price?: Prisma.SortOrder;
     txHash?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.OrderCountOrderByAggregateInput;
@@ -204,6 +211,7 @@ export type OrderScalarWhereWithAggregatesInput = {
     price?: Prisma.DecimalWithAggregatesFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringWithAggregatesFilter<"Order"> | string;
     status?: Prisma.StringWithAggregatesFilter<"Order"> | string;
+    txData?: Prisma.JsonNullableWithAggregatesFilter<"Order">;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string;
 };
@@ -214,6 +222,7 @@ export type OrderCreateInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     listing: Prisma.ListingCreateNestedOneWithoutOrderInput;
@@ -226,6 +235,7 @@ export type OrderUncheckedCreateInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -236,6 +246,7 @@ export type OrderUpdateInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     listing?: Prisma.ListingUpdateOneRequiredWithoutOrderNestedInput;
@@ -248,6 +259,7 @@ export type OrderUncheckedUpdateInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -259,6 +271,7 @@ export type OrderCreateManyInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -269,6 +282,7 @@ export type OrderUpdateManyMutationInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -280,6 +294,7 @@ export type OrderUncheckedUpdateManyInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -299,6 +314,7 @@ export type OrderCountOrderByAggregateInput = {
     price?: Prisma.SortOrder;
     txHash?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -375,6 +391,7 @@ export type OrderCreateWithoutListingInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -385,6 +402,7 @@ export type OrderUncheckedCreateWithoutListingInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -420,6 +438,7 @@ export type OrderScalarWhereInput = {
     price?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFilter<"Order"> | string;
     status?: Prisma.StringFilter<"Order"> | string;
+    txData?: Prisma.JsonNullableFilter<"Order">;
     createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string;
 };
@@ -430,6 +449,7 @@ export type OrderCreateManyListingInput = {
     price: runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash: string;
     status?: string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -440,6 +460,7 @@ export type OrderUpdateWithoutListingInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -450,6 +471,7 @@ export type OrderUncheckedUpdateWithoutListingInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -460,6 +482,7 @@ export type OrderUncheckedUpdateManyWithoutListingInput = {
     price?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string;
     txHash?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -471,6 +494,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     price?: boolean;
     txHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>;
@@ -483,6 +507,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
     price?: boolean;
     txHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>;
@@ -495,6 +520,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
     price?: boolean;
     txHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>;
@@ -507,10 +533,11 @@ export type OrderSelectScalar = {
     price?: boolean;
     txHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "buyer" | "seller" | "price" | "txHash" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>;
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "buyer" | "seller" | "price" | "txHash" | "status" | "txData" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>;
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>;
 };
@@ -533,6 +560,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
         price: runtime.Decimal;
         txHash: string;
         status: string;
+        txData: runtime.JsonValue | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["order"]>;
@@ -600,6 +628,7 @@ export interface OrderFieldRefs {
     readonly price: Prisma.FieldRef<"Order", 'Decimal'>;
     readonly txHash: Prisma.FieldRef<"Order", 'String'>;
     readonly status: Prisma.FieldRef<"Order", 'String'>;
+    readonly txData: Prisma.FieldRef<"Order", 'Json'>;
     readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>;
 }

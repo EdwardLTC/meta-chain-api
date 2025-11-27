@@ -181,7 +181,6 @@ export declare const ModelName: {
     readonly Token: "Token";
     readonly Listing: "Listing";
     readonly Order: "Order";
-    readonly EventCursor: "EventCursor";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -194,7 +193,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "collection" | "token" | "listing" | "order" | "eventCursor";
+        modelProps: "user" | "collection" | "token" | "listing" | "order";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -568,80 +567,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
-        EventCursor: {
-            payload: Prisma.$EventCursorPayload<ExtArgs>;
-            fields: Prisma.EventCursorFieldRefs;
-            operations: {
-                findUnique: {
-                    args: Prisma.EventCursorFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload> | null;
-                };
-                findUniqueOrThrow: {
-                    args: Prisma.EventCursorFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                findFirst: {
-                    args: Prisma.EventCursorFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload> | null;
-                };
-                findFirstOrThrow: {
-                    args: Prisma.EventCursorFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                findMany: {
-                    args: Prisma.EventCursorFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>[];
-                };
-                create: {
-                    args: Prisma.EventCursorCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                createMany: {
-                    args: Prisma.EventCursorCreateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                createManyAndReturn: {
-                    args: Prisma.EventCursorCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>[];
-                };
-                delete: {
-                    args: Prisma.EventCursorDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                update: {
-                    args: Prisma.EventCursorUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                deleteMany: {
-                    args: Prisma.EventCursorDeleteManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateMany: {
-                    args: Prisma.EventCursorUpdateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateManyAndReturn: {
-                    args: Prisma.EventCursorUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>[];
-                };
-                upsert: {
-                    args: Prisma.EventCursorUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$EventCursorPayload>;
-                };
-                aggregate: {
-                    args: Prisma.EventCursorAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateEventCursor>;
-                };
-                groupBy: {
-                    args: Prisma.EventCursorGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.EventCursorGroupByOutputType>[];
-                };
-                count: {
-                    args: Prisma.EventCursorCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.EventCursorCountAggregateOutputType> | number;
-                };
-            };
-        };
     };
 } & {
     other: {
@@ -696,6 +621,7 @@ export declare const CollectionScalarFieldEnum: {
     readonly royaltyFeeBps: "royaltyFeeBps";
     readonly txHash: "txHash";
     readonly contractAddress: "contractAddress";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -712,6 +638,7 @@ export declare const TokenScalarFieldEnum: {
     readonly image: "image";
     readonly mintTxHash: "mintTxHash";
     readonly status: "status";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -721,12 +648,13 @@ export declare const ListingScalarFieldEnum: {
     readonly tokenId: "tokenId";
     readonly sellerAddress: "sellerAddress";
     readonly price: "price";
-    readonly currency: "currency";
+    readonly paymentToken: "paymentToken";
     readonly status: "status";
     readonly expiresAt: "expiresAt";
-    readonly source: "source";
-    readonly orderData: "orderData";
+    readonly onchainId: "onchainId";
     readonly txHash: "txHash";
+    readonly txData: "txData";
+    readonly orderData: "orderData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -739,15 +667,11 @@ export declare const OrderScalarFieldEnum: {
     readonly price: "price";
     readonly txHash: "txHash";
     readonly status: "status";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum];
-export declare const EventCursorScalarFieldEnum: {
-    readonly id: "id";
-    readonly lastBlock: "lastBlock";
-};
-export type EventCursorScalarFieldEnum = (typeof EventCursorScalarFieldEnum)[keyof typeof EventCursorScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
@@ -807,12 +731,14 @@ export type EnumCollectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumCollectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CollectionStatus[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 export type EnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus'>;
 export type ListEnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus[]'>;
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>;
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
+export type EnumListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ListingStatus'>;
+export type ListEnumListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ListingStatus[]'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
 export type BatchPayload = {
@@ -846,7 +772,6 @@ export type GlobalOmitConfig = {
     token?: Prisma.TokenOmit;
     listing?: Prisma.ListingOmit;
     order?: Prisma.OrderOmit;
-    eventCursor?: Prisma.EventCursorOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

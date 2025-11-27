@@ -31,7 +31,6 @@ export declare const ModelName: {
     readonly Token: "Token";
     readonly Listing: "Listing";
     readonly Order: "Order";
-    readonly EventCursor: "EventCursor";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -64,6 +63,7 @@ export declare const CollectionScalarFieldEnum: {
     readonly royaltyFeeBps: "royaltyFeeBps";
     readonly txHash: "txHash";
     readonly contractAddress: "contractAddress";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -80,6 +80,7 @@ export declare const TokenScalarFieldEnum: {
     readonly image: "image";
     readonly mintTxHash: "mintTxHash";
     readonly status: "status";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -89,12 +90,13 @@ export declare const ListingScalarFieldEnum: {
     readonly tokenId: "tokenId";
     readonly sellerAddress: "sellerAddress";
     readonly price: "price";
-    readonly currency: "currency";
+    readonly paymentToken: "paymentToken";
     readonly status: "status";
     readonly expiresAt: "expiresAt";
-    readonly source: "source";
-    readonly orderData: "orderData";
+    readonly onchainId: "onchainId";
     readonly txHash: "txHash";
+    readonly txData: "txData";
+    readonly orderData: "orderData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -107,15 +109,11 @@ export declare const OrderScalarFieldEnum: {
     readonly price: "price";
     readonly txHash: "txHash";
     readonly status: "status";
+    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum];
-export declare const EventCursorScalarFieldEnum: {
-    readonly id: "id";
-    readonly lastBlock: "lastBlock";
-};
-export type EventCursorScalarFieldEnum = (typeof EventCursorScalarFieldEnum)[keyof typeof EventCursorScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

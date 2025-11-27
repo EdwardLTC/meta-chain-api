@@ -1,4 +1,12 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { MintTokenDto } from './dtos/mint.dto';
 import { CollectionsService } from '../collections/collections.service';
 import { Contract } from 'ethers';
@@ -9,7 +17,7 @@ import { EthService } from '../../eth/eth.service';
 import { CollectionStatus, TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { SignTokenDto } from './dtos/sign-token.dto';
 import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
+import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 
 @Injectable()
 export class TokensService {
@@ -30,6 +38,10 @@ export class TokensService {
 
     if (collection.status !== CollectionStatus.CREATED) {
       throw new BadRequestException('Contract for this collection is not yet created on blockchain');
+    }
+
+    if (!collection.contractAddress) {
+      throw new InternalServerErrorException(`Collection ${collection.id} has no contract address`);
     }
 
     const metadataUrl = await this.nftStorageService.uploadMetadata(
@@ -55,36 +67,17 @@ export class TokensService {
       },
     });
 
-    const contract = new Contract(collection.contractAddress!, ABI, this.ethService.getProvider());
+    const contract = new Contract(collection.contractAddress, ABI, this.ethService.getProvider());
 
     const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, createdToken.id);
 
-    const updated = await this.dbService.token.update({
+    return this.dbService.token.update({
       where: { id: createdToken.id },
       data: {
         status: TokenStatus.PENDING,
+        txData: txData as unknown as InputJsonValue,
       },
     });
-
-    const metaTxData = await Promise.all([
-      this.ethService.getProvider().getTransactionCount(creatorAddress),
-      this.ethService.getProvider().getNetwork(),
-      this.ethService.getProvider().estimateGas({
-        to: txData.to,
-        data: txData.data,
-        from: creatorAddress,
-      }),
-    ]);
-
-    return {
-      token: updated,
-      txData: {
-        ...txData,
-        nonce: metaTxData[0].toString(),
-        chainId: metaTxData[1].chainId.toString(),
-        gasLimit: metaTxData[2].toString(),
-      },
-    };
   }
 
   public async getTokens(getTokensFilterDto: GetTokensFilterDto) {

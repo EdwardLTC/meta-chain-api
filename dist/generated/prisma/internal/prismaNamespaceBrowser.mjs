@@ -13,8 +13,7 @@ export const ModelName = {
     Collection: 'Collection',
     Token: 'Token',
     Listing: 'Listing',
-    Order: 'Order',
-    EventCursor: 'EventCursor'
+    Order: 'Order'
 };
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
     ReadUncommitted: 'ReadUncommitted',
@@ -44,6 +43,7 @@ export const CollectionScalarFieldEnum = {
     royaltyFeeBps: 'royaltyFeeBps',
     txHash: 'txHash',
     contractAddress: 'contractAddress',
+    txData: 'txData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -59,6 +59,7 @@ export const TokenScalarFieldEnum = {
     image: 'image',
     mintTxHash: 'mintTxHash',
     status: 'status',
+    txData: 'txData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -67,12 +68,13 @@ export const ListingScalarFieldEnum = {
     tokenId: 'tokenId',
     sellerAddress: 'sellerAddress',
     price: 'price',
-    currency: 'currency',
+    paymentToken: 'paymentToken',
     status: 'status',
     expiresAt: 'expiresAt',
-    source: 'source',
-    orderData: 'orderData',
+    onchainId: 'onchainId',
     txHash: 'txHash',
+    txData: 'txData',
+    orderData: 'orderData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -84,12 +86,9 @@ export const OrderScalarFieldEnum = {
     price: 'price',
     txHash: 'txHash',
     status: 'status',
+    txData: 'txData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
-};
-export const EventCursorScalarFieldEnum = {
-    id: 'id',
-    lastBlock: 'lastBlock'
 };
 export const SortOrder = {
     asc: 'asc',

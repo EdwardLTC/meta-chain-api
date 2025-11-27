@@ -14,6 +14,7 @@ export declare class TokensController {
         description: string;
         image: string;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
         tokenId: string | null;
         ownerAddress: string;
@@ -29,6 +30,7 @@ export declare class TokensController {
         description: string;
         image: string;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
         tokenId: string | null;
         ownerAddress: string;
@@ -36,39 +38,20 @@ export declare class TokensController {
         mintTxHash: string | null;
     }>;
     mintToken(data: MintTokenDto, walletAddress: string, userId: string): Promise<{
-        token: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: import("../../../generated/prisma/enums.mjs", { with: { "resolution-mode": "import" } }).TokenStatus;
-            name: string;
-            description: string;
-            image: string;
-            contractAddress: string | null;
-            collectionId: string;
-            tokenId: string | null;
-            ownerAddress: string;
-            tokenUri: string;
-            mintTxHash: string | null;
-        };
-        txData: {
-            nonce: string;
-            chainId: string;
-            gasLimit: string;
-            to: string;
-            data: string;
-            from?: string;
-            type?: number;
-            gasPrice?: bigint;
-            maxPriorityFeePerGas?: bigint;
-            maxFeePerGas?: bigint;
-            value?: bigint;
-            accessList?: import("ethers").AccessList;
-            authorizationList?: Array<import("ethers").Authorization>;
-            customData?: any;
-            blockTag?: import("ethers").BlockTag;
-            enableCcipRead?: boolean;
-        };
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import("../../../generated/prisma/enums.mjs", { with: { "resolution-mode": "import" } }).TokenStatus;
+        name: string;
+        description: string;
+        image: string;
+        contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
+        collectionId: string;
+        tokenId: string | null;
+        ownerAddress: string;
+        tokenUri: string;
+        mintTxHash: string | null;
     }>;
     signTokenDevOnly(tokenId: SignTokenDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
 }

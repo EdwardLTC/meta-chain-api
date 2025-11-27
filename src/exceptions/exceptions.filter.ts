@@ -10,7 +10,7 @@ export class ExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
-    let responseBody: { statusCode: number; timestamp: Date; message: string; cause: unknown } = {
+    let responseBody: { statusCode: HttpStatus; timestamp: Date; message: string; cause: unknown } = {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       timestamp: new Date(),
       message: 'Something went wrong',
@@ -27,7 +27,9 @@ export class ExceptionsFilter implements ExceptionFilter {
       };
     }
 
-    this.logger.error(`[${req.method}] ${req.path} [Error] >> Message:: ${exception.toString()}`, exception.stack);
+    if (responseBody.statusCode !== HttpStatus.NOT_FOUND) {
+      this.logger.error(`[${req.method}] ${req.path} [Error] >> Message:: ${exception.toString()}`, exception.stack);
+    }
 
     response.status(responseBody.statusCode).json(responseBody);
   }

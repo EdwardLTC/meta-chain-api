@@ -45,6 +45,7 @@ model Collection {
   royaltyFeeBps   Int
   txHash          String?          @unique
   contractAddress String?          @unique
+  txData          Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,7 +69,7 @@ model Token {
   collectionId String
 
   contractAddress String?
-  tokenId         String?
+  tokenId         String? /// on-chain token ID
   ownerAddress    String
   tokenUri        String
 
@@ -78,6 +79,7 @@ model Token {
 
   mintTxHash String?
   status     TokenStatus @default(NEW)
+  txData     Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -90,25 +92,36 @@ model Token {
   @@map("tokens")
 }
 
-model Listing {
-  id            String    @id @default(uuid())
-  token         Token     @relation(fields: [tokenId], references: [id])
-  tokenId       String
-  sellerAddress String
-  price         Decimal   @db.Decimal(36, 18)
-  currency      String
-  status        String    @default("active")
-  expiresAt     DateTime?
-  source        String // "offchain" | "onchain"
-  orderData     Json?
-  txHash        String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  Order         Order[]
+enum ListingStatus {
+  NEW
+  PENDING
+  ACTIVE
+  SOLD
+  CANCELLED
+}
 
-  @@index([sellerAddress])
-  @@index([status])
-  @@index([tokenId])
+model Listing {
+  id String @id @default(uuid())
+
+  tokenId String
+
+  sellerAddress String
+  price         Decimal       @db.Decimal(36, 18)
+  paymentToken  String
+  status        ListingStatus @default(NEW)
+  expiresAt     DateTime?
+
+  onchainId Int?
+  txHash    String?
+  txData    Json?
+
+  orderData Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order[]
+  token Token   @relation(fields: [tokenId], references: [id])
+
   @@map("listings")
 }
 
@@ -121,18 +134,9 @@ model Order {
   price     Decimal  @db.Decimal(36, 18)
   txHash    String
   status    String   @default("pending")
+  txData    Json?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([buyer])
-  @@index([seller])
-  @@index([status])
   @@map("orders")
-}
-
-model EventCursor {
-  id        String @id
-  lastBlock Int
-
-  @@map("event_cursors")
 }

@@ -41,7 +41,7 @@ export class ContractsService {
     }
   }
 
-  public getContract(name: string): Contract {
+  public getContract(name: string, protocall: 'HTTP' | 'WS' = 'HTTP'): Contract {
     if (this.contractCache[name]) {
       return this.contractCache[name];
     }
@@ -54,7 +54,7 @@ export class ContractsService {
       throw new Error(`Contract ${name} is missing ABI or address`);
     }
 
-    this.contractCache[name] = new Contract(info.address, info.abi, this.getProvider());
+    this.contractCache[name] = new Contract(info.address, info.abi, protocall === 'HTTP' ? this.eth.getProvider() : this.eth.getWebSocketProvider());
     return this.contractCache[name];
   }
 }

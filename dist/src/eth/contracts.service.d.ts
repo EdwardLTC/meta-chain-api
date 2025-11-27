@@ -10,5 +10,5 @@ export declare class ContractsService {
     getAbi(name: string): InterfaceAbi | null;
     getProvider(): import("ethers").JsonRpcProvider;
     loadDeployments(): void;
-    getContract(name: string): Contract;
+    getContract(name: string, protocall?: 'HTTP' | 'WS'): Contract;
 }

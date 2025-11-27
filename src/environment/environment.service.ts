@@ -32,6 +32,10 @@ export class EnvironmentService {
     return <string>this.configService.get<string>('PROVIDER_NODE_URL');
   }
 
+  public get ProviderWsNodeUrl(): string {
+    return <string>this.configService.get<string>('PROVIDER_WS_NODE_URL');
+  }
+
   public get isProduction(): boolean {
     return this.environment === 'production';
   }

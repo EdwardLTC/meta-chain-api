@@ -16,12 +16,17 @@ const environment_service_1 = require("../environment/environment.service");
 let EthService = class EthService {
     environmentService;
     provider;
+    webSocketProvider;
     constructor(environmentService) {
         this.environmentService = environmentService;
         this.provider = new ethers_1.JsonRpcProvider(this.environmentService.ProviderNodeUrl);
+        this.webSocketProvider = new ethers_1.JsonRpcProvider(this.environmentService.ProviderWsNodeUrl);
     }
     getProvider() {
         return this.provider;
+    }
+    getWebSocketProvider() {
+        return this.webSocketProvider;
     }
     async getSigner(indexOrPrivateKey) {
         if (typeof indexOrPrivateKey === 'number') {

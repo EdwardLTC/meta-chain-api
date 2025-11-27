@@ -5,13 +5,19 @@ import { EnvironmentService } from '../environment/environment.service';
 @Injectable()
 export class EthService {
   private readonly provider: JsonRpcProvider;
+  private readonly webSocketProvider: JsonRpcProvider;
 
   constructor(private readonly environmentService: EnvironmentService) {
     this.provider = new JsonRpcProvider(this.environmentService.ProviderNodeUrl);
+    this.webSocketProvider = new JsonRpcProvider(this.environmentService.ProviderWsNodeUrl);
   }
 
   public getProvider() {
     return this.provider;
+  }
+
+  public getWebSocketProvider() {
+    return this.webSocketProvider;
   }
 
   public async getSigner(indexOrPrivateKey?: number | string): Promise<JsonRpcSigner> {

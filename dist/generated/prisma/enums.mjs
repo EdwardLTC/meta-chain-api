@@ -10,4 +10,11 @@ export const TokenStatus = {
     MINTED: 'MINTED',
     FAILED: 'FAILED'
 };
+export const ListingStatus = {
+    NEW: 'NEW',
+    PENDING: 'PENDING',
+    ACTIVE: 'ACTIVE',
+    SOLD: 'SOLD',
+    CANCELLED: 'CANCELLED'
+};
 //# sourceMappingURL=enums.mjs.map

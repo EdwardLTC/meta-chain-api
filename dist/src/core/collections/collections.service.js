@@ -40,30 +40,13 @@ let CollectionsService = class CollectionsService {
         });
         const factory = this.contracts.getContract('Factory');
         const txData = await factory.createCollection.populateTransaction(createBody.name, createBody.symbol, create.id, creatorAddress, createBody.royaltyFeeBps);
-        const update = await this.prisma.collection.update({
+        return this.prisma.collection.update({
             where: { id: create.id },
             data: {
                 status: enums_mjs_1.CollectionStatus.PENDING,
+                txData: txData,
             },
         });
-        const metaTxData = await Promise.all([
-            this.eth.getProvider().getTransactionCount(creatorAddress),
-            this.eth.getProvider().getNetwork(),
-            this.eth.getProvider().estimateGas({
-                to: txData.to,
-                data: txData.data,
-                from: creatorAddress,
-            }),
-        ]);
-        return {
-            collection: update,
-            txData: {
-                ...txData,
-                nonce: metaTxData[0].toString(),
-                chainId: metaTxData[1].chainId.toString(),
-                gasLimit: metaTxData[2].toString(),
-            },
-        };
     }
     async getCollections() {
         return this.prisma.collection.findMany({ where: { status: enums_mjs_1.CollectionStatus.CREATED } });

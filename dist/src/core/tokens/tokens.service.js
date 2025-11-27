@@ -41,6 +41,9 @@ let TokensService = class TokensService {
         if (collection.status !== enums_mjs_1.CollectionStatus.CREATED) {
             throw new common_1.BadRequestException('Contract for this collection is not yet created on blockchain');
         }
+        if (!collection.contractAddress) {
+            throw new common_1.InternalServerErrorException(`Collection ${collection.id} has no contract address`);
+        }
         const metadataUrl = await this.nftStorageService.uploadMetadata({
             name: data.name,
             description: data.description,
@@ -61,30 +64,13 @@ let TokensService = class TokensService {
         });
         const contract = new ethers_1.Contract(collection.contractAddress, tokens_abi_1.ABI, this.ethService.getProvider());
         const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, createdToken.id);
-        const updated = await this.dbService.token.update({
+        return this.dbService.token.update({
             where: { id: createdToken.id },
             data: {
                 status: enums_mjs_1.TokenStatus.PENDING,
+                txData: txData,
             },
         });
-        const metaTxData = await Promise.all([
-            this.ethService.getProvider().getTransactionCount(creatorAddress),
-            this.ethService.getProvider().getNetwork(),
-            this.ethService.getProvider().estimateGas({
-                to: txData.to,
-                data: txData.data,
-                from: creatorAddress,
-            }),
-        ]);
-        return {
-            token: updated,
-            txData: {
-                ...txData,
-                nonce: metaTxData[0].toString(),
-                chainId: metaTxData[1].chainId.toString(),
-                gasLimit: metaTxData[2].toString(),
-            },
-        };
     }
     async getTokens(getTokensFilterDto) {
         return this.dbService.token.findMany({ where: { collectionId: getTokensFilterDto.collectionId, status: enums_mjs_1.TokenStatus.MINTED } });

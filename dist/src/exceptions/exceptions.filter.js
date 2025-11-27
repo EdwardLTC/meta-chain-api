@@ -29,7 +29,9 @@ let ExceptionsFilter = ExceptionsFilter_1 = class ExceptionsFilter {
                 cause: exception?.cause || null,
             };
         }
-        this.logger.error(`[${req.method}] ${req.path} [Error] >> Message:: ${exception.toString()}`, exception.stack);
+        if (responseBody.statusCode !== common_1.HttpStatus.NOT_FOUND) {
+            this.logger.error(`[${req.method}] ${req.path} [Error] >> Message:: ${exception.toString()}`, exception.stack);
+        }
         response.status(responseBody.statusCode).json(responseBody);
     }
 };

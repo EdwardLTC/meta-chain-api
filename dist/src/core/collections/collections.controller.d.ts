@@ -18,6 +18,7 @@ export declare class CollectionsController {
         royaltyFeeBps: number;
         txHash: string | null;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
     }[]>;
     getCollection(id: string): Promise<{
         symbol: string;
@@ -33,41 +34,23 @@ export declare class CollectionsController {
         royaltyFeeBps: number;
         txHash: string | null;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
     }>;
     create(dto: CreateCollectionDto, userWallet: string, userId: string): Promise<{
-        collection: {
-            symbol: string;
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: import("../../../generated/prisma/enums.mjs", { with: { "resolution-mode": "import" } }).CollectionStatus;
-            userId: string;
-            creatorAddress: string;
-            name: string;
-            description: string;
-            image: string;
-            royaltyFeeBps: number;
-            txHash: string | null;
-            contractAddress: string | null;
-        };
-        txData: {
-            nonce: string;
-            chainId: string;
-            gasLimit: string;
-            to: string;
-            data: string;
-            from?: string;
-            type?: number;
-            gasPrice?: bigint;
-            maxPriorityFeePerGas?: bigint;
-            maxFeePerGas?: bigint;
-            value?: bigint;
-            accessList?: import("ethers").AccessList;
-            authorizationList?: Array<import("ethers").Authorization>;
-            customData?: any;
-            blockTag?: import("ethers").BlockTag;
-            enableCcipRead?: boolean;
-        };
+        symbol: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import("../../../generated/prisma/enums.mjs", { with: { "resolution-mode": "import" } }).CollectionStatus;
+        userId: string;
+        creatorAddress: string;
+        name: string;
+        description: string;
+        image: string;
+        royaltyFeeBps: number;
+        txHash: string | null;
+        contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
     }>;
     signContract(dto: SignContractDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
 }

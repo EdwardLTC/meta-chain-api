@@ -57,6 +57,7 @@ export type CollectionCountAggregateOutputType = {
     royaltyFeeBps: number;
     txHash: number;
     contractAddress: number;
+    txData: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -109,6 +110,7 @@ export type CollectionCountAggregateInputType = {
     royaltyFeeBps?: true;
     txHash?: true;
     contractAddress?: true;
+    txData?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -153,6 +155,7 @@ export type CollectionGroupByOutputType = {
     royaltyFeeBps: number;
     txHash: string | null;
     contractAddress: string | null;
+    txData: runtime.JsonValue | null;
     createdAt: Date;
     updatedAt: Date;
     _count: CollectionCountAggregateOutputType | null;
@@ -179,6 +182,7 @@ export type CollectionWhereInput = {
     royaltyFeeBps?: Prisma.IntFilter<"Collection"> | number;
     txHash?: Prisma.StringNullableFilter<"Collection"> | string | null;
     contractAddress?: Prisma.StringNullableFilter<"Collection"> | string | null;
+    txData?: Prisma.JsonNullableFilter<"Collection">;
     createdAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
     tokens?: Prisma.TokenListRelationFilter;
@@ -196,6 +200,7 @@ export type CollectionOrderByWithRelationInput = {
     royaltyFeeBps?: Prisma.SortOrder;
     txHash?: Prisma.SortOrderInput | Prisma.SortOrder;
     contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     tokens?: Prisma.TokenOrderByRelationAggregateInput;
@@ -216,6 +221,7 @@ export type CollectionWhereUniqueInput = Prisma.AtLeast<{
     description?: Prisma.StringFilter<"Collection"> | string;
     image?: Prisma.StringFilter<"Collection"> | string;
     royaltyFeeBps?: Prisma.IntFilter<"Collection"> | number;
+    txData?: Prisma.JsonNullableFilter<"Collection">;
     createdAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
     tokens?: Prisma.TokenListRelationFilter;
@@ -233,6 +239,7 @@ export type CollectionOrderByWithAggregationInput = {
     royaltyFeeBps?: Prisma.SortOrder;
     txHash?: Prisma.SortOrderInput | Prisma.SortOrder;
     contractAddress?: Prisma.SortOrderInput | Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.CollectionCountOrderByAggregateInput;
@@ -256,6 +263,7 @@ export type CollectionScalarWhereWithAggregatesInput = {
     royaltyFeeBps?: Prisma.IntWithAggregatesFilter<"Collection"> | number;
     txHash?: Prisma.StringNullableWithAggregatesFilter<"Collection"> | string | null;
     contractAddress?: Prisma.StringNullableWithAggregatesFilter<"Collection"> | string | null;
+    txData?: Prisma.JsonNullableWithAggregatesFilter<"Collection">;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Collection"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Collection"> | Date | string;
 };
@@ -270,6 +278,7 @@ export type CollectionCreateInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     tokens?: Prisma.TokenCreateNestedManyWithoutCollectionInput;
@@ -287,6 +296,7 @@ export type CollectionUncheckedCreateInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     tokens?: Prisma.TokenUncheckedCreateNestedManyWithoutCollectionInput;
@@ -302,6 +312,7 @@ export type CollectionUpdateInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     tokens?: Prisma.TokenUpdateManyWithoutCollectionNestedInput;
@@ -319,6 +330,7 @@ export type CollectionUncheckedUpdateInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     tokens?: Prisma.TokenUncheckedUpdateManyWithoutCollectionNestedInput;
@@ -335,6 +347,7 @@ export type CollectionCreateManyInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -349,6 +362,7 @@ export type CollectionUpdateManyMutationInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -364,6 +378,7 @@ export type CollectionUncheckedUpdateManyInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -387,6 +402,7 @@ export type CollectionCountOrderByAggregateInput = {
     royaltyFeeBps?: Prisma.SortOrder;
     txHash?: Prisma.SortOrder;
     contractAddress?: Prisma.SortOrder;
+    txData?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -501,6 +517,7 @@ export type CollectionCreateWithoutUserInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     tokens?: Prisma.TokenCreateNestedManyWithoutCollectionInput;
@@ -516,6 +533,7 @@ export type CollectionUncheckedCreateWithoutUserInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     tokens?: Prisma.TokenUncheckedCreateNestedManyWithoutCollectionInput;
@@ -556,6 +574,7 @@ export type CollectionScalarWhereInput = {
     royaltyFeeBps?: Prisma.IntFilter<"Collection"> | number;
     txHash?: Prisma.StringNullableFilter<"Collection"> | string | null;
     contractAddress?: Prisma.StringNullableFilter<"Collection"> | string | null;
+    txData?: Prisma.JsonNullableFilter<"Collection">;
     createdAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Collection"> | Date | string;
 };
@@ -570,6 +589,7 @@ export type CollectionCreateWithoutTokensInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     user: Prisma.UserCreateNestedOneWithoutCollectionsInput;
@@ -586,6 +606,7 @@ export type CollectionUncheckedCreateWithoutTokensInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -613,6 +634,7 @@ export type CollectionUpdateWithoutTokensInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     user?: Prisma.UserUpdateOneRequiredWithoutCollectionsNestedInput;
@@ -629,6 +651,7 @@ export type CollectionUncheckedUpdateWithoutTokensInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -643,6 +666,7 @@ export type CollectionCreateManyUserInput = {
     royaltyFeeBps: number;
     txHash?: string | null;
     contractAddress?: string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -657,6 +681,7 @@ export type CollectionUpdateWithoutUserInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     tokens?: Prisma.TokenUpdateManyWithoutCollectionNestedInput;
@@ -672,6 +697,7 @@ export type CollectionUncheckedUpdateWithoutUserInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     tokens?: Prisma.TokenUncheckedUpdateManyWithoutCollectionNestedInput;
@@ -687,6 +713,7 @@ export type CollectionUncheckedUpdateManyWithoutUserInput = {
     royaltyFeeBps?: Prisma.IntFieldUpdateOperationsInput | number;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -714,6 +741,7 @@ export type CollectionSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
     royaltyFeeBps?: boolean;
     txHash?: boolean;
     contractAddress?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     tokens?: boolean | Prisma.Collection$tokensArgs<ExtArgs>;
@@ -732,6 +760,7 @@ export type CollectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
     royaltyFeeBps?: boolean;
     txHash?: boolean;
     contractAddress?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -748,6 +777,7 @@ export type CollectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
     royaltyFeeBps?: boolean;
     txHash?: boolean;
     contractAddress?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -764,10 +794,11 @@ export type CollectionSelectScalar = {
     royaltyFeeBps?: boolean;
     txHash?: boolean;
     contractAddress?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type CollectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "userId" | "creatorAddress" | "name" | "symbol" | "description" | "image" | "royaltyFeeBps" | "txHash" | "contractAddress" | "createdAt" | "updatedAt", ExtArgs["result"]["collection"]>;
+export type CollectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "userId" | "creatorAddress" | "name" | "symbol" | "description" | "image" | "royaltyFeeBps" | "txHash" | "contractAddress" | "txData" | "createdAt" | "updatedAt", ExtArgs["result"]["collection"]>;
 export type CollectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     tokens?: boolean | Prisma.Collection$tokensArgs<ExtArgs>;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -797,6 +828,7 @@ export type $CollectionPayload<ExtArgs extends runtime.Types.Extensions.Internal
         royaltyFeeBps: number;
         txHash: string | null;
         contractAddress: string | null;
+        txData: runtime.JsonValue | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["collection"]>;
@@ -869,6 +901,7 @@ export interface CollectionFieldRefs {
     readonly royaltyFeeBps: Prisma.FieldRef<"Collection", 'Int'>;
     readonly txHash: Prisma.FieldRef<"Collection", 'String'>;
     readonly contractAddress: Prisma.FieldRef<"Collection", 'String'>;
+    readonly txData: Prisma.FieldRef<"Collection", 'Json'>;
     readonly createdAt: Prisma.FieldRef<"Collection", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Collection", 'DateTime'>;
 }

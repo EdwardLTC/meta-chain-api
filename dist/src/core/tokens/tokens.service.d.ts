@@ -13,39 +13,20 @@ export declare class TokensService {
     private ethService;
     constructor(dbService: PrismaService, collectionService: CollectionsService, nftStorageService: NftStorageService, ethService: EthService);
     mintToken(data: MintTokenDto, creatorAddress: string, userId: string): Promise<{
-        token: {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: TokenStatus;
-            name: string;
-            description: string;
-            image: string;
-            contractAddress: string | null;
-            collectionId: string;
-            tokenId: string | null;
-            ownerAddress: string;
-            tokenUri: string;
-            mintTxHash: string | null;
-        };
-        txData: {
-            nonce: string;
-            chainId: string;
-            gasLimit: string;
-            to: string;
-            data: string;
-            from?: string;
-            type?: number;
-            gasPrice?: bigint;
-            maxPriorityFeePerGas?: bigint;
-            maxFeePerGas?: bigint;
-            value?: bigint;
-            accessList?: import("ethers").AccessList;
-            authorizationList?: Array<import("ethers").Authorization>;
-            customData?: any;
-            blockTag?: import("ethers").BlockTag;
-            enableCcipRead?: boolean;
-        };
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: TokenStatus;
+        name: string;
+        description: string;
+        image: string;
+        contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
+        collectionId: string;
+        tokenId: string | null;
+        ownerAddress: string;
+        tokenUri: string;
+        mintTxHash: string | null;
     }>;
     getTokens(getTokensFilterDto: GetTokensFilterDto): Promise<{
         id: string;
@@ -56,6 +37,7 @@ export declare class TokensService {
         description: string;
         image: string;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
         tokenId: string | null;
         ownerAddress: string;
@@ -71,6 +53,7 @@ export declare class TokensService {
         description: string;
         image: string;
         contractAddress: string | null;
+        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
         tokenId: string | null;
         ownerAddress: string;

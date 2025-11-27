@@ -12,3 +12,11 @@ export declare const TokenStatus: {
     readonly FAILED: "FAILED";
 };
 export type TokenStatus = (typeof TokenStatus)[keyof typeof TokenStatus];
+export declare const ListingStatus: {
+    readonly NEW: "NEW";
+    readonly PENDING: "PENDING";
+    readonly ACTIVE: "ACTIVE";
+    readonly SOLD: "SOLD";
+    readonly CANCELLED: "CANCELLED";
+};
+export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus];

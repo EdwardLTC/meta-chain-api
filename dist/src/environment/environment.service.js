@@ -38,6 +38,9 @@ let EnvironmentService = class EnvironmentService {
     get ProviderNodeUrl() {
         return this.configService.get('PROVIDER_NODE_URL');
     }
+    get ProviderWsNodeUrl() {
+        return this.configService.get('PROVIDER_WS_NODE_URL');
+    }
     get isProduction() {
         return this.environment === 'production';
     }

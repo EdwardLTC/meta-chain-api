@@ -49,6 +49,7 @@ export type TokenCountAggregateOutputType = {
     image: number;
     mintTxHash: number;
     status: number;
+    txData: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -95,6 +96,7 @@ export type TokenCountAggregateInputType = {
     image?: true;
     mintTxHash?: true;
     status?: true;
+    txData?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -135,6 +137,7 @@ export type TokenGroupByOutputType = {
     image: string;
     mintTxHash: string | null;
     status: $Enums.TokenStatus;
+    txData: runtime.JsonValue | null;
     createdAt: Date;
     updatedAt: Date;
     _count: TokenCountAggregateOutputType | null;
@@ -159,6 +162,7 @@ export type TokenWhereInput = {
     image?: Prisma.StringFilter<"Token"> | string;
     mintTxHash?: Prisma.StringNullableFilter<"Token"> | string | null;
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
+    txData?: Prisma.JsonNullableFilter<"Token">;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     collection?: Prisma.XOR<Prisma.CollectionScalarRelationFilter, Prisma.CollectionWhereInput>;
@@ -176,6 +180,7 @@ export type TokenOrderByWithRelationInput = {
     image?: Prisma.SortOrder;
     mintTxHash?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     collection?: Prisma.CollectionOrderByWithRelationInput;
@@ -197,6 +202,7 @@ export type TokenWhereUniqueInput = Prisma.AtLeast<{
     image?: Prisma.StringFilter<"Token"> | string;
     mintTxHash?: Prisma.StringNullableFilter<"Token"> | string | null;
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
+    txData?: Prisma.JsonNullableFilter<"Token">;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     collection?: Prisma.XOR<Prisma.CollectionScalarRelationFilter, Prisma.CollectionWhereInput>;
@@ -214,6 +220,7 @@ export type TokenOrderByWithAggregationInput = {
     image?: Prisma.SortOrder;
     mintTxHash?: Prisma.SortOrderInput | Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.TokenCountOrderByAggregateInput;
@@ -235,6 +242,7 @@ export type TokenScalarWhereWithAggregatesInput = {
     image?: Prisma.StringWithAggregatesFilter<"Token"> | string;
     mintTxHash?: Prisma.StringNullableWithAggregatesFilter<"Token"> | string | null;
     status?: Prisma.EnumTokenStatusWithAggregatesFilter<"Token"> | $Enums.TokenStatus;
+    txData?: Prisma.JsonNullableWithAggregatesFilter<"Token">;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Token"> | Date | string;
 };
@@ -249,6 +257,7 @@ export type TokenCreateInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     collection: Prisma.CollectionCreateNestedOneWithoutTokensInput;
@@ -266,6 +275,7 @@ export type TokenUncheckedCreateInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     listings?: Prisma.ListingUncheckedCreateNestedManyWithoutTokenInput;
@@ -281,6 +291,7 @@ export type TokenUpdateInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     collection?: Prisma.CollectionUpdateOneRequiredWithoutTokensNestedInput;
@@ -298,6 +309,7 @@ export type TokenUncheckedUpdateInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     listings?: Prisma.ListingUncheckedUpdateManyWithoutTokenNestedInput;
@@ -314,6 +326,7 @@ export type TokenCreateManyInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -328,6 +341,7 @@ export type TokenUpdateManyMutationInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -343,6 +357,7 @@ export type TokenUncheckedUpdateManyInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -370,6 +385,7 @@ export type TokenCountOrderByAggregateInput = {
     image?: Prisma.SortOrder;
     mintTxHash?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
+    txData?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -471,6 +487,7 @@ export type TokenCreateWithoutCollectionInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     listings?: Prisma.ListingCreateNestedManyWithoutTokenInput;
@@ -486,6 +503,7 @@ export type TokenUncheckedCreateWithoutCollectionInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     listings?: Prisma.ListingUncheckedCreateNestedManyWithoutTokenInput;
@@ -526,6 +544,7 @@ export type TokenScalarWhereInput = {
     image?: Prisma.StringFilter<"Token"> | string;
     mintTxHash?: Prisma.StringNullableFilter<"Token"> | string | null;
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
+    txData?: Prisma.JsonNullableFilter<"Token">;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
 };
@@ -540,6 +559,7 @@ export type TokenCreateWithoutListingsInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     collection: Prisma.CollectionCreateNestedOneWithoutTokensInput;
@@ -556,6 +576,7 @@ export type TokenUncheckedCreateWithoutListingsInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -583,6 +604,7 @@ export type TokenUpdateWithoutListingsInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     collection?: Prisma.CollectionUpdateOneRequiredWithoutTokensNestedInput;
@@ -599,6 +621,7 @@ export type TokenUncheckedUpdateWithoutListingsInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -613,6 +636,7 @@ export type TokenCreateManyCollectionInput = {
     image: string;
     mintTxHash?: string | null;
     status?: $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -627,6 +651,7 @@ export type TokenUpdateWithoutCollectionInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     listings?: Prisma.ListingUpdateManyWithoutTokenNestedInput;
@@ -642,6 +667,7 @@ export type TokenUncheckedUpdateWithoutCollectionInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     listings?: Prisma.ListingUncheckedUpdateManyWithoutTokenNestedInput;
@@ -657,6 +683,7 @@ export type TokenUncheckedUpdateManyWithoutCollectionInput = {
     image?: Prisma.StringFieldUpdateOperationsInput | string;
     mintTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
+    txData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -684,6 +711,7 @@ export type TokenSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     image?: boolean;
     mintTxHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>;
@@ -702,6 +730,7 @@ export type TokenSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
     image?: boolean;
     mintTxHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>;
@@ -718,6 +747,7 @@ export type TokenSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
     image?: boolean;
     mintTxHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>;
@@ -734,10 +764,11 @@ export type TokenSelectScalar = {
     image?: boolean;
     mintTxHash?: boolean;
     status?: boolean;
+    txData?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type TokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "collectionId" | "contractAddress" | "tokenId" | "ownerAddress" | "tokenUri" | "name" | "description" | "image" | "mintTxHash" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["token"]>;
+export type TokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "collectionId" | "contractAddress" | "tokenId" | "ownerAddress" | "tokenUri" | "name" | "description" | "image" | "mintTxHash" | "status" | "txData" | "createdAt" | "updatedAt", ExtArgs["result"]["token"]>;
 export type TokenInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     collection?: boolean | Prisma.CollectionDefaultArgs<ExtArgs>;
     listings?: boolean | Prisma.Token$listingsArgs<ExtArgs>;
@@ -767,6 +798,7 @@ export type $TokenPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
         image: string;
         mintTxHash: string | null;
         status: $Enums.TokenStatus;
+        txData: runtime.JsonValue | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["token"]>;
@@ -839,6 +871,7 @@ export interface TokenFieldRefs {
     readonly image: Prisma.FieldRef<"Token", 'String'>;
     readonly mintTxHash: Prisma.FieldRef<"Token", 'String'>;
     readonly status: Prisma.FieldRef<"Token", 'TokenStatus'>;
+    readonly txData: Prisma.FieldRef<"Token", 'Json'>;
     readonly createdAt: Prisma.FieldRef<"Token", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Token", 'DateTime'>;
 }
