@@ -29,7 +29,7 @@ let CollectionsListenerService = CollectionsListenerService_1 = class Collection
         this.contracts = contracts;
         this.prisma = prisma;
         this.tokenListenerService = tokenListenerService;
-        this.contract = this.contracts.getContract('Factory');
+        this.contract = this.contracts.getContractWs('Factory');
     }
     async onModuleInit() {
         await this.contract.on('CollectionCreated', (creator, collection, transactionCode, event) => {

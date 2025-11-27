@@ -16,7 +16,7 @@ export class CollectionsListenerService implements OnModuleInit, OnModuleDestroy
     @Inject(forwardRef(() => TokensListenerService))
     private tokenListenerService: TokensListenerService,
   ) {
-    this.contract = this.contracts.getContract('Factory');
+    this.contract = this.contracts.getContractWs('Factory');
   }
 
   async onModuleInit() {

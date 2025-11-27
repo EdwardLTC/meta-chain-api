@@ -23,7 +23,6 @@ let ContractsService = class ContractsService {
     eth;
     environmentService;
     deployments = null;
-    contractCache = {};
     constructor(eth, environmentService) {
         this.eth = eth;
         this.environmentService = environmentService;
@@ -51,10 +50,7 @@ let ContractsService = class ContractsService {
             throw new Error('Failed to parse deployments file: ' + e.message);
         }
     }
-    getContract(name, protocall = 'HTTP') {
-        if (this.contractCache[name]) {
-            return this.contractCache[name];
-        }
+    getContract(name) {
         if (!this.deployments || !this.deployments[name]) {
             throw new Error(`Contract ${name} not found in deployments`);
         }
@@ -62,8 +58,17 @@ let ContractsService = class ContractsService {
         if (!info.abi || !info.address) {
             throw new Error(`Contract ${name} is missing ABI or address`);
         }
-        this.contractCache[name] = new ethers_1.Contract(info.address, info.abi, protocall === 'HTTP' ? this.eth.getProvider() : this.eth.getWebSocketProvider());
-        return this.contractCache[name];
+        return new ethers_1.Contract(info.address, info.abi, this.eth.getProvider());
+    }
+    getContractWs(name) {
+        if (!this.deployments || !this.deployments[name]) {
+            throw new Error(`Contract ${name} not found in deployments`);
+        }
+        const info = this.deployments[name];
+        if (!info.abi || !info.address) {
+            throw new Error(`Contract ${name} is missing ABI or address`);
+        }
+        return new ethers_1.Contract(info.address, info.abi, this.eth.getWebSocketProvider());
     }
 };
 exports.ContractsService = ContractsService;

@@ -15,7 +15,7 @@ export class TokensListenerService implements OnModuleInit, OnModuleDestroy {
     private contracts: ContractsService,
     private prisma: PrismaService,
   ) {
-    this.factoryContract = this.contracts.getContract('Factory');
+    this.factoryContract = this.contracts.getContractWs('Factory');
   }
 
   async onModuleInit() {

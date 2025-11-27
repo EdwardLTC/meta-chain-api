@@ -26,7 +26,7 @@ let TokensListenerService = TokensListenerService_1 = class TokensListenerServic
     constructor(contracts, prisma) {
         this.contracts = contracts;
         this.prisma = prisma;
-        this.factoryContract = this.contracts.getContract('Factory');
+        this.factoryContract = this.contracts.getContractWs('Factory');
     }
     async onModuleInit() {
         const collections = await this.prisma.collection.findMany({
