@@ -28,7 +28,7 @@ export class ExceptionsFilter implements ExceptionFilter {
     }
 
     if (responseBody.statusCode !== HttpStatus.NOT_FOUND) {
-      this.logger.error(`[${req.method}] ${req.path} [Error] >> Message:: ${exception.toString()}`, exception.stack);
+      this.logger.error(`[${req.method}] ${req.path} [${response.statusCode}] >> Message:: ${exception.toString()}`, exception.stack);
     }
 
     response.status(responseBody.statusCode).json(responseBody);
