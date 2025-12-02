@@ -36,21 +36,19 @@ export class AuthService {
 
     const recoveredAddress = ethers.verifyMessage(`Sign in nonce: ${nonce}`, signature);
 
-    console.log('Recovered Address:', recoveredAddress);
-    console.log('address:', address);
-
     if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
       throw new UnauthorizedException('Invalid signature');
     }
 
     await this.redis.del(key);
 
-    await this.userService.upsert(address, {
+    const user = await this.userService.upsert(address, {
       username: address,
     });
 
     return this.jwtService.sign({
       sub: address,
+      userId: user.id,
       walletAddress: address.toLowerCase(),
     });
   }
