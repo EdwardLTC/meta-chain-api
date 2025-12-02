@@ -36,6 +36,9 @@ export class AuthService {
 
     const recoveredAddress = ethers.verifyMessage(`Sign in nonce: ${nonce}`, signature);
 
+    console.log('Recovered Address:', recoveredAddress);
+    console.log('address:', address);
+
     if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
       throw new UnauthorizedException('Invalid signature');
     }

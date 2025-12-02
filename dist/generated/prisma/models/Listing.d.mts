@@ -280,6 +280,7 @@ export type ListingOrderByWithRelationInput = {
 };
 export type ListingWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
+    onchainId?: number;
     AND?: Prisma.ListingWhereInput | Prisma.ListingWhereInput[];
     OR?: Prisma.ListingWhereInput[];
     NOT?: Prisma.ListingWhereInput | Prisma.ListingWhereInput[];
@@ -289,7 +290,6 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
     status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus;
     expiresAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
     txData?: Prisma.JsonFilter<"Listing">;
-    onchainId?: Prisma.IntNullableFilter<"Listing"> | number | null;
     txHash?: Prisma.StringNullableFilter<"Listing"> | string | null;
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -303,7 +303,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
     createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string;
     token?: Prisma.XOR<Prisma.TokenScalarRelationFilter, Prisma.TokenWhereInput>;
-}, "id">;
+}, "id" | "onchainId">;
 export type ListingOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     tokenId?: Prisma.SortOrder;

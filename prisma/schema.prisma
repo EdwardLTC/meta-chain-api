@@ -107,7 +107,7 @@ model Listing {
   expiresAt     DateTime?
   txData        Json
 
-  onchainId Int?
+  onchainId Int?    @unique
   txHash    String?
 
   buyerAddress String?

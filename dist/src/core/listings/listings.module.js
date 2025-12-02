@@ -12,6 +12,7 @@ const listings_service_1 = require("./listings.service");
 const listings_controller_1 = require("./listings.controller");
 const eth_module_1 = require("../../eth/eth.module");
 const tokens_module_1 = require("../tokens/tokens.module");
+const listings_listener_1 = require("./listings.listener");
 let ListingsModule = class ListingsModule {
 };
 exports.ListingsModule = ListingsModule;
@@ -19,7 +20,8 @@ exports.ListingsModule = ListingsModule = __decorate([
     (0, common_1.Module)({
         imports: [eth_module_1.EthModule, tokens_module_1.TokensModule],
         controllers: [listings_controller_1.ListingsController],
-        providers: [listings_service_1.ListingsService],
+        providers: [listings_service_1.ListingsService, listings_listener_1.ListingsListener],
+        exports: [listings_service_1.ListingsService, listings_listener_1.ListingsListener],
     })
 ], ListingsModule);
 //# sourceMappingURL=listings.module.js.map

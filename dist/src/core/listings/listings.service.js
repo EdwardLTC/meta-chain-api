@@ -30,6 +30,15 @@ let ListingsService = class ListingsService {
         if (token.ownerAddress !== userAddress) {
             throw new common_1.ForbiddenException('You do not own this token');
         }
+        const isExistingListing = await this.dbService.listing.findFirst({
+            where: {
+                tokenId: data.tokenId,
+                status: { in: [enums_mjs_1.ListingStatus.PENDING, enums_mjs_1.ListingStatus.ACTIVE] },
+            },
+        });
+        if (isExistingListing) {
+            throw new common_1.BadRequestException('Token already listed or pending');
+        }
         const factory = this.contracts.getContract('Marketplace');
         const id = (0, uuid_1.uuidv7)();
         const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, data.price, '0', id);

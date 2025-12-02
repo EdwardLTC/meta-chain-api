@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListingDto } from './dtos/create.dto';
 import { TokensService } from '../tokens/tokens.service';
@@ -20,6 +20,17 @@ export class ListingsService {
 
     if (token.ownerAddress !== userAddress) {
       throw new ForbiddenException('You do not own this token');
+    }
+
+    const isExistingListing = await this.dbService.listing.findFirst({
+      where: {
+        tokenId: data.tokenId,
+        status: { in: [ListingStatus.PENDING, ListingStatus.ACTIVE] },
+      },
+    });
+
+    if (isExistingListing) {
+      throw new BadRequestException('Token already listed or pending');
     }
 
     const factory = this.contracts.getContract('Marketplace');

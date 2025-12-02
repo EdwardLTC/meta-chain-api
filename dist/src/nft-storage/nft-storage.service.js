@@ -25,7 +25,7 @@ let NftStorageService = class NftStorageService {
     }
     async uploadMetadata(data, name) {
         const response = await this.client.upload.public.json(data).name(name);
-        return response.cid;
+        return `ipfs://${response.cid}`;
     }
 };
 exports.NftStorageService = NftStorageService;
