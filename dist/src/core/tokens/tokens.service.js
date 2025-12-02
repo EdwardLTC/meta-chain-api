@@ -22,6 +22,7 @@ const nft_storage_service_1 = require("../../nft-storage/nft-storage.service");
 const eth_service_1 = require("../../eth/eth.service");
 const enums_mjs_1 = require("../../../generated/prisma/enums.mjs");
 const edge_1 = require("@prisma/client/runtime/edge");
+const uuid_1 = require("../../ultils/uuid");
 let TokensService = class TokensService {
     dbService;
     collectionService;
@@ -51,22 +52,19 @@ let TokensService = class TokensService {
             creatorAddress: creatorAddress,
             collectionAddress: collection.contractAddress,
         }, `${collection.contractAddress}-${data.name}`);
-        const createdToken = await this.dbService.token.create({
+        const id = (0, uuid_1.uuidv7)();
+        const contract = new ethers_1.Contract(collection.contractAddress, tokens_abi_1.ABI, this.ethService.getProvider());
+        const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, id);
+        return this.dbService.token.create({
             data: {
+                id: id,
                 collectionId: data.collectionId,
                 ownerAddress: creatorAddress,
+                contractAddress: collection.contractAddress,
                 tokenUri: metadataUrl,
                 name: data.name,
                 description: data.description,
                 image: data.image,
-                status: enums_mjs_1.TokenStatus.NEW,
-            },
-        });
-        const contract = new ethers_1.Contract(collection.contractAddress, tokens_abi_1.ABI, this.ethService.getProvider());
-        const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, createdToken.id);
-        return this.dbService.token.update({
-            where: { id: createdToken.id },
-            data: {
                 status: enums_mjs_1.TokenStatus.PENDING,
                 txData: txData,
             },
@@ -81,15 +79,6 @@ let TokensService = class TokensService {
                 throw new common_1.NotFoundException('Collection not found');
             }
             throw err;
-        });
-    }
-    async signTokenTransfer(txData, privateKey) {
-        const wallet = await this.ethService.getSigner(privateKey);
-        return wallet.sendTransaction({
-            to: txData.to,
-            data: txData.data,
-            gasLimit: 16777215,
-            value: 0,
         });
     }
 };

@@ -1,6 +1,5 @@
 import { TokensService } from './tokens.service';
 import { MintTokenDto } from './dtos/mint.dto';
-import { SignTokenDto } from './dtos/sign-token.dto';
 import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
 export declare class TokensController {
     private readonly tokensService;
@@ -13,13 +12,13 @@ export declare class TokensController {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }[]>;
     getToken(id: string): Promise<{
         id: string;
@@ -29,13 +28,13 @@ export declare class TokensController {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }>;
     mintToken(data: MintTokenDto, walletAddress: string, userId: string): Promise<{
         id: string;
@@ -45,13 +44,12 @@ export declare class TokensController {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }>;
-    signTokenDevOnly(tokenId: SignTokenDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
 }

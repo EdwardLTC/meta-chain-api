@@ -15,9 +15,9 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { NftStorageService } from '../../nft-storage/nft-storage.service';
 import { EthService } from '../../eth/eth.service';
 import { CollectionStatus, TokenStatus } from '../../../generated/prisma/enums.mjs';
-import { SignTokenDto } from './dtos/sign-token.dto';
 import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
 import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
+import { uuidv7 } from '../../ultils/uuid';
 
 @Injectable()
 export class TokensService {
@@ -55,25 +55,22 @@ export class TokensService {
       `${collection.contractAddress}-${data.name}`,
     );
 
-    const createdToken = await this.dbService.token.create({
+    const id = uuidv7();
+
+    const contract = new Contract(collection.contractAddress, ABI, this.ethService.getProvider());
+
+    const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, id);
+
+    return this.dbService.token.create({
       data: {
+        id: id,
         collectionId: data.collectionId,
         ownerAddress: creatorAddress,
+        contractAddress: collection.contractAddress,
         tokenUri: metadataUrl,
         name: data.name,
         description: data.description,
         image: data.image,
-        status: TokenStatus.NEW,
-      },
-    });
-
-    const contract = new Contract(collection.contractAddress, ABI, this.ethService.getProvider());
-
-    const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, createdToken.id);
-
-    return this.dbService.token.update({
-      where: { id: createdToken.id },
-      data: {
         status: TokenStatus.PENDING,
         txData: txData as unknown as InputJsonValue,
       },
@@ -91,17 +88,6 @@ export class TokensService {
       }
 
       throw err;
-    });
-  }
-
-  public async signTokenTransfer(txData: SignTokenDto, privateKey: string) {
-    const wallet = await this.ethService.getSigner(privateKey);
-
-    return wallet.sendTransaction({
-      to: txData.to,
-      data: txData.data,
-      gasLimit: 16777215,
-      value: 0,
     });
   }
 }

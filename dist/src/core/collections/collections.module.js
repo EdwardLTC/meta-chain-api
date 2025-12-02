@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CollectionsModule = void 0;
 const common_1 = require("@nestjs/common");
 const collections_service_1 = require("./collections.service");
-const collections_listener_service_1 = require("./collections-listener.service");
+const collections_listener_1 = require("./collections.listener");
 const collections_controller_1 = require("./collections.controller");
 const eth_module_1 = require("../../eth/eth.module");
 const tokens_module_1 = require("../tokens/tokens.module");
@@ -20,8 +20,8 @@ exports.CollectionsModule = CollectionsModule = __decorate([
     (0, common_1.Module)({
         imports: [eth_module_1.EthModule, tokens_module_1.TokensModule],
         controllers: [collections_controller_1.CollectionsController],
-        providers: [collections_service_1.CollectionsService, collections_listener_service_1.CollectionsListenerService],
-        exports: [collections_service_1.CollectionsService, collections_listener_service_1.CollectionsListenerService],
+        providers: [collections_service_1.CollectionsService, collections_listener_1.CollectionsListener],
+        exports: [collections_service_1.CollectionsService, collections_listener_1.CollectionsListener],
     })
 ], CollectionsModule);
 //# sourceMappingURL=collections.module.js.map

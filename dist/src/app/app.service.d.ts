@@ -1,15 +1,9 @@
-import { PrismaService } from '../prisma/prisma.service';
+import { EthService } from '../eth/eth.service';
 export declare class AppService {
-    private dbService;
-    constructor(dbService: PrismaService);
-    getHello(): import("../../generated/prisma/internal/prismaNamespace.mjs", { with: { "resolution-mode": "import" } }).PrismaPromise<{
-        id: string;
-        username: string;
-        walletAddress: string;
-        email: string | null;
-        avatarUrl: string | null;
-        bio: string | null;
-        createdAt: Date;
-        updatedAt: Date;
-    }[]>;
+    private eth;
+    constructor(eth: EthService);
+    testSignContract(txData: {
+        to: string;
+        data: string;
+    }, privateKey: string): Promise<import("ethers").TransactionResponse>;
 }

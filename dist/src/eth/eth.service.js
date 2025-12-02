@@ -13,30 +13,14 @@ exports.EthService = void 0;
 const common_1 = require("@nestjs/common");
 const ethers_1 = require("ethers");
 const environment_service_1 = require("../environment/environment.service");
-class JsonRpcProviderLogger extends ethers_1.JsonRpcProvider {
-    async send(method, params) {
-        console.log(`[Infura Request] method=${method}, params=${JSON.stringify(params)}`);
-        const result = await super.send(method, params);
-        console.log(`[Infura Response] result=${JSON.stringify(result)}`);
-        return result;
-    }
-}
-class WebSocketProviderLogger extends ethers_1.WebSocketProvider {
-    async send(method, params) {
-        console.log(`[Infura WS Request] method=${method}, params=${JSON.stringify(params)}`);
-        const result = await super.send(method, params);
-        console.log(`[Infura WS Response] result=${JSON.stringify(result)}`);
-        return result;
-    }
-}
 let EthService = class EthService {
     environmentService;
     provider;
     webSocketProvider;
     constructor(environmentService) {
         this.environmentService = environmentService;
-        this.provider = new JsonRpcProviderLogger(this.environmentService.ProviderNodeUrl);
-        this.webSocketProvider = new WebSocketProviderLogger(this.environmentService.ProviderWsNodeUrl);
+        this.provider = new ethers_1.JsonRpcProvider(this.environmentService.ProviderNodeUrl);
+        this.webSocketProvider = new ethers_1.WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
     }
     getProvider() {
         return this.provider;

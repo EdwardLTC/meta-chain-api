@@ -40,8 +40,5 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get listing(): Prisma.ListingDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
-    get order(): Prisma.OrderDelegate<ExtArgs, {
-        omit: OmitOpts;
-    }>;
 }
 export declare function getPrismaClientClass(dirname: string): PrismaClientConstructor;

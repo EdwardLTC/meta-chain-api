@@ -27,14 +27,13 @@ model User {
 }
 
 enum CollectionStatus {
-  NEW
   PENDING
   CREATED
   FAILED
 }
 
 model Collection {
-  id              String           @id @default(uuid())
+  id              String           @id
   status          CollectionStatus @default(PENDING)
   userId          String
   creatorAddress  String
@@ -43,9 +42,9 @@ model Collection {
   description     String
   image           String
   royaltyFeeBps   Int
+  txData          Json
   txHash          String?          @unique
   contractAddress String?          @unique
-  txData          Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,44 +55,41 @@ model Collection {
 }
 
 enum TokenStatus {
-  NEW
   PENDING
   MINTED
   FAILED
 }
 
 model Token {
-  id String @id @default(uuid())
-
+  id           String     @id
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId String
 
-  contractAddress String?
-  tokenId         String? /// on-chain token ID
-  ownerAddress    String
-  tokenUri        String
+  ownerAddress String
+  tokenUri     String
 
   name        String
   description String
   image       String
+  status      TokenStatus @default(PENDING)
+  txData      Json
 
-  mintTxHash String?
-  status     TokenStatus @default(NEW)
-  txData     Json?
+  txHash          String?
+  onchainId       Int? /// on-chain token ID
+  contractAddress String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   listings Listing[]
 
-  @@unique([contractAddress, tokenId])
+  @@unique([contractAddress, onchainId])
   @@index([contractAddress])
   @@index([ownerAddress])
   @@map("tokens")
 }
 
 enum ListingStatus {
-  NEW
   PENDING
   ACTIVE
   SOLD
@@ -101,42 +97,35 @@ enum ListingStatus {
 }
 
 model Listing {
-  id String @id @default(uuid())
-
+  id      String @id
   tokenId String
+  token   Token  @relation(fields: [tokenId], references: [id])
 
   sellerAddress String
   price         Decimal       @db.Decimal(36, 18)
-  paymentToken  String
-  status        ListingStatus @default(NEW)
+  status        ListingStatus @default(PENDING)
   expiresAt     DateTime?
+  txData        Json
 
   onchainId Int?
   txHash    String?
-  txData    Json?
 
-  orderData Json?
+  buyerAddress String?
+  paymentToken String?
+  soldAt       DateTime?
+
+  marketFeeBps    Int?
+  marketFeeAmount Decimal? @db.Decimal(36, 18)
+
+  feeRecipient String?
+
+  royaltyReceiver String?
+  royaltyAmount   Decimal? @db.Decimal(36, 18)
+
+  sellerProceeds Decimal? @db.Decimal(36, 18)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  order Order[]
-  token Token   @relation(fields: [tokenId], references: [id])
 
   @@map("listings")
-}
-
-model Order {
-  id        String   @id @default(uuid())
-  listing   Listing  @relation(fields: [listingId], references: [id])
-  listingId String
-  buyer     String
-  seller    String
-  price     Decimal  @db.Decimal(36, 18)
-  txHash    String
-  status    String   @default("pending")
-  txData    Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("orders")
 }

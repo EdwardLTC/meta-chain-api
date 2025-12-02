@@ -30,7 +30,6 @@ export declare const ModelName: {
     readonly Collection: "Collection";
     readonly Token: "Token";
     readonly Listing: "Listing";
-    readonly Order: "Order";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -61,9 +60,9 @@ export declare const CollectionScalarFieldEnum: {
     readonly description: "description";
     readonly image: "image";
     readonly royaltyFeeBps: "royaltyFeeBps";
+    readonly txData: "txData";
     readonly txHash: "txHash";
     readonly contractAddress: "contractAddress";
-    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -71,16 +70,16 @@ export type CollectionScalarFieldEnum = (typeof CollectionScalarFieldEnum)[keyof
 export declare const TokenScalarFieldEnum: {
     readonly id: "id";
     readonly collectionId: "collectionId";
-    readonly contractAddress: "contractAddress";
-    readonly tokenId: "tokenId";
     readonly ownerAddress: "ownerAddress";
     readonly tokenUri: "tokenUri";
     readonly name: "name";
     readonly description: "description";
     readonly image: "image";
-    readonly mintTxHash: "mintTxHash";
     readonly status: "status";
     readonly txData: "txData";
+    readonly txHash: "txHash";
+    readonly onchainId: "onchainId";
+    readonly contractAddress: "contractAddress";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -90,42 +89,30 @@ export declare const ListingScalarFieldEnum: {
     readonly tokenId: "tokenId";
     readonly sellerAddress: "sellerAddress";
     readonly price: "price";
-    readonly paymentToken: "paymentToken";
     readonly status: "status";
     readonly expiresAt: "expiresAt";
+    readonly txData: "txData";
     readonly onchainId: "onchainId";
     readonly txHash: "txHash";
-    readonly txData: "txData";
-    readonly orderData: "orderData";
+    readonly buyerAddress: "buyerAddress";
+    readonly paymentToken: "paymentToken";
+    readonly soldAt: "soldAt";
+    readonly marketFeeBps: "marketFeeBps";
+    readonly marketFeeAmount: "marketFeeAmount";
+    readonly feeRecipient: "feeRecipient";
+    readonly royaltyReceiver: "royaltyReceiver";
+    readonly royaltyAmount: "royaltyAmount";
+    readonly sellerProceeds: "sellerProceeds";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum];
-export declare const OrderScalarFieldEnum: {
-    readonly id: "id";
-    readonly listingId: "listingId";
-    readonly buyer: "buyer";
-    readonly seller: "seller";
-    readonly price: "price";
-    readonly txHash: "txHash";
-    readonly status: "status";
-    readonly txData: "txData";
-    readonly createdAt: "createdAt";
-    readonly updatedAt: "updatedAt";
-};
-export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
-export declare const NullableJsonNullValueInput: {
-    readonly DbNull: {
-        "__#private@#private": any;
-        _getNamespace(): string;
-        _getName(): string;
-        toString(): string;
-    };
+export declare const JsonNullValueInput: {
     readonly JsonNull: {
         "__#private@#private": any;
         _getNamespace(): string;
@@ -133,7 +120,7 @@ export declare const NullableJsonNullValueInput: {
         toString(): string;
     };
 };
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 export declare const QueryMode: {
     readonly default: "default";
     readonly insensitive: "insensitive";

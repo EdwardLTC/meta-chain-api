@@ -12,22 +12,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CollectionsService = void 0;
 const common_1 = require("@nestjs/common");
 const contracts_service_1 = require("../../eth/contracts.service");
-const eth_service_1 = require("../../eth/eth.service");
 const prisma_service_1 = require("../../prisma/prisma.service");
 const edge_1 = require("@prisma/client/runtime/edge");
 const enums_mjs_1 = require("../../../generated/prisma/enums.mjs");
+const uuid_1 = require("../../ultils/uuid");
 let CollectionsService = class CollectionsService {
     contracts;
-    eth;
     prisma;
-    constructor(contracts, eth, prisma) {
+    constructor(contracts, prisma) {
         this.contracts = contracts;
-        this.eth = eth;
         this.prisma = prisma;
     }
     async createCollection(createBody, creatorAddress, userId) {
-        const create = await this.prisma.collection.create({
+        const factory = this.contracts.getContract('Factory');
+        const id = (0, uuid_1.uuidv7)();
+        const txData = await factory.createCollection.populateTransaction(createBody.name, createBody.symbol, id, creatorAddress, createBody.royaltyFeeBps);
+        return this.prisma.collection.create({
             data: {
+                id: id,
                 userId: userId,
                 creatorAddress: creatorAddress,
                 name: createBody.name,
@@ -35,14 +37,6 @@ let CollectionsService = class CollectionsService {
                 description: createBody.description,
                 image: createBody.image,
                 royaltyFeeBps: createBody.royaltyFeeBps,
-                status: enums_mjs_1.CollectionStatus.NEW,
-            },
-        });
-        const factory = this.contracts.getContract('Factory');
-        const txData = await factory.createCollection.populateTransaction(createBody.name, createBody.symbol, create.id, creatorAddress, createBody.royaltyFeeBps);
-        return this.prisma.collection.update({
-            where: { id: create.id },
-            data: {
                 status: enums_mjs_1.CollectionStatus.PENDING,
                 txData: txData,
             },
@@ -59,21 +53,11 @@ let CollectionsService = class CollectionsService {
             throw err;
         });
     }
-    async testSignContract(txData, privateKey) {
-        const wallet = await this.eth.getSigner(privateKey);
-        return wallet.sendTransaction({
-            to: txData.to,
-            data: txData.data,
-            gasLimit: 16777215,
-            value: 0,
-        });
-    }
 };
 exports.CollectionsService = CollectionsService;
 exports.CollectionsService = CollectionsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [contracts_service_1.ContractsService,
-        eth_service_1.EthService,
         prisma_service_1.PrismaService])
 ], CollectionsService);
 //# sourceMappingURL=collections.service.js.map

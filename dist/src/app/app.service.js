@@ -11,19 +11,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
+const eth_service_1 = require("../eth/eth.service");
 let AppService = class AppService {
-    dbService;
-    constructor(dbService) {
-        this.dbService = dbService;
+    eth;
+    constructor(eth) {
+        this.eth = eth;
     }
-    getHello() {
-        return this.dbService.user.findMany();
+    async testSignContract(txData, privateKey) {
+        const wallet = await this.eth.getSigner(privateKey);
+        return wallet.sendTransaction({
+            to: txData.to,
+            data: txData.data,
+            gasLimit: 16777215,
+            value: 0,
+        });
     }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [eth_service_1.EthService])
 ], AppService);
 //# sourceMappingURL=app.service.js.map

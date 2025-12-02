@@ -6,4 +6,3 @@ export type User = Prisma.UserModel;
 export type Collection = Prisma.CollectionModel;
 export type Token = Prisma.TokenModel;
 export type Listing = Prisma.ListingModel;
-export type Order = Prisma.OrderModel;

@@ -4,7 +4,6 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { NftStorageService } from '../../nft-storage/nft-storage.service';
 import { EthService } from '../../eth/eth.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
-import { SignTokenDto } from './dtos/sign-token.dto';
 import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
 export declare class TokensService {
     private dbService;
@@ -20,13 +19,13 @@ export declare class TokensService {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }>;
     getTokens(getTokensFilterDto: GetTokensFilterDto): Promise<{
         id: string;
@@ -36,13 +35,13 @@ export declare class TokensService {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }[]>;
     getToken(tokenId: string): Promise<{
         id: string;
@@ -52,13 +51,12 @@ export declare class TokensService {
         name: string;
         description: string;
         image: string;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
         contractAddress: string | null;
-        txData: import("@prisma/client/runtime/client").JsonValue | null;
         collectionId: string;
-        tokenId: string | null;
         ownerAddress: string;
         tokenUri: string;
-        mintTxHash: string | null;
+        onchainId: number | null;
     }>;
-    signTokenTransfer(txData: SignTokenDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
 }

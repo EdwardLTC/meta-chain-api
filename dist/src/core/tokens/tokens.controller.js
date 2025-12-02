@@ -18,7 +18,6 @@ const tokens_service_1 = require("./tokens.service");
 const mint_dto_1 = require("./dtos/mint.dto");
 const swagger_1 = require("@nestjs/swagger");
 const auth_decorator_1 = require("../../auth/auth.decorator");
-const sign_token_dto_1 = require("./dtos/sign-token.dto");
 const get_tokens_filter_dto_1 = require("./dtos/get-tokens-filter.dto");
 let TokensController = class TokensController {
     tokensService;
@@ -33,9 +32,6 @@ let TokensController = class TokensController {
     }
     async mintToken(data, walletAddress, userId) {
         return this.tokensService.mintToken(data, walletAddress, userId);
-    }
-    async signTokenDevOnly(tokenId, privateKey) {
-        return this.tokensService.signTokenTransfer(tokenId, privateKey);
     }
 };
 exports.TokensController = TokensController;
@@ -65,15 +61,6 @@ __decorate([
     __metadata("design:paramtypes", [mint_dto_1.MintTokenDto, String, String]),
     __metadata("design:returntype", Promise)
 ], TokensController.prototype, "mintToken", null);
-__decorate([
-    (0, common_1.Post)('sign-dev-only/:privateKey'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Param)('privateKey')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sign_token_dto_1.SignTokenDto, String]),
-    __metadata("design:returntype", Promise)
-], TokensController.prototype, "signTokenDevOnly", null);
 exports.TokensController = TokensController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('tokens'),

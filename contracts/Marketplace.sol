@@ -32,25 +32,39 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     event Listed(uint256 indexed listingId, address indexed seller, address indexed nft, uint256 tokenId, uint256 price, address paymentToken, string transactionCode);
     event Cancelled(uint256 indexed listingId, address indexed seller);
-    event Bought(uint256 indexed listingId, address indexed buyer, uint256 price, address paymentToken);
-    event MarketFeeUpdated(uint96 newBps, string transactionCode);
-    event FeeRecipientUpdated(address recipient, string transactionCode);
+
+    event Bought(
+        uint256 indexed listingId,
+        address indexed buyer,
+        address indexed seller,
+        uint256 price,
+        address paymentToken,
+        uint96 marketFeeBps,
+        uint256 marketFeeAmount,
+        address feeRecipient,
+        address royaltyReceiver,
+        uint256 royaltyAmount,
+        uint256 sellerProceeds
+    );
 
     constructor(address feeRecipient_) Ownable(msg.sender) {
         feeRecipient = feeRecipient_;
     }
 
     // ---- admin ----
-    function setMarketFee(uint96 bps, string calldata transactionCode) external onlyOwner {
+    function setMarketFee(uint96 bps) external onlyOwner {
         require(bps <= 10000, "invalid bps");
         marketFeeBps = bps;
-        emit MarketFeeUpdated(bps,transactionCode);
     }
 
     // ---- admin ----
-    function setFeeRecipient(address recipient,string calldata transactionCode) external onlyOwner {
+    function setFeeRecipient(address recipient) external onlyOwner {
         feeRecipient = recipient;
-        emit FeeRecipientUpdated(recipient,transactionCode);
+    }
+
+    // ---- view ----
+    function getMarketFeeInfo() external view onlyOwner returns(uint96, address) {
+        return (marketFeeBps, feeRecipient);
     }
 
     // ---- listing ----
@@ -159,7 +173,20 @@ contract Marketplace is ReentrancyGuard, Ownable {
             }
         }
 
-        emit Bought(listingId, buyer, amount, paymentToken);
+        // add royalty and market fee info to event?
+        emit Bought(
+            listingId,
+            buyer,
+            l.seller,
+            amount,
+            paymentToken,
+            marketFeeBps,
+            marketFee,
+            feeRecipient,
+            royaltyReceiver,
+            royaltyAmount,
+            remainder
+        );
     }
 
     // helper to call IERC2981 if implemented

@@ -1,0 +1,28 @@
+import { ListingsService } from './listings.service';
+import { CreateListingDto } from './dtos/create.dto';
+export declare class ListingsController {
+    private readonly listingsService;
+    constructor(listingsService: ListingsService);
+    createListing(body: CreateListingDto, userWallet: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import("../../../generated/prisma/enums.mjs", { with: { "resolution-mode": "import" } }).ListingStatus;
+        txData: import("@prisma/client/runtime/client").JsonValue;
+        txHash: string | null;
+        onchainId: number | null;
+        tokenId: string;
+        sellerAddress: string;
+        price: import("@prisma/client/runtime/client").Decimal;
+        expiresAt: Date | null;
+        buyerAddress: string | null;
+        paymentToken: string | null;
+        soldAt: Date | null;
+        marketFeeBps: number | null;
+        marketFeeAmount: import("@prisma/client/runtime/client").Decimal | null;
+        feeRecipient: string | null;
+        royaltyReceiver: string | null;
+        royaltyAmount: import("@prisma/client/runtime/client").Decimal | null;
+        sellerProceeds: import("@prisma/client/runtime/client").Decimal | null;
+    }>;
+}

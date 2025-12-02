@@ -27,8 +27,7 @@ export const ModelName = {
     User: 'User',
     Collection: 'Collection',
     Token: 'Token',
-    Listing: 'Listing',
-    Order: 'Order'
+    Listing: 'Listing'
 };
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
     ReadUncommitted: 'ReadUncommitted',
@@ -56,25 +55,25 @@ export const CollectionScalarFieldEnum = {
     description: 'description',
     image: 'image',
     royaltyFeeBps: 'royaltyFeeBps',
+    txData: 'txData',
     txHash: 'txHash',
     contractAddress: 'contractAddress',
-    txData: 'txData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
 export const TokenScalarFieldEnum = {
     id: 'id',
     collectionId: 'collectionId',
-    contractAddress: 'contractAddress',
-    tokenId: 'tokenId',
     ownerAddress: 'ownerAddress',
     tokenUri: 'tokenUri',
     name: 'name',
     description: 'description',
     image: 'image',
-    mintTxHash: 'mintTxHash',
     status: 'status',
     txData: 'txData',
+    txHash: 'txHash',
+    onchainId: 'onchainId',
+    contractAddress: 'contractAddress',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -83,25 +82,20 @@ export const ListingScalarFieldEnum = {
     tokenId: 'tokenId',
     sellerAddress: 'sellerAddress',
     price: 'price',
-    paymentToken: 'paymentToken',
     status: 'status',
     expiresAt: 'expiresAt',
+    txData: 'txData',
     onchainId: 'onchainId',
     txHash: 'txHash',
-    txData: 'txData',
-    orderData: 'orderData',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-};
-export const OrderScalarFieldEnum = {
-    id: 'id',
-    listingId: 'listingId',
-    buyer: 'buyer',
-    seller: 'seller',
-    price: 'price',
-    txHash: 'txHash',
-    status: 'status',
-    txData: 'txData',
+    buyerAddress: 'buyerAddress',
+    paymentToken: 'paymentToken',
+    soldAt: 'soldAt',
+    marketFeeBps: 'marketFeeBps',
+    marketFeeAmount: 'marketFeeAmount',
+    feeRecipient: 'feeRecipient',
+    royaltyReceiver: 'royaltyReceiver',
+    royaltyAmount: 'royaltyAmount',
+    sellerProceeds: 'sellerProceeds',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -109,8 +103,7 @@ export const SortOrder = {
     asc: 'asc',
     desc: 'desc'
 };
-export const NullableJsonNullValueInput = {
-    DbNull: DbNull,
+export const JsonNullValueInput = {
     JsonNull: JsonNull
 };
 export const QueryMode = {

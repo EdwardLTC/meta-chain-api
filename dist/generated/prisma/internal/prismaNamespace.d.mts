@@ -180,7 +180,6 @@ export declare const ModelName: {
     readonly Collection: "Collection";
     readonly Token: "Token";
     readonly Listing: "Listing";
-    readonly Order: "Order";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -193,7 +192,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "collection" | "token" | "listing" | "order";
+        modelProps: "user" | "collection" | "token" | "listing";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -493,80 +492,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
-        Order: {
-            payload: Prisma.$OrderPayload<ExtArgs>;
-            fields: Prisma.OrderFieldRefs;
-            operations: {
-                findUnique: {
-                    args: Prisma.OrderFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload> | null;
-                };
-                findUniqueOrThrow: {
-                    args: Prisma.OrderFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                findFirst: {
-                    args: Prisma.OrderFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload> | null;
-                };
-                findFirstOrThrow: {
-                    args: Prisma.OrderFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                findMany: {
-                    args: Prisma.OrderFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>[];
-                };
-                create: {
-                    args: Prisma.OrderCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                createMany: {
-                    args: Prisma.OrderCreateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                createManyAndReturn: {
-                    args: Prisma.OrderCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>[];
-                };
-                delete: {
-                    args: Prisma.OrderDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                update: {
-                    args: Prisma.OrderUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                deleteMany: {
-                    args: Prisma.OrderDeleteManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateMany: {
-                    args: Prisma.OrderUpdateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateManyAndReturn: {
-                    args: Prisma.OrderUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>[];
-                };
-                upsert: {
-                    args: Prisma.OrderUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderPayload>;
-                };
-                aggregate: {
-                    args: Prisma.OrderAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateOrder>;
-                };
-                groupBy: {
-                    args: Prisma.OrderGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.OrderGroupByOutputType>[];
-                };
-                count: {
-                    args: Prisma.OrderCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.OrderCountAggregateOutputType> | number;
-                };
-            };
-        };
     };
 } & {
     other: {
@@ -619,9 +544,9 @@ export declare const CollectionScalarFieldEnum: {
     readonly description: "description";
     readonly image: "image";
     readonly royaltyFeeBps: "royaltyFeeBps";
+    readonly txData: "txData";
     readonly txHash: "txHash";
     readonly contractAddress: "contractAddress";
-    readonly txData: "txData";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -629,16 +554,16 @@ export type CollectionScalarFieldEnum = (typeof CollectionScalarFieldEnum)[keyof
 export declare const TokenScalarFieldEnum: {
     readonly id: "id";
     readonly collectionId: "collectionId";
-    readonly contractAddress: "contractAddress";
-    readonly tokenId: "tokenId";
     readonly ownerAddress: "ownerAddress";
     readonly tokenUri: "tokenUri";
     readonly name: "name";
     readonly description: "description";
     readonly image: "image";
-    readonly mintTxHash: "mintTxHash";
     readonly status: "status";
     readonly txData: "txData";
+    readonly txHash: "txHash";
+    readonly onchainId: "onchainId";
+    readonly contractAddress: "contractAddress";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -648,42 +573,30 @@ export declare const ListingScalarFieldEnum: {
     readonly tokenId: "tokenId";
     readonly sellerAddress: "sellerAddress";
     readonly price: "price";
-    readonly paymentToken: "paymentToken";
     readonly status: "status";
     readonly expiresAt: "expiresAt";
+    readonly txData: "txData";
     readonly onchainId: "onchainId";
     readonly txHash: "txHash";
-    readonly txData: "txData";
-    readonly orderData: "orderData";
+    readonly buyerAddress: "buyerAddress";
+    readonly paymentToken: "paymentToken";
+    readonly soldAt: "soldAt";
+    readonly marketFeeBps: "marketFeeBps";
+    readonly marketFeeAmount: "marketFeeAmount";
+    readonly feeRecipient: "feeRecipient";
+    readonly royaltyReceiver: "royaltyReceiver";
+    readonly royaltyAmount: "royaltyAmount";
+    readonly sellerProceeds: "sellerProceeds";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
 export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum];
-export declare const OrderScalarFieldEnum: {
-    readonly id: "id";
-    readonly listingId: "listingId";
-    readonly buyer: "buyer";
-    readonly seller: "seller";
-    readonly price: "price";
-    readonly txHash: "txHash";
-    readonly status: "status";
-    readonly txData: "txData";
-    readonly createdAt: "createdAt";
-    readonly updatedAt: "updatedAt";
-};
-export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
-export declare const NullableJsonNullValueInput: {
-    readonly DbNull: {
-        "__#private@#private": any;
-        _getNamespace(): string;
-        _getName(): string;
-        toString(): string;
-    };
+export declare const JsonNullValueInput: {
     readonly JsonNull: {
         "__#private@#private": any;
         _getNamespace(): string;
@@ -691,7 +604,7 @@ export declare const NullableJsonNullValueInput: {
         toString(): string;
     };
 };
-export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 export declare const QueryMode: {
     readonly default: "default";
     readonly insensitive: "insensitive";
@@ -771,7 +684,6 @@ export type GlobalOmitConfig = {
     collection?: Prisma.CollectionOmit;
     token?: Prisma.TokenOmit;
     listing?: Prisma.ListingOmit;
-    order?: Prisma.OrderOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

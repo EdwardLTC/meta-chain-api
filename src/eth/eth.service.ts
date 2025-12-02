@@ -2,32 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { JsonRpcProvider, JsonRpcSigner, Wallet, WebSocketProvider } from 'ethers';
 import { EnvironmentService } from '../environment/environment.service';
 
-class JsonRpcProviderLogger extends JsonRpcProvider {
-  public async send(method: string, params: Array<any>): Promise<any> {
-    console.log(`[Infura Request] method=${method}, params=${JSON.stringify(params)}`);
-    const result = await super.send(method, params);
-    console.log(`[Infura Response] result=${JSON.stringify(result)}`);
-    return result;
-  }
-}
-
-class WebSocketProviderLogger extends WebSocketProvider {
-  public async send(method: string, params: Array<any>): Promise<any> {
-    console.log(`[Infura WS Request] method=${method}, params=${JSON.stringify(params)}`);
-    const result = await super.send(method, params);
-    console.log(`[Infura WS Response] result=${JSON.stringify(result)}`);
-    return result;
-  }
-}
-
 @Injectable()
 export class EthService {
-  private readonly provider: JsonRpcProviderLogger;
-  private readonly webSocketProvider: WebSocketProviderLogger;
+  private readonly provider: JsonRpcProvider;
+  private readonly webSocketProvider: WebSocketProvider;
 
   constructor(private readonly environmentService: EnvironmentService) {
-    this.provider = new JsonRpcProviderLogger(this.environmentService.ProviderNodeUrl);
-    this.webSocketProvider = new WebSocketProviderLogger(this.environmentService.ProviderWsNodeUrl);
+    this.provider = new JsonRpcProvider(this.environmentService.ProviderNodeUrl);
+    this.webSocketProvider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
   }
 
   public getProvider() {

@@ -3,7 +3,7 @@
   "deployer": "0xdADf098BC7168Ae56b418DbA804163cB6f1C9aCF",
   "contracts": {
     "Factory": {
-      "address": "0x6f130764090bc4f3aB13DCf9cB8Af155822CA7d7",
+      "address": "0x793ef0ABaD2A446244fb7c75e9391F071ea27de9",
       "abi": [
         {
           "inputs": [],
@@ -151,7 +151,7 @@
       ]
     },
     "Marketplace": {
-      "address": "0x53C10fb725c684a9ABCb4EEeb90d4a0179557359",
+      "address": "0x02D8aDb8F262C3A048ed7FF9B542A35Eb16BCD50",
       "abi": [
         {
           "inputs": [
@@ -228,6 +228,12 @@
               "type": "address"
             },
             {
+              "indexed": true,
+              "internalType": "address",
+              "name": "seller",
+              "type": "address"
+            },
+            {
               "indexed": false,
               "internalType": "uint256",
               "name": "price",
@@ -238,6 +244,42 @@
               "internalType": "address",
               "name": "paymentToken",
               "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint96",
+              "name": "marketFeeBps",
+              "type": "uint96"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "marketFeeAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "feeRecipient",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "royaltyReceiver",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "royaltyAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "sellerProceeds",
+              "type": "uint256"
             }
           ],
           "name": "Bought",
@@ -260,25 +302,6 @@
             }
           ],
           "name": "Cancelled",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "address",
-              "name": "recipient",
-              "type": "address"
-            },
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "transactionCode",
-              "type": "string"
-            }
-          ],
-          "name": "FeeRecipientUpdated",
           "type": "event"
         },
         {
@@ -328,25 +351,6 @@
             }
           ],
           "name": "Listed",
-          "type": "event"
-        },
-        {
-          "anonymous": false,
-          "inputs": [
-            {
-              "indexed": false,
-              "internalType": "uint96",
-              "name": "newBps",
-              "type": "uint96"
-            },
-            {
-              "indexed": false,
-              "internalType": "string",
-              "name": "transactionCode",
-              "type": "string"
-            }
-          ],
-          "name": "MarketFeeUpdated",
           "type": "event"
         },
         {
@@ -444,6 +448,24 @@
           "inputs": [],
           "name": "feeRecipient",
           "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "getMarketFeeInfo",
+          "outputs": [
+            {
+              "internalType": "uint96",
+              "name": "",
+              "type": "uint96"
+            },
             {
               "internalType": "address",
               "name": "",
@@ -569,11 +591,6 @@
               "internalType": "address",
               "name": "recipient",
               "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "transactionCode",
-              "type": "string"
             }
           ],
           "name": "setFeeRecipient",
@@ -587,11 +604,6 @@
               "internalType": "uint96",
               "name": "bps",
               "type": "uint96"
-            },
-            {
-              "internalType": "string",
-              "name": "transactionCode",
-              "type": "string"
             }
           ],
           "name": "setMarketFee",

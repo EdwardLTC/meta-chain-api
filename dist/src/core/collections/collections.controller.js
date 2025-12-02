@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const collections_service_1 = require("./collections.service");
 const create_dto_1 = require("./dtos/create.dto");
 const swagger_1 = require("@nestjs/swagger");
-const sign_contract_dto_1 = require("./dtos/sign-contract.dto");
 const auth_decorator_1 = require("../../auth/auth.decorator");
 let CollectionsController = class CollectionsController {
     svc;
@@ -32,9 +31,6 @@ let CollectionsController = class CollectionsController {
     }
     async create(dto, userWallet, userId) {
         return this.svc.createCollection(dto, userWallet, userId);
-    }
-    async signContract(dto, privateKey) {
-        return this.svc.testSignContract(dto, privateKey);
     }
 };
 exports.CollectionsController = CollectionsController;
@@ -63,14 +59,6 @@ __decorate([
     __metadata("design:paramtypes", [create_dto_1.CreateCollectionDto, String, String]),
     __metadata("design:returntype", Promise)
 ], CollectionsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Post)('sign-contract-dev-only/:privateKey'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Param)('privateKey')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [sign_contract_dto_1.SignContractDto, String]),
-    __metadata("design:returntype", Promise)
-], CollectionsController.prototype, "signContract", null);
 exports.CollectionsController = CollectionsController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('collections'),
