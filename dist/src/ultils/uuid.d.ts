@@ -1,2 +1,2 @@
-import { v7 } from 'uuid';
-export declare const uuidv7: typeof v7;
+import { v7 as uuidv7 } from 'uuid';
+export { uuidv7 };

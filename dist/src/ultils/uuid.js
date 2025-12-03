@@ -2,5 +2,5 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uuidv7 = void 0;
 const uuid_1 = require("uuid");
-exports.uuidv7 = uuid_1.v7;
+Object.defineProperty(exports, "uuidv7", { enumerable: true, get: function () { return uuid_1.v7; } });
 //# sourceMappingURL=uuid.js.map

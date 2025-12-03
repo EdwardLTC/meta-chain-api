@@ -1,3 +1,3 @@
-import { v7 } from 'uuid';
+import { v7 as uuidv7 } from 'uuid';
 
-export const uuidv7 = v7;
+export { uuidv7 };
