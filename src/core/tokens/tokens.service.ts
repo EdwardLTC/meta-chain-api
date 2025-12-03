@@ -55,7 +55,7 @@ export class TokensService {
       `${collection.contractAddress}-${data.name}`,
     );
 
-    const id = uuidv7;
+    const id = uuidv7();
 
     const contract = new Contract(collection.contractAddress, ABI, this.ethService.getProvider());
 

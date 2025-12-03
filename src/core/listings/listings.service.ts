@@ -35,7 +35,7 @@ export class ListingsService {
 
     const factory = this.contracts.getContract('Marketplace');
 
-    const id = uuidv7;
+    const id = uuidv7();
 
     const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, data.price, '0', id);
 
