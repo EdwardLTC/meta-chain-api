@@ -40,7 +40,7 @@ let ListingsService = class ListingsService {
             throw new common_1.BadRequestException('Token already listed or pending');
         }
         const factory = this.contracts.getContract('Marketplace');
-        const id = (0, uuid_1.uuidv7)();
+        const id = uuid_1.uuidv7;
         const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, data.price, '0', id);
         return this.dbService.listing.create({
             data: {

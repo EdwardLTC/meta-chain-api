@@ -16,7 +16,7 @@ export class CollectionsService {
   public async createCollection(createBody: CreateCollectionDto, creatorAddress: string, userId: string) {
     const factory = this.contracts.getContract('Factory');
 
-    const id = uuidv7();
+    const id = uuidv7;
 
     const txData = await factory.createCollection.populateTransaction(
       createBody.name,

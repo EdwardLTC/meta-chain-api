@@ -25,7 +25,7 @@ let CollectionsService = class CollectionsService {
     }
     async createCollection(createBody, creatorAddress, userId) {
         const factory = this.contracts.getContract('Factory');
-        const id = (0, uuid_1.uuidv7)();
+        const id = uuid_1.uuidv7;
         const txData = await factory.createCollection.populateTransaction(createBody.name, createBody.symbol, id, creatorAddress, createBody.royaltyFeeBps);
         return this.prisma.collection.create({
             data: {
