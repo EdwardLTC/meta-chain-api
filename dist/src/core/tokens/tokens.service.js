@@ -52,7 +52,7 @@ let TokensService = class TokensService {
             creatorAddress: creatorAddress,
             collectionAddress: collection.contractAddress,
         }, `${collection.contractAddress}-${data.name}`);
-        const id = uuid_1.uuidv7;
+        const id = (0, uuid_1.uuidv7)();
         const contract = new ethers_1.Contract(collection.contractAddress, tokens_abi_1.ABI, this.ethService.getProvider());
         const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, id);
         return this.dbService.token.create({
