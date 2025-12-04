@@ -19,9 +19,4 @@ export class AuthController {
       token: await this.authService.verifySignature(loginDto.walletAddress, loginDto.signature),
     };
   }
-
-  @Post('dev-only/generate-jwt-private-key/:privateKey')
-  public signatureWithPrivateKey(@Query('privateKey') address: string) {
-    return this.authService.signatureWithPrivateKey(address);
-  }
 }

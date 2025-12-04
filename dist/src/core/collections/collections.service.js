@@ -42,8 +42,12 @@ let CollectionsService = class CollectionsService {
             },
         });
     }
-    async getCollections() {
-        return this.prisma.collection.findMany({ where: { status: enums_mjs_1.CollectionStatus.CREATED } });
+    async getCollections(getCollectionsQuery, userId) {
+        return this.prisma.collection.findMany({
+            where: {
+                ...(getCollectionsQuery.isMe ? { userId: userId } : { status: enums_mjs_1.CollectionStatus.PENDING }),
+            },
+        });
     }
     async getCollection(id) {
         return this.prisma.collection.findUniqueOrThrow({ where: { id } }).catch(err => {

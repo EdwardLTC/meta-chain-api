@@ -18,6 +18,7 @@ const listings_service_1 = require("./listings.service");
 const swagger_1 = require("@nestjs/swagger");
 const create_dto_1 = require("./dtos/create.dto");
 const auth_decorator_1 = require("../../auth/auth.decorator");
+const get_listing_filter_dto_1 = require("./dtos/get-listing-filter.dto");
 let ListingsController = class ListingsController {
     listingsService;
     constructor(listingsService) {
@@ -26,16 +27,40 @@ let ListingsController = class ListingsController {
     async createListing(body, userWallet) {
         return this.listingsService.createListing(body, userWallet);
     }
+    async getListings(query, userWallet) {
+        return this.listingsService.getListings(query, userWallet);
+    }
+    async getListingById(id) {
+        return this.listingsService.getListing(id);
+    }
 };
 exports.ListingsController = ListingsController;
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_decorator_1.User)('walletAddress')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_dto_1.CreateListingDto, String]),
     __metadata("design:returntype", Promise)
 ], ListingsController.prototype, "createListing", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, auth_decorator_1.User)('walletAddress')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [get_listing_filter_dto_1.GetListingFilterDto, String]),
+    __metadata("design:returntype", Promise)
+], ListingsController.prototype, "getListings", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ListingsController.prototype, "getListingById", null);
 exports.ListingsController = ListingsController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('listings'),

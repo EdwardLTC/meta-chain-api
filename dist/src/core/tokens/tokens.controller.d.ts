@@ -4,7 +4,7 @@ import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
 export declare class TokensController {
     private readonly tokensService;
     constructor(tokensService: TokensService);
-    getTokens(filter: GetTokensFilterDto): Promise<{
+    getTokens(filter: GetTokensFilterDto, userId: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -18,7 +18,7 @@ export declare class TokensController {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }[]>;
     getToken(id: string): Promise<{
         id: string;
@@ -34,7 +34,7 @@ export declare class TokensController {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }>;
     mintToken(data: MintTokenDto, walletAddress: string, userId: string): Promise<{
         id: string;
@@ -50,6 +50,6 @@ export declare class TokensController {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }>;
 }

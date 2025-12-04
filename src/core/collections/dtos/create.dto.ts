@@ -28,7 +28,7 @@ export class CreateCollectionDto {
 
   @ApiProperty({
     description: 'Image URL of the collection',
-    example: 'https://example.com/image.png',
+    example: 'https://i2c.seadn.io/ethereum/0xbd3531da5cf5857e7cfaa92426877b022e612cf8/9762e02e760c6c3644f2b32d8e1aef36.png?w=350',
   })
   @IsString()
   @IsNotEmpty()

@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '../../auth/auth.decorator';
+import { GetCollectionsQuery } from './dtos/get-collections.dto';
 
 @ApiBearerAuth()
 @Controller('collections')
@@ -11,8 +12,8 @@ export class CollectionsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  public async getCollections() {
-    return this.svc.getCollections();
+  public async getCollections(@Query() getCollectionsQuery: GetCollectionsQuery, @User('userId') userId: string) {
+    return this.svc.getCollections(getCollectionsQuery, userId);
   }
 
   @Get(':id')

@@ -23,9 +23,12 @@ let NftStorageService = class NftStorageService {
             pinataGateway: this.environmentService.pinata.gateway,
         });
     }
-    async uploadMetadata(data, name) {
-        const response = await this.client.upload.public.json(data).name(name);
-        return `ipfs://${response.cid}`;
+    async uploadMetadata(data) {
+        const response = await this.client.upload.public.json(data);
+        return {
+            ipfsUrl: `ipfs://${response.cid}`,
+            httpUrl: `https://${this.environmentService.pinata.gateway}/ipfs/${response.cid}`,
+        };
     }
 };
 exports.NftStorageService = NftStorageService;

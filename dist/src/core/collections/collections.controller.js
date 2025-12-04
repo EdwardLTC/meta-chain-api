@@ -18,13 +18,14 @@ const collections_service_1 = require("./collections.service");
 const create_dto_1 = require("./dtos/create.dto");
 const swagger_1 = require("@nestjs/swagger");
 const auth_decorator_1 = require("../../auth/auth.decorator");
+const get_collections_dto_1 = require("./dtos/get-collections.dto");
 let CollectionsController = class CollectionsController {
     svc;
     constructor(svc) {
         this.svc = svc;
     }
-    async getCollections() {
-        return this.svc.getCollections();
+    async getCollections(getCollectionsQuery, userId) {
+        return this.svc.getCollections(getCollectionsQuery, userId);
     }
     async getCollection(id) {
         return this.svc.getCollection(id);
@@ -37,8 +38,10 @@ exports.CollectionsController = CollectionsController;
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, auth_decorator_1.User)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [get_collections_dto_1.GetCollectionsQuery, String]),
     __metadata("design:returntype", Promise)
 ], CollectionsController.prototype, "getCollections", null);
 __decorate([

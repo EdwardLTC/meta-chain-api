@@ -20,7 +20,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     await this.marketplace.on(
       'Listed',
       (
-        listingId: number,
+        listingId: bigint,
         seller: string,
         nft: string,
         tokenId: number,

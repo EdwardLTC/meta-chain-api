@@ -9,33 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetTokensFilterDto = void 0;
+exports.GetCollectionsQuery = void 0;
 const class_validator_1 = require("class-validator");
-const swagger_1 = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
-class GetTokensFilterDto {
-    collectionId;
+const swagger_1 = require("@nestjs/swagger");
+class GetCollectionsQuery {
     isMe;
 }
-exports.GetTokensFilterDto = GetTokensFilterDto;
-__decorate([
-    (0, swagger_1.ApiPropertyOptional)({
-        description: 'Filter tokens by collection ID',
-        example: 'c1a2b3c4-d5e6-7f89-0a1b-2c3d4e5f6a7b',
-    }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], GetTokensFilterDto.prototype, "collectionId", void 0);
+exports.GetCollectionsQuery = GetCollectionsQuery;
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({
         type: Boolean,
         example: true,
-        description: 'If true, only tokens owned by the authenticated user will be returned',
+        description: 'If true, only collections owned by the authenticated user will be returned',
     }),
     (0, class_transformer_1.Transform)(({ value }) => value === 'true'),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], GetTokensFilterDto.prototype, "isMe", void 0);
-//# sourceMappingURL=get-tokens-filter.dto.js.map
+], GetCollectionsQuery.prototype, "isMe", void 0);
+//# sourceMappingURL=get-collections.dto.js.map

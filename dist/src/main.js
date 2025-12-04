@@ -6,6 +6,9 @@ const common_1 = require("@nestjs/common");
 const environment_service_1 = require("./environment/environment.service");
 const swagger_1 = require("@nestjs/swagger");
 async function bootstrap() {
+    BigInt.prototype.toJSON = function () {
+        return this.toString();
+    };
     const logger = new common_1.Logger();
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { bufferLogs: true });
     const env = app.get(environment_service_1.EnvironmentService);

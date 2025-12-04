@@ -44,22 +44,17 @@ export class TokensService {
       throw new InternalServerErrorException(`Collection ${collection.id} has no contract address`);
     }
 
-    const metadataUrl = await this.nftStorageService.uploadMetadata(
-      {
-        name: data.name,
-        description: data.description,
-        image: data.image,
-        creatorAddress: creatorAddress,
-        collectionAddress: collection.contractAddress,
-      },
-      `${collection.contractAddress}-${data.name}`,
-    );
+    const metadata = await this.nftStorageService.uploadMetadata({
+      name: data.name,
+      description: data.description,
+      image: data.image,
+    });
 
     const id = uuidv7();
 
     const contract = new Contract(collection.contractAddress, ABI, this.ethService.getProvider());
 
-    const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, id);
+    const txData = await contract.mint.populateTransaction(creatorAddress, metadata.ipfsUrl, id);
 
     return this.dbService.token.create({
       data: {
@@ -67,7 +62,7 @@ export class TokensService {
         collectionId: data.collectionId,
         ownerAddress: creatorAddress,
         contractAddress: collection.contractAddress,
-        tokenUri: metadataUrl,
+        tokenUri: metadata.ipfsUrl,
         name: data.name,
         description: data.description,
         image: data.image,
@@ -77,8 +72,13 @@ export class TokensService {
     });
   }
 
-  public async getTokens(getTokensFilterDto: GetTokensFilterDto) {
-    return this.dbService.token.findMany({ where: { collectionId: getTokensFilterDto.collectionId, status: TokenStatus.MINTED } });
+  public async getTokens(getTokensFilterDto: GetTokensFilterDto, userAddress: string) {
+    return this.dbService.token.findMany({
+      where: {
+        collectionId: getTokensFilterDto.collectionId,
+        ...(getTokensFilterDto.isMe ? { ownerAddress: userAddress } : { status: TokenStatus.MINTED }),
+      },
+    });
   }
 
   public async getToken(tokenId: string) {

@@ -45,23 +45,21 @@ let TokensService = class TokensService {
         if (!collection.contractAddress) {
             throw new common_1.InternalServerErrorException(`Collection ${collection.id} has no contract address`);
         }
-        const metadataUrl = await this.nftStorageService.uploadMetadata({
+        const metadata = await this.nftStorageService.uploadMetadata({
             name: data.name,
             description: data.description,
             image: data.image,
-            creatorAddress: creatorAddress,
-            collectionAddress: collection.contractAddress,
-        }, `${collection.contractAddress}-${data.name}`);
+        });
         const id = (0, uuid_1.uuidv7)();
         const contract = new ethers_1.Contract(collection.contractAddress, tokens_abi_1.ABI, this.ethService.getProvider());
-        const txData = await contract.mint.populateTransaction(creatorAddress, metadataUrl, id);
+        const txData = await contract.mint.populateTransaction(creatorAddress, metadata.ipfsUrl, id);
         return this.dbService.token.create({
             data: {
                 id: id,
                 collectionId: data.collectionId,
                 ownerAddress: creatorAddress,
                 contractAddress: collection.contractAddress,
-                tokenUri: metadataUrl,
+                tokenUri: metadata.ipfsUrl,
                 name: data.name,
                 description: data.description,
                 image: data.image,
@@ -70,8 +68,13 @@ let TokensService = class TokensService {
             },
         });
     }
-    async getTokens(getTokensFilterDto) {
-        return this.dbService.token.findMany({ where: { collectionId: getTokensFilterDto.collectionId, status: enums_mjs_1.TokenStatus.MINTED } });
+    async getTokens(getTokensFilterDto, userAddress) {
+        return this.dbService.token.findMany({
+            where: {
+                collectionId: getTokensFilterDto.collectionId,
+                ...(getTokensFilterDto.isMe ? { ownerAddress: userAddress } : { status: enums_mjs_1.TokenStatus.MINTED }),
+            },
+        });
     }
     async getToken(tokenId) {
         return this.dbService.token.findUniqueOrThrow({ where: { id: tokenId } }).catch(err => {

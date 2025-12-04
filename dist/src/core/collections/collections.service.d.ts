@@ -2,6 +2,7 @@ import { CreateCollectionDto } from './dtos/create.dto';
 import { ContractsService } from 'src/eth/contracts.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CollectionStatus } from '../../../generated/prisma/enums.mjs';
+import { GetCollectionsQuery } from './dtos/get-collections.dto';
 export declare class CollectionsService {
     private contracts;
     private prisma;
@@ -22,7 +23,7 @@ export declare class CollectionsService {
         txHash: string | null;
         contractAddress: string | null;
     }>;
-    getCollections(): Promise<{
+    getCollections(getCollectionsQuery: GetCollectionsQuery, userId: string): Promise<{
         symbol: string;
         id: string;
         createdAt: Date;

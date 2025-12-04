@@ -3,5 +3,8 @@ export declare class NftStorageService {
     private readonly environmentService;
     private client;
     constructor(environmentService: EnvironmentService);
-    uploadMetadata(data: object, name: string): Promise<string>;
+    uploadMetadata(data: object): Promise<{
+        ipfsUrl: string;
+        httpUrl: string;
+    }>;
 }

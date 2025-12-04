@@ -25,9 +25,9 @@ export declare class TokensService {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }>;
-    getTokens(getTokensFilterDto: GetTokensFilterDto): Promise<{
+    getTokens(getTokensFilterDto: GetTokensFilterDto, userAddress: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
@@ -41,7 +41,7 @@ export declare class TokensService {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }[]>;
     getToken(tokenId: string): Promise<{
         id: string;
@@ -57,6 +57,6 @@ export declare class TokensService {
         collectionId: string;
         ownerAddress: string;
         tokenUri: string;
-        onchainId: number | null;
+        onchainId: bigint | null;
     }>;
 }

@@ -61,7 +61,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
     const contract = new Contract(collectionAddress, ABI, this.contracts.getProvider());
     this.collectionContracts.set(collectionAddress, contract);
 
-    await contract.on('Minted', (to: string, tokenId: number, uri: string, transactionCode: string, event: ContractEventPayload) => {
+    await contract.on('Minted', (to: string, tokenId: bigint, uri: string, transactionCode: string, event: ContractEventPayload) => {
       this.logger.log(`Minted: to=${to}, tokenId=${tokenId}, uri=${uri}, txCode=${transactionCode}`);
 
       void (async () => {

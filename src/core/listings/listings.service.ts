@@ -1,11 +1,12 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListingDto } from './dtos/create.dto';
 import { TokensService } from '../tokens/tokens.service';
 import { ContractsService } from '../../eth/contracts.service';
 import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { uuidv7 } from '../../ultils/uuid';
-import { InputJsonValue } from '@prisma/client/runtime/edge';
+import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
+import { GetListingFilterDto } from './dtos/get-listing-filter.dto';
 
 @Injectable()
 export class ListingsService {
@@ -49,6 +50,30 @@ export class ListingsService {
         txData: txData as unknown as InputJsonValue,
         status: ListingStatus.PENDING,
       },
+    });
+  }
+
+  public async getListings(getListingFilterDto: GetListingFilterDto, userAddress: string) {
+    return this.dbService.listing.findMany({
+      where: {
+        ...(getListingFilterDto.isMe
+          ? { sellerAddress: userAddress }
+          : {
+              status: {
+                not: ListingStatus.PENDING,
+              },
+            }),
+      },
+    });
+  }
+
+  public async getListing(id: string) {
+    return this.dbService.listing.findUniqueOrThrow({ where: { id: id } }).catch(err => {
+      if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
+        throw new NotFoundException('Collection not found');
+      }
+
+      throw err;
     });
   }
 }

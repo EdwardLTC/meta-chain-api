@@ -19,7 +19,7 @@ export type ListingAvgAggregateOutputType = {
 };
 export type ListingSumAggregateOutputType = {
     price: runtime.Decimal | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     marketFeeBps: number | null;
     marketFeeAmount: runtime.Decimal | null;
     royaltyAmount: runtime.Decimal | null;
@@ -32,7 +32,7 @@ export type ListingMinAggregateOutputType = {
     price: runtime.Decimal | null;
     status: $Enums.ListingStatus | null;
     expiresAt: Date | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     txHash: string | null;
     buyerAddress: string | null;
     paymentToken: string | null;
@@ -53,7 +53,7 @@ export type ListingMaxAggregateOutputType = {
     price: runtime.Decimal | null;
     status: $Enums.ListingStatus | null;
     expiresAt: Date | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     txHash: string | null;
     buyerAddress: string | null;
     paymentToken: string | null;
@@ -207,7 +207,7 @@ export type ListingGroupByOutputType = {
     status: $Enums.ListingStatus;
     expiresAt: Date | null;
     txData: runtime.JsonValue;
-    onchainId: number | null;
+    onchainId: bigint | null;
     txHash: string | null;
     buyerAddress: string | null;
     paymentToken: string | null;
@@ -240,7 +240,7 @@ export type ListingWhereInput = {
     status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus;
     expiresAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
     txData?: Prisma.JsonFilter<"Listing">;
-    onchainId?: Prisma.IntNullableFilter<"Listing"> | number | null;
+    onchainId?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null;
     txHash?: Prisma.StringNullableFilter<"Listing"> | string | null;
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -280,7 +280,7 @@ export type ListingOrderByWithRelationInput = {
 };
 export type ListingWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
-    onchainId?: number;
+    onchainId?: bigint | number;
     AND?: Prisma.ListingWhereInput | Prisma.ListingWhereInput[];
     OR?: Prisma.ListingWhereInput[];
     NOT?: Prisma.ListingWhereInput | Prisma.ListingWhereInput[];
@@ -342,7 +342,7 @@ export type ListingScalarWhereWithAggregatesInput = {
     status?: Prisma.EnumListingStatusWithAggregatesFilter<"Listing"> | $Enums.ListingStatus;
     expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null;
     txData?: Prisma.JsonWithAggregatesFilter<"Listing">;
-    onchainId?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null;
+    onchainId?: Prisma.BigIntNullableWithAggregatesFilter<"Listing"> | bigint | number | null;
     txHash?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
     buyerAddress?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
@@ -363,7 +363,7 @@ export type ListingCreateInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -386,7 +386,7 @@ export type ListingUncheckedCreateInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -407,7 +407,7 @@ export type ListingUpdateInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -430,7 +430,7 @@ export type ListingUncheckedUpdateInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -452,7 +452,7 @@ export type ListingCreateManyInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -473,7 +473,7 @@ export type ListingUpdateManyMutationInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -495,7 +495,7 @@ export type ListingUncheckedUpdateManyInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -648,6 +648,13 @@ export type EnumListingStatusFieldUpdateOperationsInput = {
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null;
 };
+export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null;
+    increment?: number;
+    decrement?: number;
+    multiply?: number;
+    divide?: number;
+};
 export type NullableDecimalFieldUpdateOperationsInput = {
     set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     increment?: runtime.Decimal | runtime.DecimalJsLike | number | string;
@@ -662,7 +669,7 @@ export type ListingCreateWithoutTokenInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -683,7 +690,7 @@ export type ListingUncheckedCreateWithoutTokenInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -729,7 +736,7 @@ export type ListingScalarWhereInput = {
     status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus;
     expiresAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
     txData?: Prisma.JsonFilter<"Listing">;
-    onchainId?: Prisma.IntNullableFilter<"Listing"> | number | null;
+    onchainId?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null;
     txHash?: Prisma.StringNullableFilter<"Listing"> | string | null;
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -750,7 +757,7 @@ export type ListingCreateManyTokenInput = {
     status?: $Enums.ListingStatus;
     expiresAt?: Date | string | null;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     txHash?: string | null;
     buyerAddress?: string | null;
     paymentToken?: string | null;
@@ -771,7 +778,7 @@ export type ListingUpdateWithoutTokenInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -792,7 +799,7 @@ export type ListingUncheckedUpdateWithoutTokenInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -813,7 +820,7 @@ export type ListingUncheckedUpdateManyWithoutTokenInput = {
     status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus;
     expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -941,7 +948,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
         status: $Enums.ListingStatus;
         expiresAt: Date | null;
         txData: runtime.JsonValue;
-        onchainId: number | null;
+        onchainId: bigint | null;
         txHash: string | null;
         buyerAddress: string | null;
         paymentToken: string | null;
@@ -1019,7 +1026,7 @@ export interface ListingFieldRefs {
     readonly status: Prisma.FieldRef<"Listing", 'ListingStatus'>;
     readonly expiresAt: Prisma.FieldRef<"Listing", 'DateTime'>;
     readonly txData: Prisma.FieldRef<"Listing", 'Json'>;
-    readonly onchainId: Prisma.FieldRef<"Listing", 'Int'>;
+    readonly onchainId: Prisma.FieldRef<"Listing", 'BigInt'>;
     readonly txHash: Prisma.FieldRef<"Listing", 'String'>;
     readonly buyerAddress: Prisma.FieldRef<"Listing", 'String'>;
     readonly paymentToken: Prisma.FieldRef<"Listing", 'String'>;

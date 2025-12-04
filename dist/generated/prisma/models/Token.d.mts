@@ -13,7 +13,7 @@ export type TokenAvgAggregateOutputType = {
     onchainId: number | null;
 };
 export type TokenSumAggregateOutputType = {
-    onchainId: number | null;
+    onchainId: bigint | null;
 };
 export type TokenMinAggregateOutputType = {
     id: string | null;
@@ -25,7 +25,7 @@ export type TokenMinAggregateOutputType = {
     image: string | null;
     status: $Enums.TokenStatus | null;
     txHash: string | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     contractAddress: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
@@ -40,7 +40,7 @@ export type TokenMaxAggregateOutputType = {
     image: string | null;
     status: $Enums.TokenStatus | null;
     txHash: string | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     contractAddress: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
@@ -154,7 +154,7 @@ export type TokenGroupByOutputType = {
     status: $Enums.TokenStatus;
     txData: runtime.JsonValue;
     txHash: string | null;
-    onchainId: number | null;
+    onchainId: bigint | null;
     contractAddress: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -181,7 +181,7 @@ export type TokenWhereInput = {
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
     txData?: Prisma.JsonFilter<"Token">;
     txHash?: Prisma.StringNullableFilter<"Token"> | string | null;
-    onchainId?: Prisma.IntNullableFilter<"Token"> | number | null;
+    onchainId?: Prisma.BigIntNullableFilter<"Token"> | bigint | number | null;
     contractAddress?: Prisma.StringNullableFilter<"Token"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
@@ -221,7 +221,7 @@ export type TokenWhereUniqueInput = Prisma.AtLeast<{
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
     txData?: Prisma.JsonFilter<"Token">;
     txHash?: Prisma.StringNullableFilter<"Token"> | string | null;
-    onchainId?: Prisma.IntNullableFilter<"Token"> | number | null;
+    onchainId?: Prisma.BigIntNullableFilter<"Token"> | bigint | number | null;
     contractAddress?: Prisma.StringNullableFilter<"Token"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
@@ -263,7 +263,7 @@ export type TokenScalarWhereWithAggregatesInput = {
     status?: Prisma.EnumTokenStatusWithAggregatesFilter<"Token"> | $Enums.TokenStatus;
     txData?: Prisma.JsonWithAggregatesFilter<"Token">;
     txHash?: Prisma.StringNullableWithAggregatesFilter<"Token"> | string | null;
-    onchainId?: Prisma.IntNullableWithAggregatesFilter<"Token"> | number | null;
+    onchainId?: Prisma.BigIntNullableWithAggregatesFilter<"Token"> | bigint | number | null;
     contractAddress?: Prisma.StringNullableWithAggregatesFilter<"Token"> | string | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Token"> | Date | string;
@@ -278,7 +278,7 @@ export type TokenCreateInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -296,7 +296,7 @@ export type TokenUncheckedCreateInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -312,7 +312,7 @@ export type TokenUpdateInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -330,7 +330,7 @@ export type TokenUncheckedUpdateInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -347,7 +347,7 @@ export type TokenCreateManyInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -362,7 +362,7 @@ export type TokenUpdateManyMutationInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -378,7 +378,7 @@ export type TokenUncheckedUpdateManyInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -393,7 +393,7 @@ export type TokenOrderByRelationAggregateInput = {
 };
 export type TokenContractAddressOnchainIdCompoundUniqueInput = {
     contractAddress: string;
-    onchainId: number;
+    onchainId: bigint | number;
 };
 export type TokenCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
@@ -492,12 +492,12 @@ export type TokenUncheckedUpdateManyWithoutCollectionNestedInput = {
 export type EnumTokenStatusFieldUpdateOperationsInput = {
     set?: $Enums.TokenStatus;
 };
-export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null;
-    increment?: number;
-    decrement?: number;
-    multiply?: number;
-    divide?: number;
+export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null;
+    increment?: bigint | number;
+    decrement?: bigint | number;
+    multiply?: bigint | number;
+    divide?: bigint | number;
 };
 export type TokenCreateNestedOneWithoutListingsInput = {
     create?: Prisma.XOR<Prisma.TokenCreateWithoutListingsInput, Prisma.TokenUncheckedCreateWithoutListingsInput>;
@@ -521,7 +521,7 @@ export type TokenCreateWithoutCollectionInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -537,7 +537,7 @@ export type TokenUncheckedCreateWithoutCollectionInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -578,7 +578,7 @@ export type TokenScalarWhereInput = {
     status?: Prisma.EnumTokenStatusFilter<"Token"> | $Enums.TokenStatus;
     txData?: Prisma.JsonFilter<"Token">;
     txHash?: Prisma.StringNullableFilter<"Token"> | string | null;
-    onchainId?: Prisma.IntNullableFilter<"Token"> | number | null;
+    onchainId?: Prisma.BigIntNullableFilter<"Token"> | bigint | number | null;
     contractAddress?: Prisma.StringNullableFilter<"Token"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Token"> | Date | string;
@@ -593,7 +593,7 @@ export type TokenCreateWithoutListingsInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -610,7 +610,7 @@ export type TokenUncheckedCreateWithoutListingsInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -638,7 +638,7 @@ export type TokenUpdateWithoutListingsInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -655,7 +655,7 @@ export type TokenUncheckedUpdateWithoutListingsInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -670,7 +670,7 @@ export type TokenCreateManyCollectionInput = {
     status?: $Enums.TokenStatus;
     txData: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: string | null;
-    onchainId?: number | null;
+    onchainId?: bigint | number | null;
     contractAddress?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
@@ -685,7 +685,7 @@ export type TokenUpdateWithoutCollectionInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -701,7 +701,7 @@ export type TokenUncheckedUpdateWithoutCollectionInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -717,7 +717,7 @@ export type TokenUncheckedUpdateManyWithoutCollectionInput = {
     status?: Prisma.EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus;
     txData?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    onchainId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    onchainId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     contractAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -832,7 +832,7 @@ export type $TokenPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
         status: $Enums.TokenStatus;
         txData: runtime.JsonValue;
         txHash: string | null;
-        onchainId: number | null;
+        onchainId: bigint | null;
         contractAddress: string | null;
         createdAt: Date;
         updatedAt: Date;
@@ -905,7 +905,7 @@ export interface TokenFieldRefs {
     readonly status: Prisma.FieldRef<"Token", 'TokenStatus'>;
     readonly txData: Prisma.FieldRef<"Token", 'Json'>;
     readonly txHash: Prisma.FieldRef<"Token", 'String'>;
-    readonly onchainId: Prisma.FieldRef<"Token", 'Int'>;
+    readonly onchainId: Prisma.FieldRef<"Token", 'BigInt'>;
     readonly contractAddress: Prisma.FieldRef<"Token", 'String'>;
     readonly createdAt: Prisma.FieldRef<"Token", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Token", 'DateTime'>;

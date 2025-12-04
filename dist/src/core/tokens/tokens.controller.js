@@ -24,8 +24,8 @@ let TokensController = class TokensController {
     constructor(tokensService) {
         this.tokensService = tokensService;
     }
-    async getTokens(filter) {
-        return this.tokensService.getTokens(filter);
+    async getTokens(filter, userId) {
+        return this.tokensService.getTokens(filter, userId);
     }
     async getToken(id) {
         return this.tokensService.getToken(id);
@@ -39,8 +39,9 @@ __decorate([
     (0, common_1.Get)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Query)()),
+    __param(1, (0, auth_decorator_1.User)('walletAddress')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [get_tokens_filter_dto_1.GetTokensFilterDto]),
+    __metadata("design:paramtypes", [get_tokens_filter_dto_1.GetTokensFilterDto, String]),
     __metadata("design:returntype", Promise)
 ], TokensController.prototype, "getTokens", null);
 __decorate([

@@ -12,8 +12,8 @@ export class TokensController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  public async getTokens(@Query() filter: GetTokensFilterDto) {
-    return this.tokensService.getTokens(filter);
+  public async getTokens(@Query() filter: GetTokensFilterDto, @User('walletAddress') userId: string) {
+    return this.tokensService.getTokens(filter, userId);
   }
 
   @Get(':id')

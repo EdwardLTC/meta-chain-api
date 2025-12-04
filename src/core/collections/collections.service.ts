@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 import { CollectionStatus } from '../../../generated/prisma/enums.mjs';
 import { uuidv7 } from '../../ultils/uuid';
+import { GetCollectionsQuery } from './dtos/get-collections.dto';
 
 @Injectable()
 export class CollectionsService {
@@ -42,8 +43,12 @@ export class CollectionsService {
     });
   }
 
-  public async getCollections() {
-    return this.prisma.collection.findMany({ where: { status: CollectionStatus.CREATED } });
+  public async getCollections(getCollectionsQuery: GetCollectionsQuery, userId: string) {
+    return this.prisma.collection.findMany({
+      where: {
+        ...(getCollectionsQuery.isMe ? { userId: userId } : { status: CollectionStatus.PENDING }),
+      },
+    });
   }
 
   public async getCollection(id: string) {

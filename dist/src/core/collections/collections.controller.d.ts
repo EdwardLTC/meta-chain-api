@@ -1,9 +1,10 @@
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dtos/create.dto';
+import { GetCollectionsQuery } from './dtos/get-collections.dto';
 export declare class CollectionsController {
     private svc;
     constructor(svc: CollectionsService);
-    getCollections(): Promise<{
+    getCollections(getCollectionsQuery: GetCollectionsQuery, userId: string): Promise<{
         symbol: string;
         id: string;
         createdAt: Date;

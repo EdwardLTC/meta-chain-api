@@ -13,9 +13,12 @@ export class NftStorageService {
     });
   }
 
-  public async uploadMetadata(data: object, name: string): Promise<string> {
-    const response = await this.client.upload.public.json(data).name(name);
+  public async uploadMetadata(data: object) {
+    const response = await this.client.upload.public.json(data);
 
-    return `ipfs://${response.cid}`;
+    return {
+      ipfsUrl: `ipfs://${response.cid}`,
+      httpUrl: `https://${this.environmentService.pinata.gateway}/ipfs/${response.cid}`,
+    };
   }
 }

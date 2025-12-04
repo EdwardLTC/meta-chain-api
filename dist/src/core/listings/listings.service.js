@@ -16,6 +16,7 @@ const tokens_service_1 = require("../tokens/tokens.service");
 const contracts_service_1 = require("../../eth/contracts.service");
 const enums_mjs_1 = require("../../../generated/prisma/enums.mjs");
 const uuid_1 = require("../../ultils/uuid");
+const edge_1 = require("@prisma/client/runtime/edge");
 let ListingsService = class ListingsService {
     dbService;
     tokenService;
@@ -52,6 +53,27 @@ let ListingsService = class ListingsService {
                 txData: txData,
                 status: enums_mjs_1.ListingStatus.PENDING,
             },
+        });
+    }
+    async getListings(getListingFilterDto, userAddress) {
+        return this.dbService.listing.findMany({
+            where: {
+                ...(getListingFilterDto.isMe
+                    ? { sellerAddress: userAddress }
+                    : {
+                        status: {
+                            not: enums_mjs_1.ListingStatus.PENDING,
+                        },
+                    }),
+            },
+        });
+    }
+    async getListing(id) {
+        return this.dbService.listing.findUniqueOrThrow({ where: { id: id } }).catch(err => {
+            if (err instanceof edge_1.PrismaClientKnownRequestError && err.code === 'P2025') {
+                throw new common_1.NotFoundException('Collection not found');
+            }
+            throw err;
         });
     }
 };

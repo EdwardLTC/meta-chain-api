@@ -5,6 +5,10 @@ import { EnvironmentService } from './environment/environment.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+  (BigInt.prototype as any).toJSON = function () {
+    return this.toString();
+  };
+
   const logger = new Logger();
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 

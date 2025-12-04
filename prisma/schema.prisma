@@ -75,7 +75,7 @@ model Token {
   txData      Json
 
   txHash          String?
-  onchainId       Int? /// on-chain token ID
+  onchainId       BigInt? /// on-chain token ID
   contractAddress String?
 
   createdAt DateTime @default(now())
@@ -107,7 +107,7 @@ model Listing {
   expiresAt     DateTime?
   txData        Json
 
-  onchainId Int?    @unique
+  onchainId BigInt? @unique
   txHash    String?
 
   buyerAddress String?
