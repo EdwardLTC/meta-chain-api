@@ -76,3 +76,5 @@ ignition/deployments/chain-31337
 
 # ingore all pem file
 *.pem
+
+/dist
