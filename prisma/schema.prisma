@@ -114,7 +114,7 @@ model Listing {
   paymentToken String?
   soldAt       DateTime?
 
-  marketFeeBps    Int?
+  marketFeeBps    BigInt?
   marketFeeAmount Decimal? @db.Decimal(36, 18)
 
   feeRecipient String?

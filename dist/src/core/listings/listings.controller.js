@@ -33,6 +33,9 @@ let ListingsController = class ListingsController {
     async getListingById(id) {
         return this.listingsService.getListing(id);
     }
+    async buyListing(id, userWallet) {
+        return this.listingsService.buyListing(id, userWallet);
+    }
 };
 exports.ListingsController = ListingsController;
 __decorate([
@@ -61,6 +64,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ListingsController.prototype, "getListingById", null);
+__decorate([
+    (0, common_1.Post)(':id/buy'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, auth_decorator_1.User)('walletAddress')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ListingsController.prototype, "buyListing", null);
 exports.ListingsController = ListingsController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('listings'),

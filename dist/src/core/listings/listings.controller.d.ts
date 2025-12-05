@@ -70,4 +70,5 @@ export declare class ListingsController {
         royaltyAmount: import("@prisma/client/runtime/client").Decimal | null;
         sellerProceeds: import("@prisma/client/runtime/client").Decimal | null;
     }>;
+    buyListing(id: string, userWallet: string): Promise<import("ethers").ContractTransaction>;
 }

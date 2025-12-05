@@ -4,6 +4,7 @@ import { TokensService } from '../tokens/tokens.service';
 import { ContractsService } from '../../eth/contracts.service';
 import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { GetListingFilterDto } from './dtos/get-listing-filter.dto';
+import { ethers } from 'ethers';
 export declare class ListingsService {
     private readonly dbService;
     private readonly tokenService;
@@ -75,4 +76,5 @@ export declare class ListingsService {
         royaltyAmount: import("@prisma/client/runtime/client").Decimal | null;
         sellerProceeds: import("@prisma/client/runtime/client").Decimal | null;
     }>;
+    buyListing(id: string, buyerAddress: string): Promise<ethers.ContractTransaction>;
 }

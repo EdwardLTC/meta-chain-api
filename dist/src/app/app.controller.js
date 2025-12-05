@@ -31,6 +31,9 @@ let AppController = class AppController {
     signatureWithPrivateKey(address) {
         return this.authService.signatureWithPrivateKey(address);
     }
+    async approveAllNftForMarketplace(contractAddress, privateKey) {
+        return this.appService.approveAllNftForMarketplace(contractAddress, privateKey);
+    }
 };
 exports.AppController = AppController;
 __decorate([
@@ -48,6 +51,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "signatureWithPrivateKey", null);
+__decorate([
+    (0, common_1.Post)('dev-only/approve-all-nft/:contractAddress/:privateKey'),
+    __param(0, (0, common_1.Param)('contractAddress')),
+    __param(1, (0, common_1.Param)('privateKey')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "approveAllNftForMarketplace", null);
 exports.AppController = AppController = __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Controller)(),

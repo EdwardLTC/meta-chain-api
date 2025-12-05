@@ -17,6 +17,7 @@ const contracts_service_1 = require("../../eth/contracts.service");
 const enums_mjs_1 = require("../../../generated/prisma/enums.mjs");
 const uuid_1 = require("../../ultils/uuid");
 const edge_1 = require("@prisma/client/runtime/edge");
+const ethers_1 = require("ethers");
 let ListingsService = class ListingsService {
     dbService;
     tokenService;
@@ -42,14 +43,14 @@ let ListingsService = class ListingsService {
         }
         const factory = this.contracts.getContract('Marketplace');
         const id = (0, uuid_1.uuidv7)();
-        const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, data.price, '0', id);
+        const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, ethers_1.ethers.parseEther(data.price.toString()), '0x0000000000000000000000000000000000000000', id);
         return this.dbService.listing.create({
             data: {
                 id: id,
                 tokenId: data.tokenId,
                 price: data.price,
                 sellerAddress: userAddress,
-                paymentToken: '0',
+                paymentToken: '0x0000000000000000000000000000000000000000',
                 txData: txData,
                 status: enums_mjs_1.ListingStatus.PENDING,
             },
@@ -62,7 +63,7 @@ let ListingsService = class ListingsService {
                     ? { sellerAddress: userAddress }
                     : {
                         status: {
-                            not: enums_mjs_1.ListingStatus.PENDING,
+                            not: enums_mjs_1.ListingStatus.ACTIVE,
                         },
                     }),
             },
@@ -74,6 +75,19 @@ let ListingsService = class ListingsService {
                 throw new common_1.NotFoundException('Collection not found');
             }
             throw err;
+        });
+    }
+    async buyListing(id, buyerAddress) {
+        const listing = await this.getListing(id);
+        if (listing.status !== enums_mjs_1.ListingStatus.ACTIVE) {
+            throw new common_1.BadRequestException('Listing is not active');
+        }
+        if (listing.sellerAddress.toLowerCase() === buyerAddress.toLowerCase()) {
+            throw new common_1.BadRequestException('You cannot buy your own listing');
+        }
+        const marketplace = this.contracts.getContract('Marketplace');
+        return marketplace.buyItem.populateTransaction(listing.onchainId, {
+            value: ethers_1.ethers.parseEther(listing.price.toString()),
         });
     }
 };

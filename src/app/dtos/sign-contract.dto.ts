@@ -17,4 +17,12 @@ export class SignContractDto {
   @IsString()
   @IsNotEmpty()
   data: string;
+
+  @ApiProperty({
+    description: 'The value (in wei) to be sent with the transaction',
+    example: '0',
+  })
+  @IsString()
+  @IsNotEmpty()
+  value: string;
 }

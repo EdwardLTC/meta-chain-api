@@ -27,4 +27,10 @@ export class ListingsController {
   public async getListingById(@Param('id') id: string) {
     return this.listingsService.getListing(id);
   }
+
+  @Post(':id/buy')
+  @HttpCode(HttpStatus.OK)
+  public async buyListing(@Param('id') id: string, @User('walletAddress') userWallet: string) {
+    return this.listingsService.buyListing(id, userWallet);
+  }
 }

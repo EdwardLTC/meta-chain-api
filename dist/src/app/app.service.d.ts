@@ -5,5 +5,7 @@ export declare class AppService {
     testSignContract(txData: {
         to: string;
         data: string;
-    }, privateKey: string): Promise<import("ethers").TransactionResponse>;
+        value: string;
+    }, privateKey: string): Promise<import("ethers").TransactionReceipt | null>;
+    approveAllNftForMarketplace(contractAddress: string, privateKey: string): Promise<any>;
 }

@@ -5,6 +5,7 @@ export declare class AppController {
     private readonly appService;
     private readonly authService;
     constructor(appService: AppService, authService: AuthService);
-    signContract(dto: SignContractDto, privateKey: string): Promise<import("ethers").TransactionResponse>;
+    signContract(dto: SignContractDto, privateKey: string): Promise<import("ethers").TransactionReceipt | null>;
     signatureWithPrivateKey(address: string): Promise<string>;
+    approveAllNftForMarketplace(contractAddress: string, privateKey: string): Promise<any>;
 }

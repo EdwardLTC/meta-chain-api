@@ -7,6 +7,7 @@ import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { uuidv7 } from '../../ultils/uuid';
 import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 import { GetListingFilterDto } from './dtos/get-listing-filter.dto';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class ListingsService {
@@ -38,7 +39,13 @@ export class ListingsService {
 
     const id = uuidv7();
 
-    const txData = await factory.listItem.populateTransaction(token.contractAddress, token.onchainId, data.price, '0', id);
+    const txData = await factory.listItem.populateTransaction(
+      token.contractAddress,
+      token.onchainId,
+      ethers.parseEther(data.price.toString()),
+      '0x0000000000000000000000000000000000000000',
+      id,
+    );
 
     return this.dbService.listing.create({
       data: {
@@ -46,7 +53,7 @@ export class ListingsService {
         tokenId: data.tokenId,
         price: data.price,
         sellerAddress: userAddress,
-        paymentToken: '0',
+        paymentToken: '0x0000000000000000000000000000000000000000',
         txData: txData as unknown as InputJsonValue,
         status: ListingStatus.PENDING,
       },
@@ -60,7 +67,7 @@ export class ListingsService {
           ? { sellerAddress: userAddress }
           : {
               status: {
-                not: ListingStatus.PENDING,
+                not: ListingStatus.ACTIVE,
               },
             }),
       },
@@ -74,6 +81,24 @@ export class ListingsService {
       }
 
       throw err;
+    });
+  }
+
+  public async buyListing(id: string, buyerAddress: string) {
+    const listing = await this.getListing(id);
+
+    if (listing.status !== ListingStatus.ACTIVE) {
+      throw new BadRequestException('Listing is not active');
+    }
+
+    if (listing.sellerAddress.toLowerCase() === buyerAddress.toLowerCase()) {
+      throw new BadRequestException('You cannot buy your own listing');
+    }
+
+    const marketplace = this.contracts.getContract('Marketplace');
+
+    return marketplace.buyItem.populateTransaction(listing.onchainId, {
+      value: ethers.parseEther(listing.price.toString()),
     });
   }
 }

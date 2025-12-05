@@ -46,7 +46,7 @@ export class CollectionsService {
   public async getCollections(getCollectionsQuery: GetCollectionsQuery, userId: string) {
     return this.prisma.collection.findMany({
       where: {
-        ...(getCollectionsQuery.isMe ? { userId: userId } : { status: CollectionStatus.PENDING }),
+        ...(getCollectionsQuery.isMe ? { userId: userId } : { status: CollectionStatus.CREATED }),
       },
     });
   }

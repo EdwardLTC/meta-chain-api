@@ -45,7 +45,7 @@ let CollectionsService = class CollectionsService {
     async getCollections(getCollectionsQuery, userId) {
         return this.prisma.collection.findMany({
             where: {
-                ...(getCollectionsQuery.isMe ? { userId: userId } : { status: enums_mjs_1.CollectionStatus.PENDING }),
+                ...(getCollectionsQuery.isMe ? { userId: userId } : { status: enums_mjs_1.CollectionStatus.CREATED }),
             },
         });
     }

@@ -14,6 +14,9 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
     address private _royaltyRecipient;
     uint96 private _royaltyBasisPoints; // using basis points: 10000 = 100%
 
+    // avoid double sign
+    mapping(string  => bool ) private _usedTransactionCodes ;
+
     event Minted(address indexed to, uint256 indexed tokenId, string uri, string transactionCode);
     event RoyaltySet(address indexed recipient, uint96 bps, string transactionCode);
 
@@ -29,10 +32,12 @@ contract NFTCollection is ERC721URIStorage, Ownable, IERC2981 {
     }
 
     function mint(address to, string memory tokenURI_, string calldata transactionCode) external onlyOwner returns (uint256) {
+        require(!_usedTransactionCodes[transactionCode], "Transaction code already used");
         _tokenIdCounter += 1;
         uint256 tid = _tokenIdCounter;
         _safeMint(to, tid);
         _setTokenURI(tid, tokenURI_);
+        _usedTransactionCodes[transactionCode] = true;
         emit Minted(to, tid, tokenURI_, transactionCode);
         return tid;
     }

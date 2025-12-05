@@ -3,7 +3,7 @@
   "deployer": "0xdADf098BC7168Ae56b418DbA804163cB6f1C9aCF",
   "contracts": {
     "Factory": {
-      "address": "0x793ef0ABaD2A446244fb7c75e9391F071ea27de9",
+      "address": "0x104F32D84a8310079938F3019E124E76116D01E3",
       "abi": [
         {
           "inputs": [],
@@ -151,7 +151,7 @@
       ]
     },
     "Marketplace": {
-      "address": "0x02D8aDb8F262C3A048ed7FF9B542A35Eb16BCD50",
+      "address": "0x3836559F707687901c5955deC4840Be5cC011597",
       "abi": [
         {
           "inputs": [

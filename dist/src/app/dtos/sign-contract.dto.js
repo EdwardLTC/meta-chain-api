@@ -15,6 +15,7 @@ const class_validator_1 = require("class-validator");
 class SignContractDto {
     to;
     data;
+    value;
 }
 exports.SignContractDto = SignContractDto;
 __decorate([
@@ -35,4 +36,13 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], SignContractDto.prototype, "data", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The value (in wei) to be sent with the transaction',
+        example: '0',
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], SignContractDto.prototype, "value", void 0);
 //# sourceMappingURL=sign-contract.dto.js.map
