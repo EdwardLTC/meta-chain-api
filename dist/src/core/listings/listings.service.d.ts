@@ -25,7 +25,7 @@ export declare class ListingsService {
         buyerAddress: string | null;
         paymentToken: string | null;
         soldAt: Date | null;
-        marketFeeBps: number | null;
+        marketFeeBps: bigint | null;
         marketFeeAmount: import("@prisma/client/runtime/client").Decimal | null;
         feeRecipient: string | null;
         royaltyReceiver: string | null;
@@ -47,7 +47,7 @@ export declare class ListingsService {
         buyerAddress: string | null;
         paymentToken: string | null;
         soldAt: Date | null;
-        marketFeeBps: number | null;
+        marketFeeBps: bigint | null;
         marketFeeAmount: import("@prisma/client/runtime/client").Decimal | null;
         feeRecipient: string | null;
         royaltyReceiver: string | null;
@@ -69,7 +69,7 @@ export declare class ListingsService {
         buyerAddress: string | null;
         paymentToken: string | null;
         soldAt: Date | null;
-        marketFeeBps: number | null;
+        marketFeeBps: bigint | null;
         marketFeeAmount: import("@prisma/client/runtime/client").Decimal | null;
         feeRecipient: string | null;
         royaltyReceiver: string | null;

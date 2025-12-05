@@ -20,7 +20,7 @@ export type ListingAvgAggregateOutputType = {
 export type ListingSumAggregateOutputType = {
     price: runtime.Decimal | null;
     onchainId: bigint | null;
-    marketFeeBps: number | null;
+    marketFeeBps: bigint | null;
     marketFeeAmount: runtime.Decimal | null;
     royaltyAmount: runtime.Decimal | null;
     sellerProceeds: runtime.Decimal | null;
@@ -37,7 +37,7 @@ export type ListingMinAggregateOutputType = {
     buyerAddress: string | null;
     paymentToken: string | null;
     soldAt: Date | null;
-    marketFeeBps: number | null;
+    marketFeeBps: bigint | null;
     marketFeeAmount: runtime.Decimal | null;
     feeRecipient: string | null;
     royaltyReceiver: string | null;
@@ -58,7 +58,7 @@ export type ListingMaxAggregateOutputType = {
     buyerAddress: string | null;
     paymentToken: string | null;
     soldAt: Date | null;
-    marketFeeBps: number | null;
+    marketFeeBps: bigint | null;
     marketFeeAmount: runtime.Decimal | null;
     feeRecipient: string | null;
     royaltyReceiver: string | null;
@@ -212,7 +212,7 @@ export type ListingGroupByOutputType = {
     buyerAddress: string | null;
     paymentToken: string | null;
     soldAt: Date | null;
-    marketFeeBps: number | null;
+    marketFeeBps: bigint | null;
     marketFeeAmount: runtime.Decimal | null;
     feeRecipient: string | null;
     royaltyReceiver: string | null;
@@ -245,7 +245,7 @@ export type ListingWhereInput = {
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
     soldAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
-    marketFeeBps?: Prisma.IntNullableFilter<"Listing"> | number | null;
+    marketFeeBps?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null;
     marketFeeAmount?: Prisma.DecimalNullableFilter<"Listing"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.StringNullableFilter<"Listing"> | string | null;
     royaltyReceiver?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -294,7 +294,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
     soldAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
-    marketFeeBps?: Prisma.IntNullableFilter<"Listing"> | number | null;
+    marketFeeBps?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null;
     marketFeeAmount?: Prisma.DecimalNullableFilter<"Listing"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.StringNullableFilter<"Listing"> | string | null;
     royaltyReceiver?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -347,7 +347,7 @@ export type ListingScalarWhereWithAggregatesInput = {
     buyerAddress?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
     soldAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null;
-    marketFeeBps?: Prisma.IntNullableWithAggregatesFilter<"Listing"> | number | null;
+    marketFeeBps?: Prisma.BigIntNullableWithAggregatesFilter<"Listing"> | bigint | number | null;
     marketFeeAmount?: Prisma.DecimalNullableWithAggregatesFilter<"Listing"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
     royaltyReceiver?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null;
@@ -368,7 +368,7 @@ export type ListingCreateInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -391,7 +391,7 @@ export type ListingUncheckedCreateInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -412,7 +412,7 @@ export type ListingUpdateInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -435,7 +435,7 @@ export type ListingUncheckedUpdateInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -457,7 +457,7 @@ export type ListingCreateManyInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -478,7 +478,7 @@ export type ListingUpdateManyMutationInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -500,7 +500,7 @@ export type ListingUncheckedUpdateManyInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -648,13 +648,6 @@ export type EnumListingStatusFieldUpdateOperationsInput = {
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null;
 };
-export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null;
-    increment?: number;
-    decrement?: number;
-    multiply?: number;
-    divide?: number;
-};
 export type NullableDecimalFieldUpdateOperationsInput = {
     set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     increment?: runtime.Decimal | runtime.DecimalJsLike | number | string;
@@ -674,7 +667,7 @@ export type ListingCreateWithoutTokenInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -695,7 +688,7 @@ export type ListingUncheckedCreateWithoutTokenInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -741,7 +734,7 @@ export type ListingScalarWhereInput = {
     buyerAddress?: Prisma.StringNullableFilter<"Listing"> | string | null;
     paymentToken?: Prisma.StringNullableFilter<"Listing"> | string | null;
     soldAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null;
-    marketFeeBps?: Prisma.IntNullableFilter<"Listing"> | number | null;
+    marketFeeBps?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null;
     marketFeeAmount?: Prisma.DecimalNullableFilter<"Listing"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.StringNullableFilter<"Listing"> | string | null;
     royaltyReceiver?: Prisma.StringNullableFilter<"Listing"> | string | null;
@@ -762,7 +755,7 @@ export type ListingCreateManyTokenInput = {
     buyerAddress?: string | null;
     paymentToken?: string | null;
     soldAt?: Date | string | null;
-    marketFeeBps?: number | null;
+    marketFeeBps?: bigint | number | null;
     marketFeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: string | null;
     royaltyReceiver?: string | null;
@@ -783,7 +776,7 @@ export type ListingUpdateWithoutTokenInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -804,7 +797,7 @@ export type ListingUncheckedUpdateWithoutTokenInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -825,7 +818,7 @@ export type ListingUncheckedUpdateManyWithoutTokenInput = {
     buyerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     paymentToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     soldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    marketFeeBps?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    marketFeeBps?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null;
     marketFeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     feeRecipient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     royaltyReceiver?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -953,7 +946,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
         buyerAddress: string | null;
         paymentToken: string | null;
         soldAt: Date | null;
-        marketFeeBps: number | null;
+        marketFeeBps: bigint | null;
         marketFeeAmount: runtime.Decimal | null;
         feeRecipient: string | null;
         royaltyReceiver: string | null;
@@ -1031,7 +1024,7 @@ export interface ListingFieldRefs {
     readonly buyerAddress: Prisma.FieldRef<"Listing", 'String'>;
     readonly paymentToken: Prisma.FieldRef<"Listing", 'String'>;
     readonly soldAt: Prisma.FieldRef<"Listing", 'DateTime'>;
-    readonly marketFeeBps: Prisma.FieldRef<"Listing", 'Int'>;
+    readonly marketFeeBps: Prisma.FieldRef<"Listing", 'BigInt'>;
     readonly marketFeeAmount: Prisma.FieldRef<"Listing", 'Decimal'>;
     readonly feeRecipient: Prisma.FieldRef<"Listing", 'String'>;
     readonly royaltyReceiver: Prisma.FieldRef<"Listing", 'String'>;
