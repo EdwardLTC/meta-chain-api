@@ -71,4 +71,5 @@ export declare class ListingsController {
         sellerProceeds: import("@prisma/client/runtime/client").Decimal | null;
     }>;
     buyListing(id: string, userWallet: string): Promise<import("ethers").ContractTransaction>;
+    cancelListing(id: string, userWallet: string): Promise<import("ethers").ContractTransaction>;
 }

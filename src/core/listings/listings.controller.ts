@@ -33,4 +33,10 @@ export class ListingsController {
   public async buyListing(@Param('id') id: string, @User('walletAddress') userWallet: string) {
     return this.listingsService.buyListing(id, userWallet);
   }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  public async cancelListing(@Param('id') id: string, @User('walletAddress') userWallet: string) {
+    return this.listingsService.cancelListing(id, userWallet);
+  }
 }

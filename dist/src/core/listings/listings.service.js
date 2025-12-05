@@ -90,6 +90,17 @@ let ListingsService = class ListingsService {
             value: ethers_1.ethers.parseEther(listing.price.toString()),
         });
     }
+    async cancelListing(id, userAddress) {
+        const listing = await this.getListing(id);
+        if (listing.sellerAddress.toLowerCase() !== userAddress.toLowerCase()) {
+            throw new common_1.ForbiddenException('You do not own this listing');
+        }
+        if (listing.status !== enums_mjs_1.ListingStatus.ACTIVE) {
+            throw new common_1.BadRequestException('Listing is not active');
+        }
+        const marketplace = this.contracts.getContract('Marketplace');
+        return marketplace.cancelListing.populateTransaction(listing.onchainId);
+    }
 };
 exports.ListingsService = ListingsService;
 exports.ListingsService = ListingsService = __decorate([

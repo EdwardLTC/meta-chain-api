@@ -77,4 +77,5 @@ export declare class ListingsService {
         sellerProceeds: import("@prisma/client/runtime/client").Decimal | null;
     }>;
     buyListing(id: string, buyerAddress: string): Promise<ethers.ContractTransaction>;
+    cancelListing(id: string, userAddress: string): Promise<ethers.ContractTransaction>;
 }
