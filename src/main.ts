@@ -5,6 +5,7 @@ import { EnvironmentService } from './environment/environment.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+  process.title = 'meta-chain-api';
   (BigInt.prototype as any).toJSON = function () {
     return this.toString();
   };
