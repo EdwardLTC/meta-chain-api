@@ -12,9 +12,10 @@ import { EthModule } from '../eth/eth.module';
 import { CollectionsModule } from '../core/collections/collections.module';
 import { TokensModule } from '../core/tokens/tokens.module';
 import { ListingsModule } from '../core/listings/listings.module';
+import { MediaModule } from '../media/media.module';
 
 @Module({
-  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule, TokensModule, ListingsModule],
+  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule, TokensModule, ListingsModule, MediaModule],
   controllers: [AppController],
   providers: [
     AppService,

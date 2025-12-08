@@ -40,17 +40,14 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
       return;
     }
 
-    // Thêm địa chỉ mới vào filter
     this.collectionAddresses.add(collectionAddress);
 
-    // Cập nhật filter cho listener
     await this.updateListenerFilter();
 
     this.logger.log(`Collection ${collectionAddress} added to global listener`);
   }
 
   async onModuleDestroy() {
-    // Cleanup đơn giản hơn
     try {
       await this.provider.removeAllListeners();
     } catch (e: any) {
@@ -59,13 +56,11 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   }
 
   private async setupGlobalListener() {
-    // Filter theo địa chỉ và event topic
     const filter = {
       address: Array.from(this.collectionAddresses),
       topics: [this.mintedEventTopic],
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     await this.provider.on(filter, async (log: Log) => {
       await this.handleMintedEvent(log);
     });
@@ -101,10 +96,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   }
 
   private async updateListenerFilter() {
-    // Xóa listener cũ
     await this.provider.removeAllListeners();
-
-    // Tạo listener mới với filter cập nhật
     await this.setupGlobalListener();
   }
 }

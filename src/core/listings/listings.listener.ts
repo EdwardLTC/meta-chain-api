@@ -117,10 +117,6 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
       if (this.marketplace && this.marketplace.removeAllListeners) {
         void this.marketplace.removeAllListeners();
       }
-      const provider = this.contracts.getProvider();
-      if (provider && provider.removeAllListeners) {
-        void provider.removeAllListeners();
-      }
     } catch (e: any) {
       this.logger.error('Error during listener cleanup: ' + (e?.message ?? String(e)));
     }

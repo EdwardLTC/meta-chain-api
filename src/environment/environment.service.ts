@@ -50,4 +50,11 @@ export class EnvironmentService {
       gateway: <string>this.configService.get<string>('PINATA_GATEWAY_URL'),
     };
   }
+
+  public get azure() {
+    return {
+      accountName: <string>this.configService.get<string>('AZURE_STORAGE_ACCOUNT_NAME'),
+      accountKey: <string>this.configService.get<string>('AZURE_STORAGE_ACCOUNT_KEY'),
+    };
+  }
 }

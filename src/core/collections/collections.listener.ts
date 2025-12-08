@@ -49,10 +49,6 @@ export class CollectionsListener implements OnModuleInit, OnModuleDestroy {
       if (this.contract && this.contract.removeAllListeners) {
         void this.contract.removeAllListeners('CollectionCreated');
       }
-      const provider = this.contracts.getProvider();
-      if (provider && provider.removeAllListeners) {
-        void provider.removeAllListeners();
-      }
     } catch (e: any) {
       this.logger.error('Error during listener cleanup: ' + (e?.message ?? String(e)));
     }
