@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { id, Interface, Log, Provider } from 'ethers';
+import { id, Interface, Log, LogDescription, Provider } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
@@ -11,6 +11,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   private collectionAddresses: Set<string> = new Set();
   private provider: Provider;
   private readonly mintedEventTopic: string;
+  private readonly royaltySetEventTopic: string;
 
   constructor(
     private contracts: ContractsService,
@@ -18,6 +19,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   ) {
     this.provider = this.contracts.getWebSocketProvider();
     this.mintedEventTopic = id('Minted(address,uint256,string,string)');
+    this.royaltySetEventTopic = id('RoyaltySet(address,uint96,string)');
   }
 
   async onModuleInit() {
@@ -58,19 +60,18 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   private async setupGlobalListener() {
     const filter = {
       address: Array.from(this.collectionAddresses),
-      topics: [this.mintedEventTopic],
+      topics: [this.mintedEventTopic, this.royaltySetEventTopic],
     };
 
     await this.provider.on(filter, async (log: Log) => {
-      await this.handleMintedEvent(log);
+      await this.handleEvent(log);
     });
 
     this.logger.log('Global listener setup completed');
   }
 
-  private async handleMintedEvent(log: Log) {
+  private async handleEvent(log: Log) {
     try {
-      // Parse log sử dụng Interface chung
       const iface = new Interface(ABI);
       const parsedLog = iface.parseLog(log);
 
@@ -79,6 +80,25 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
         return;
       }
 
+      switch (parsedLog.name) {
+        case 'Minted':
+          await this.handleMintedEvent(parsedLog, log);
+          break;
+
+        case 'RoyaltySet':
+          await this.handleRoyaltySet(parsedLog);
+          break;
+
+        default:
+          this.logger.warn(`Unknown event: ${parsedLog.name}`);
+      }
+    } catch (err: any) {
+      this.logger.error(`Error handling event: ${err?.message ?? String(err)}`);
+    }
+  }
+
+  private async handleMintedEvent(parsedLog: LogDescription, log: Log) {
+    try {
       const { to, tokenId, uri, transactionCode } = parsedLog.args;
       this.logger.log(`Minted: to=${to}, tokenId=${tokenId}, uri=${uri}, txCode=${transactionCode}`);
 
@@ -92,6 +112,21 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
       });
     } catch (err: any) {
       this.logger.error(`Error handling minted event: ${err?.message ?? String(err)}`);
+    }
+  }
+
+  private async handleRoyaltySet(parsedLog: LogDescription) {
+    try {
+      const { to, royaltyBps, transactionCode } = parsedLog.args;
+      this.logger.log(`RoyaltySet: to=${to}, royaltyBps=${royaltyBps}, transactionCode=${transactionCode}`);
+      await this.prisma.collection.update({
+        where: { id: transactionCode },
+        data: {
+          royaltyFeeBps: royaltyBps,
+        },
+      });
+    } catch (err: any) {
+      this.logger.error(`Error handling royalty set event: ${err?.message ?? String(err)}`);
     }
   }
 

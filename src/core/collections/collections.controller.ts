@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { CollectionsService } from './collections.service';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '../../auth/auth.decorator';
 import { GetCollectionsQuery } from './dtos/get-collections.dto';
+import { UpdateDto } from './dtos/update.dto';
 
 @ApiBearerAuth()
 @Controller('collections')
@@ -26,5 +27,11 @@ export class CollectionsController {
   @HttpCode(HttpStatus.CREATED)
   public async create(@Body() dto: CreateCollectionDto, @User('walletAddress') userWallet: string, @User('userId') userId: string) {
     return this.svc.createCollection(dto, userWallet, userId);
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  public async updateCollection(@Param('id') id: string, @Body() dto: UpdateDto) {
+    return this.svc.updateRoyaltyInfo(id, dto.royaltyFeeBps);
   }
 }

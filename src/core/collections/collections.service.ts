@@ -6,6 +6,8 @@ import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/ru
 import { CollectionStatus } from '../../../generated/prisma/enums.mjs';
 import { uuidv7 } from '../../ultils/uuid';
 import { GetCollectionsQuery } from './dtos/get-collections.dto';
+import { Contract } from 'ethers';
+import { ABI } from '../tokens/tokens.abi';
 
 @Injectable()
 export class CollectionsService {
@@ -59,5 +61,17 @@ export class CollectionsService {
 
       throw err;
     });
+  }
+
+  public async updateRoyaltyInfo(collectionId: string, royaltyFeeBps: number) {
+    const collection = await this.getCollection(collectionId);
+
+    if (collection.status !== CollectionStatus.CREATED) {
+      throw new NotFoundException('Collection not found or not created yet');
+    }
+
+    const contract = new Contract(collection.contractAddress!, ABI, this.contracts.getProvider());
+
+    return contract.setRoyalty.populateTransaction(collection.creatorAddress, royaltyFeeBps, collection.id);
   }
 }
