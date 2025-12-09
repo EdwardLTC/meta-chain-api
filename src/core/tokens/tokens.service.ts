@@ -72,13 +72,24 @@ export class TokensService {
     });
   }
 
-  public async getTokens(getTokensFilterDto: GetTokensFilterDto, userAddress: string) {
-    return this.dbService.token.findMany({
+  public async getTokens(getTokensFilterDto: GetTokensFilterDto, userAddress: string, userId: string) {
+    const tokens = await this.dbService.token.findMany({
       where: {
         collectionId: getTokensFilterDto.collectionId,
         ...(getTokensFilterDto.isMe ? { ownerAddress: userAddress } : { status: TokenStatus.MINTED }),
       },
+      include: {
+        tokenLikes: {
+          where: { userId: userId },
+        },
+      },
     });
+
+    return tokens.map(token => ({
+      ...token,
+      isLiked: token.tokenLikes.length > 0,
+      tokenLikes: undefined,
+    }));
   }
 
   public async getToken(tokenId: string) {

@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { id, Interface, Log, LogDescription, Provider } from 'ethers';
+import { id, Interface, Log, LogDescription, WebSocketProvider } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
@@ -9,7 +9,7 @@ import { ABI } from './tokens.abi';
 export class TokensListener implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(TokensListener.name);
   private collectionAddresses: Set<string> = new Set();
-  private provider: Provider;
+  private provider: WebSocketProvider;
   private readonly mintedEventTopic: string;
   private readonly royaltySetEventTopic: string;
 
@@ -60,7 +60,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
   private async setupGlobalListener() {
     const filter = {
       address: Array.from(this.collectionAddresses),
-      topics: [this.mintedEventTopic, this.royaltySetEventTopic],
+      topics: [[this.mintedEventTopic, this.royaltySetEventTopic]],
     };
 
     await this.provider.on(filter, async (log: Log) => {
@@ -117,12 +117,12 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
 
   private async handleRoyaltySet(parsedLog: LogDescription) {
     try {
-      const { to, royaltyBps, transactionCode } = parsedLog.args;
-      this.logger.log(`RoyaltySet: to=${to}, royaltyBps=${royaltyBps}, transactionCode=${transactionCode}`);
+      const { recipient, bps, transactionCode } = parsedLog.args;
+      this.logger.log(`RoyaltySet: to=${recipient}, royaltyBps=${bps}, transactionCode=${transactionCode}`);
       await this.prisma.collection.update({
         where: { id: transactionCode },
         data: {
-          royaltyFeeBps: royaltyBps,
+          royaltyFeeBps: Number(bps),
         },
       });
     } catch (err: any) {

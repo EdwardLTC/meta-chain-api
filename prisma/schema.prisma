@@ -22,6 +22,7 @@ model User {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   collections Collection[]
+  tokenLikes  TokenLike[]
 
   @@map("users")
 }
@@ -81,7 +82,10 @@ model Token {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  listings Listing[]
+  likeCount Int @default(0)
+
+  listings   Listing[]
+  tokenLikes TokenLike[]
 
   @@unique([contractAddress, onchainId])
   @@index([contractAddress])
@@ -128,4 +132,17 @@ model Listing {
   updatedAt DateTime @updatedAt
 
   @@map("listings")
+}
+
+model TokenLike {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  token Token @relation(fields: [tokenId], references: [id])
+
+  @@unique([userId, tokenId]) // user can like once
+  @@map("token_likes")
 }

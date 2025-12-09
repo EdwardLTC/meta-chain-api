@@ -13,9 +13,21 @@ import { CollectionsModule } from '../core/collections/collections.module';
 import { TokensModule } from '../core/tokens/tokens.module';
 import { ListingsModule } from '../core/listings/listings.module';
 import { MediaModule } from '../media/media.module';
+import { LikesModule } from '../core/likes/likes.module';
 
 @Module({
-  imports: [EnvironmentModule, PrismaModule, RedisModule, AuthModule, EthModule, CollectionsModule, TokensModule, ListingsModule, MediaModule],
+  imports: [
+    EnvironmentModule,
+    PrismaModule,
+    RedisModule,
+    AuthModule,
+    EthModule,
+    CollectionsModule,
+    TokensModule,
+    ListingsModule,
+    MediaModule,
+    LikesModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
