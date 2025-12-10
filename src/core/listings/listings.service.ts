@@ -66,16 +66,17 @@ export class ListingsService {
         ...(getListingFilterDto.isMe
           ? { sellerAddress: userAddress }
           : {
-              status: {
-                not: ListingStatus.ACTIVE,
-              },
+              status: ListingStatus.ACTIVE,
             }),
+      },
+      include: {
+        token: true,
       },
     });
   }
 
   public async getListing(id: string) {
-    return this.dbService.listing.findUniqueOrThrow({ where: { id: id } }).catch(err => {
+    return this.dbService.listing.findUniqueOrThrow({ where: { id: id }, include: { token: true } }).catch(err => {
       if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
         throw new NotFoundException('Collection not found');
       }
