@@ -14,7 +14,7 @@ import { ABI } from './tokens.abi';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NftStorageService } from '../../nft-storage/nft-storage.service';
 import { EthService } from '../../eth/eth.service';
-import { CollectionStatus, TokenStatus } from '../../../generated/prisma/enums.mjs';
+import { CollectionStatus, ListingStatus, TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { GetTokensFilterDto } from './dtos/get-tokens-filter.dto';
 import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 import { uuidv7 } from '../../ultils/uuid';
@@ -93,12 +93,33 @@ export class TokensService {
   }
 
   public async getToken(tokenId: string) {
-    return this.dbService.token.findUniqueOrThrow({ where: { id: tokenId } }).catch(err => {
+    const token = await this.dbService.token.findUniqueOrThrow({ where: { id: tokenId } }).catch(err => {
       if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
         throw new NotFoundException('Collection not found');
       }
 
       throw err;
     });
+
+    const isListed = await this.isTokenListed(tokenId);
+
+    return {
+      ...token,
+      isListed,
+    };
+  }
+
+  public async isTokenListed(tokenId: string): Promise<boolean> {
+    const listing = await this.dbService.listing.findFirst({
+      where: {
+        tokenId: tokenId,
+        status: ListingStatus.ACTIVE,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!listing;
   }
 }
