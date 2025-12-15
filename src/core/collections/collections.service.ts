@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { ContractsService } from 'src/eth/contracts.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -83,17 +83,19 @@ export class CollectionsService {
       throw new NotFoundException('Collection not found or not created yet');
     }
 
-    if (collection.creatorAddress !== ownerAddress) {
-      throw new ForbiddenException('You are not the owner of this collection');
-    }
-
     const contract = new Contract(collection.contractAddress!, ABI, this.contracts.getProvider());
 
     return contract.isApprovedForAll(ownerAddress, MARKETPLACE_ADDRESS);
   }
 
-  public async approveCollectionForMarketplace(collectionAddress: string) {
-    const contract = new Contract(collectionAddress, ABI, this.contracts.getProvider());
+  public async approveCollectionForMarketplace(id: string) {
+    const collection = await this.getCollection(id);
+
+    if (collection.status !== CollectionStatus.CREATED) {
+      throw new NotFoundException('Collection not found or not created yet');
+    }
+
+    const contract = new Contract(collection.contractAddress!, ABI, this.contracts.getProvider());
 
     return contract.setApprovalForAll.populateTransaction(MARKETPLACE_ADDRESS, true);
   }

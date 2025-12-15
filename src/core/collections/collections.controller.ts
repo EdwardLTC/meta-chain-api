@@ -37,8 +37,8 @@ export class CollectionsController {
 
   @Put(':id/approve')
   @HttpCode(HttpStatus.OK)
-  public async approveCollectionForMarketplace(collectionAddress: string) {
-    return this.svc.approveCollectionForMarketplace(collectionAddress);
+  public async approveCollectionForMarketplace(@Param('id') id: string) {
+    return this.svc.approveCollectionForMarketplace(id);
   }
 
   @Get(':id/approved')
