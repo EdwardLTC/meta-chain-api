@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { ContractsService } from 'src/eth/contracts.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -8,6 +8,7 @@ import { uuidv7 } from '../../ultils/uuid';
 import { GetCollectionsQuery } from './dtos/get-collections.dto';
 import { Contract } from 'ethers';
 import { ABI } from '../tokens/tokens.abi';
+import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 
 @Injectable()
 export class CollectionsService {
@@ -73,5 +74,27 @@ export class CollectionsService {
     const contract = new Contract(collection.contractAddress!, ABI, this.contracts.getProvider());
 
     return contract.setRoyalty.populateTransaction(collection.creatorAddress, royaltyFeeBps, collection.id);
+  }
+
+  public async isCollectionApprovedForMarketplace(id: string, ownerAddress: string): Promise<boolean> {
+    const collection = await this.getCollection(id);
+
+    if (collection.status !== CollectionStatus.CREATED) {
+      throw new NotFoundException('Collection not found or not created yet');
+    }
+
+    if (collection.creatorAddress !== ownerAddress) {
+      throw new ForbiddenException('You are not the owner of this collection');
+    }
+
+    const contract = new Contract(collection.contractAddress!, ABI, this.contracts.getProvider());
+
+    return contract.isApprovedForAll(ownerAddress, MARKETPLACE_ADDRESS);
+  }
+
+  public async approveCollectionForMarketplace(collectionAddress: string) {
+    const contract = new Contract(collectionAddress, ABI, this.contracts.getProvider());
+
+    return contract.setApprovalForAll.populateTransaction(MARKETPLACE_ADDRESS, true);
   }
 }

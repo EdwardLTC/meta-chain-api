@@ -17,13 +17,8 @@ export class AppController {
     return this.appService.testSignContract(dto, privateKey);
   }
 
-  @Post('dev-only/generate-jwt-private-key/:privateKey')
+  @Post('dev-only/jwt/:privateKey')
   public signatureWithPrivateKey(@Query('privateKey') address: string) {
     return this.authService.signatureWithPrivateKey(address);
-  }
-
-  @Post('dev-only/approve-all-nft/:contractAddress/:privateKey')
-  public async approveAllNftForMarketplace(@Param('contractAddress') contractAddress: string, @Param('privateKey') privateKey: string) {
-    return this.appService.approveAllNftForMarketplace(contractAddress, privateKey);
   }
 }

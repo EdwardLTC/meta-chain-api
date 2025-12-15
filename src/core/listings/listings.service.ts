@@ -35,11 +35,11 @@ export class ListingsService {
       throw new BadRequestException('Token already listed or pending');
     }
 
-    const factory = this.contracts.getContract('Marketplace');
+    const marketplace = this.contracts.getContract('Marketplace');
 
     const id = uuidv7();
 
-    const txData = await factory.listItem.populateTransaction(
+    const txData = await marketplace.listItem.populateTransaction(
       token.contractAddress,
       token.onchainId,
       ethers.parseEther(data.price.toString()),

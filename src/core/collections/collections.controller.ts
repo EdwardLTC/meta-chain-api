@@ -34,4 +34,18 @@ export class CollectionsController {
   public async updateCollection(@Param('id') id: string, @Body() dto: UpdateDto) {
     return this.svc.updateRoyaltyInfo(id, dto.royaltyFeeBps);
   }
+
+  @Put(':id/approve')
+  @HttpCode(HttpStatus.OK)
+  public async approveCollectionForMarketplace(collectionAddress: string) {
+    return this.svc.approveCollectionForMarketplace(collectionAddress);
+  }
+
+  @Get(':id/approved')
+  @HttpCode(HttpStatus.OK)
+  public async isCollectionApprovedForMarketplace(@Param('id') id: string, @User('walletAddress') ownerAddress: string) {
+    return {
+      approved: await this.svc.isCollectionApprovedForMarketplace(id, ownerAddress),
+    };
+  }
 }
