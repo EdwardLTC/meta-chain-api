@@ -101,25 +101,20 @@ export class TokensService {
       throw err;
     });
 
-    const isListed = await this.isTokenListed(tokenId);
+    const listing = await this.isTokenListed(tokenId);
 
     return {
       ...token,
-      isListed,
+      listing,
     };
   }
 
-  public async isTokenListed(tokenId: string): Promise<boolean> {
-    const listing = await this.dbService.listing.findFirst({
+  public async isTokenListed(tokenId: string) {
+    return this.dbService.listing.findFirst({
       where: {
         tokenId: tokenId,
         status: ListingStatus.ACTIVE,
       },
-      select: {
-        id: true,
-      },
     });
-
-    return !!listing;
   }
 }
