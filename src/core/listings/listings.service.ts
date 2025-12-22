@@ -43,7 +43,7 @@ export class ListingsService {
       token.contractAddress,
       token.onchainId,
       ethers.parseEther(data.price.toString()),
-      '0x0000000000000000000000000000000000000000',
+      ethers.ZeroAddress,
       id,
     );
 
@@ -53,7 +53,7 @@ export class ListingsService {
         tokenId: data.tokenId,
         price: data.price,
         sellerAddress: userAddress,
-        paymentToken: '0x0000000000000000000000000000000000000000',
+        paymentToken: ethers.ZeroAddress,
         txData: txData as unknown as InputJsonValue,
         status: ListingStatus.PENDING,
       },

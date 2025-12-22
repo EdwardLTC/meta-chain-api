@@ -48,4 +48,10 @@ export class CollectionsController {
       approved: await this.svc.isCollectionApprovedForMarketplace(id, ownerAddress),
     };
   }
+
+  @Post(':address/import')
+  @HttpCode(HttpStatus.CREATED)
+  public async importCollection(@Param('address') address: string, @User('walletAddress') walletAddress: string, @User('userId') userId: string) {
+    return this.svc.importCollections(address, walletAddress, userId);
+  }
 }
