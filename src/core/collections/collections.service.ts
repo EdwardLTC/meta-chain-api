@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCollectionDto } from './dtos/create.dto';
 import { ContractsService } from 'src/eth/contracts.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -11,12 +11,15 @@ import { ABI } from '../tokens/tokens.abi';
 import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 import { ERC165_ABI, ERC2981_ABI, ERC721_ABI, OWNABLE_ABI } from './collections.abi';
 import { TokenCreateManyCollectionInput } from '../../../generated/prisma/models/Token.mjs';
+import { TokensListener } from '../tokens/tokens.listener';
 
 @Injectable()
 export class CollectionsService {
   constructor(
     private contracts: ContractsService,
     private prisma: PrismaService,
+    @Inject(forwardRef(() => TokensListener))
+    private tokenListenerService: TokensListener,
   ) {}
 
   public async createCollection(createBody: CreateCollectionDto, creatorAddress: string, userId: string) {
@@ -187,6 +190,8 @@ export class CollectionsService {
         },
       });
     }
+
+    await this.tokenListenerService.addCollectionListener(address);
 
     return this.prisma.collection.create({
       data: {
