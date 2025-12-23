@@ -179,7 +179,7 @@ export class CollectionsService {
       token.push({
         id: uuidv7(),
         ownerAddress: owner,
-        onchainId: tokenId,
+        onchainId: Number(tokenId),
         tokenUri: tokenUri,
         name: meta.name ?? '',
         description: meta.description ?? '',
