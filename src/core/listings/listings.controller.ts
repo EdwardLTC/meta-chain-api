@@ -12,8 +12,8 @@ export class ListingsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  public async createListing(@Body() body: CreateListingDto, @User('walletAddress') userWallet: string) {
-    return this.listingsService.createListing(body, userWallet);
+  public async createListing(@Body() body: CreateListingDto, @User('walletAddress') userWallet: string, @User('userId') userId: string) {
+    return this.listingsService.createListing(body, userWallet, userId);
   }
 
   @Get()

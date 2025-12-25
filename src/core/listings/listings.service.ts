@@ -17,8 +17,8 @@ export class ListingsService {
     private contracts: ContractsService,
   ) {}
 
-  public async createListing(data: CreateListingDto, userAddress: string) {
-    const token = await this.tokenService.getToken(data.tokenId);
+  public async createListing(data: CreateListingDto, userAddress: string, userId: string) {
+    const token = await this.tokenService.getToken(data.tokenId, userId);
 
     if (token.ownerAddress !== userAddress) {
       throw new ForbiddenException('You do not own this token');
