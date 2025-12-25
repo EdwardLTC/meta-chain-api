@@ -92,20 +92,31 @@ export class TokensService {
     }));
   }
 
-  public async getToken(tokenId: string) {
-    const token = await this.dbService.token.findUniqueOrThrow({ where: { id: tokenId } }).catch(err => {
-      if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
-        throw new NotFoundException('Collection not found');
-      }
+  public async getToken(tokenId: string, userId: string) {
+    const token = await this.dbService.token
+      .findUniqueOrThrow({
+        where: { id: tokenId },
+        include: {
+          tokenLikes: {
+            where: { userId: userId },
+          },
+        },
+      })
+      .catch(err => {
+        if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
+          throw new NotFoundException('Collection not found');
+        }
 
-      throw err;
-    });
+        throw err;
+      });
 
     const listing = await this.isTokenListed(tokenId);
 
     return {
       ...token,
       listing,
+      isLiked: token.tokenLikes.length > 0,
+      tokenLikes: undefined,
     };
   }
 

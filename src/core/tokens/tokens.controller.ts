@@ -18,8 +18,8 @@ export class TokensController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  public async getToken(@Param('id') id: string) {
-    return this.tokensService.getToken(id);
+  public async getToken(@Param('id') id: string, @User('userId') userId: string) {
+    return this.tokensService.getToken(id, userId);
   }
 
   @Post('mint')
