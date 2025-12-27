@@ -20,7 +20,7 @@ export class ContractsService {
     if (!this.deployments || !this.deployments[name]) {
       throw new Error(`Contract ${name} not found in deployments`);
     }
-    return this.deployments[name].abi || null;
+    return this.deployments[name].abi;
   }
 
   public getProvider() {
