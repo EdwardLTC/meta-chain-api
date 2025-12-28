@@ -76,7 +76,14 @@ export class TokensService {
     const tokens = await this.dbService.token.findMany({
       where: {
         collectionId: getTokensFilterDto.collectionId,
-        ...(getTokensFilterDto.isMe ? { ownerAddress: userAddress } : { status: TokenStatus.MINTED }),
+        ...(getTokensFilterDto.isMe
+          ? { ownerAddress: userAddress }
+          : {
+              ownerAddress: {
+                not: userAddress,
+              },
+              status: TokenStatus.MINTED,
+            }),
       },
       include: {
         tokenLikes: {

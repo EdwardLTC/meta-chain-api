@@ -152,8 +152,16 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
           marketFeeAmount: Number(marketFeeAmount),
           feeRecipient: feeRecipient,
           royaltyReceiver: royaltyReceiver,
-          royaltyAmount: royaltyAmount,
-          sellerProceeds: sellerProceeds,
+          royaltyAmount: Number(royaltyAmount),
+          sellerProceeds: Number(sellerProceeds),
+          token: {
+            update: {
+              ownerAddress: buyer,
+            },
+          },
+        },
+        select: {
+          tokenId: true,
         },
       })
       .catch(err => {
