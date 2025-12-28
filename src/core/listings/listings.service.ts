@@ -51,7 +51,7 @@ export class ListingsService {
       data: {
         id: id,
         tokenId: data.tokenId,
-        price: data.price,
+        price: ethers.parseEther(data.price.toString()),
         sellerAddress: userAddress,
         paymentToken: ethers.ZeroAddress,
         txData: txData as unknown as InputJsonValue,
