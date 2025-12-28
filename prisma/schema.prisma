@@ -106,7 +106,7 @@ model Listing {
   token   Token  @relation(fields: [tokenId], references: [id])
 
   sellerAddress String
-  price         Decimal       @db.Decimal(36, 18)
+  price         BigInt
   status        ListingStatus @default(PENDING)
   expiresAt     DateTime?
   txData        Json
@@ -119,14 +119,14 @@ model Listing {
   soldAt       DateTime?
 
   marketFeeBps    BigInt?
-  marketFeeAmount Decimal? @db.Decimal(36, 18)
+  marketFeeAmount BigInt?
 
   feeRecipient String?
 
   royaltyReceiver String?
-  royaltyAmount   Decimal? @db.Decimal(36, 18)
+  royaltyAmount   BigInt?
 
-  sellerProceeds Decimal? @db.Decimal(36, 18)
+  sellerProceeds BigInt?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

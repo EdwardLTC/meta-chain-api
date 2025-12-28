@@ -149,11 +149,11 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
           buyerAddress: buyer,
           soldAt: new Date(),
           marketFeeBps: marketFeeBps,
-          marketFeeAmount: Number(marketFeeAmount),
+          marketFeeAmount: marketFeeAmount,
           feeRecipient: feeRecipient,
           royaltyReceiver: royaltyReceiver,
-          royaltyAmount: Number(royaltyAmount),
-          sellerProceeds: Number(sellerProceeds),
+          royaltyAmount: royaltyAmount,
+          sellerProceeds: sellerProceeds,
           token: {
             update: {
               ownerAddress: buyer,

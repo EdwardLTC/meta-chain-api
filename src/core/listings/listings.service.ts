@@ -66,6 +66,7 @@ export class ListingsService {
         ...(getListingFilterDto.isMe
           ? { sellerAddress: userAddress }
           : {
+              sellerAddress: { not: userAddress },
               status: ListingStatus.ACTIVE,
             }),
       },
