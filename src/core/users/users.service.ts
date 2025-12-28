@@ -16,12 +16,7 @@ export class UsersService {
       where: {
         walletAddress: walletAddress,
       },
-      update: {
-        username: upsertUserDto.username,
-        email: upsertUserDto.email,
-        avatarUrl: upsertUserDto.avatarUrl,
-        bio: upsertUserDto.bio,
-      },
+      update: {},
       create: {
         walletAddress: walletAddress,
         username: upsertUserDto.username!,
