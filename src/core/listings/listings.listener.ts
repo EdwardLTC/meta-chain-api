@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Interface, InterfaceAbi, Log, LogDescription, WebSocketProvider } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -7,7 +7,7 @@ import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { EnvironmentService } from '../../environment/environment.service';
 
 @Injectable()
-export class ListingsListener implements OnModuleInit {
+export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ListingsListener.name);
   private readonly provider: WebSocketProvider;
   private readonly marketplaceABI: InterfaceAbi;
@@ -32,6 +32,10 @@ export class ListingsListener implements OnModuleInit {
     await this.setupGlobalListener();
 
     this.logger.log('Listing listener initialized');
+  }
+
+  async onModuleDestroy() {
+    await this.provider.destroy();
   }
 
   private async setupGlobalListener() {

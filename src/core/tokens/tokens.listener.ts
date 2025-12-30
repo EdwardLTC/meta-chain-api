@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { id, Interface, Log, LogDescription, WebSocketProvider } from 'ethers';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
@@ -6,7 +6,7 @@ import { ABI } from './tokens.abi';
 import { EnvironmentService } from '../../environment/environment.service';
 
 @Injectable()
-export class TokensListener implements OnModuleInit {
+export class TokensListener implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(TokensListener.name);
   private collectionAddresses: Set<string> = new Set();
   private provider: WebSocketProvider;
@@ -34,6 +34,10 @@ export class TokensListener implements OnModuleInit {
     await this.setupGlobalListener();
 
     this.logger.log(`TokensListener initialized for ${this.collectionAddresses.size} collections`);
+  }
+
+  async onModuleDestroy() {
+    await this.provider.destroy();
   }
 
   public async addCollectionListener(collectionAddress: string) {
