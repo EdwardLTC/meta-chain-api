@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Contract, ContractEventPayload } from 'ethers';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ContractsService } from '../../eth/contracts.service';
@@ -6,7 +6,7 @@ import { CollectionStatus } from '../../../generated/prisma/enums.mjs';
 import { TokensListener } from '../tokens/tokens.listener';
 
 @Injectable()
-export class CollectionsListener implements OnModuleInit, OnModuleDestroy {
+export class CollectionsListener implements OnModuleInit {
   private readonly logger = new Logger(CollectionsListener.name);
   private readonly contract: Contract;
 
@@ -42,15 +42,5 @@ export class CollectionsListener implements OnModuleInit, OnModuleDestroy {
     });
 
     this.logger.log('CollectionCreated listener initialized');
-  }
-
-  onModuleDestroy() {
-    try {
-      if (this.contract && this.contract.removeAllListeners) {
-        void this.contract.removeAllListeners('CollectionCreated');
-      }
-    } catch (e: any) {
-      this.logger.error('Error during listener cleanup: ' + (e?.message ?? String(e)));
-    }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { id, Interface, Log, LogDescription, WebSocketProvider } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -6,7 +6,7 @@ import { TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { ABI } from './tokens.abi';
 
 @Injectable()
-export class TokensListener implements OnModuleInit, OnModuleDestroy {
+export class TokensListener implements OnModuleInit {
   private readonly logger = new Logger(TokensListener.name);
   private collectionAddresses: Set<string> = new Set();
   private provider: WebSocketProvider;
@@ -47,14 +47,6 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
     await this.updateListenerFilter();
 
     this.logger.log(`Collection ${collectionAddress} added to global listener`);
-  }
-
-  async onModuleDestroy() {
-    try {
-      await this.provider.removeAllListeners();
-    } catch (e: any) {
-      this.logger.error('Error during listener cleanup: ' + (e?.message ?? String(e)));
-    }
   }
 
   private async setupGlobalListener() {

@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateListingDto } from './dtos/create.dto';
 import { TokensService } from '../tokens/tokens.service';
 import { ContractsService } from '../../eth/contracts.service';
-import { ListingStatus } from '../../../generated/prisma/enums.mjs';
+import { ListingStatus, TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { uuidv7 } from '../../ultils/uuid';
 import { InputJsonValue, PrismaClientKnownRequestError } from '@prisma/client/runtime/edge';
 import { GetListingFilterDto } from './dtos/get-listing-filter.dto';
@@ -22,6 +22,10 @@ export class ListingsService {
 
     if (token.ownerAddress !== userAddress) {
       throw new ForbiddenException('You do not own this token');
+    }
+
+    if (token.status !== TokenStatus.MINTED) {
+      throw new BadRequestException('Token is not minted');
     }
 
     const isExistingListing = await this.dbService.listing.findFirst({

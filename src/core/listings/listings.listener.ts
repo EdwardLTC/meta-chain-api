@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Interface, InterfaceAbi, Log, LogDescription, WebSocketProvider } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -6,7 +6,7 @@ import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 
 @Injectable()
-export class ListingsListener implements OnModuleInit, OnModuleDestroy {
+export class ListingsListener implements OnModuleInit {
   private readonly logger = new Logger(ListingsListener.name);
   private readonly provider: WebSocketProvider;
   private readonly marketplaceABI: InterfaceAbi;
@@ -30,14 +30,6 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     await this.setupGlobalListener();
 
     this.logger.log('Listing listener initialized');
-  }
-
-  async onModuleDestroy() {
-    try {
-      await this.provider.removeAllListeners();
-    } catch (e: any) {
-      this.logger.error('Error during listener cleanup: ' + (e?.message ?? String(e)));
-    }
   }
 
   private async setupGlobalListener() {

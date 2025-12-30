@@ -1,15 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { JsonRpcProvider, JsonRpcSigner, Wallet, WebSocketProvider } from 'ethers';
 import { EnvironmentService } from '../environment/environment.service';
 
 @Injectable()
-export class EthService {
+export class EthService implements OnModuleDestroy {
   private readonly provider: JsonRpcProvider;
   private readonly webSocketProvider: WebSocketProvider;
 
   constructor(private readonly environmentService: EnvironmentService) {
     this.provider = new JsonRpcProvider(this.environmentService.ProviderNodeUrl);
     this.webSocketProvider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
+  }
+
+  async onModuleDestroy() {
+    await this.webSocketProvider.destroy();
+    this.provider.destroy();
   }
 
   public getProvider() {
