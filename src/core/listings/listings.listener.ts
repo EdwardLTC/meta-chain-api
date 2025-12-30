@@ -4,6 +4,7 @@ import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 import { ListingStatus } from '../../../generated/prisma/enums.mjs';
+import { EnvironmentService } from '../../environment/environment.service';
 
 @Injectable()
 export class ListingsListener implements OnModuleInit {
@@ -17,10 +18,11 @@ export class ListingsListener implements OnModuleInit {
   constructor(
     private contracts: ContractsService,
     private prisma: PrismaService,
+    private environmentService: EnvironmentService,
   ) {
-    const marketplace = this.contracts.getContractWs('Marketplace');
+    const marketplace = this.contracts.getContract('Marketplace');
     this.marketplaceABI = this.contracts.getAbi('Marketplace')!;
-    this.provider = this.contracts.getWebSocketProvider();
+    this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
     this.listedTopic = marketplace.interface.getEvent('Listed')!.topicHash;
     this.cancelledTopic = marketplace.interface.getEvent('Cancelled')!.topicHash;
     this.boughtTopic = marketplace.interface.getEvent('Bought')!.topicHash;

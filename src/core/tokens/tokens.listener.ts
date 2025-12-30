@@ -1,9 +1,9 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { id, Interface, Log, LogDescription, WebSocketProvider } from 'ethers';
-import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { ABI } from './tokens.abi';
+import { EnvironmentService } from '../../environment/environment.service';
 
 @Injectable()
 export class TokensListener implements OnModuleInit {
@@ -14,10 +14,10 @@ export class TokensListener implements OnModuleInit {
   private readonly royaltySetEventTopic: string;
 
   constructor(
-    private contracts: ContractsService,
     private prisma: PrismaService,
+    private environmentService: EnvironmentService,
   ) {
-    this.provider = this.contracts.getWebSocketProvider();
+    this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
     this.mintedEventTopic = id('Minted(address,uint256,string,string)');
     this.royaltySetEventTopic = id('RoyaltySet(address,uint96,string)');
   }

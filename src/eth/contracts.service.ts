@@ -27,10 +27,6 @@ export class ContractsService {
     return this.eth.getProvider();
   }
 
-  public getWebSocketProvider() {
-    return this.eth.getWebSocketProvider();
-  }
-
   public loadDeployments() {
     const file = path.join(process.cwd(), 'deployments', this.environmentService.isProduction ? 'sepolia.json' : 'localhost.json');
     if (!fs.existsSync(file)) {
