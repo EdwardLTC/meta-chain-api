@@ -4,9 +4,11 @@ import { RedisService } from '../redis/redis.service';
 import { randomBytes } from 'node:crypto';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../core/users/users.service';
+import { SiweMessage } from 'siwe';
 
 @Injectable()
 export class AuthService {
+  private readonly domain = 'meta-chain-api.indonesiacentral.cloudapp.azure.com';
   constructor(
     private userService: UsersService,
     private redis: RedisService,
@@ -18,26 +20,45 @@ export class AuthService {
     const existing = await this.redis.get(key);
 
     if (existing) {
-      return { message: `Sign in nonce: ${existing}` };
+      return { message: existing };
     }
 
     const nonce = randomBytes(16).toString('hex');
-    await this.redis.set(key, nonce, 300);
+
+    const message = new SiweMessage({
+      domain: this.domain,
+      address: address,
+      uri: 'https://meta-chain-api.indonesiacentral.cloudapp.azure.com',
+      version: '1',
+      chainId: 1,
+      nonce,
+      issuedAt: new Date().toISOString(),
+    }).prepareMessage();
+
+    await this.redis.set(`auth:siwe:${address.toLowerCase()}`, message, 300);
 
     return {
-      message: `Sign in nonce: ${nonce}`,
+      message: message,
     };
   }
 
   public async verifySignature(address: string, signature: string) {
-    const key = `auth:nonce:${address.toLowerCase()}`;
-    const nonce = await this.redis.get(key);
-    if (!nonce) throw new UnauthorizedException('No nonce found');
+    const key = `auth:siwe:${address.toLowerCase()}`;
+    const stored = await this.redis.get(key);
 
-    const recoveredAddress = ethers.verifyMessage(`Sign in nonce: ${nonce}`, signature);
+    if (!stored) {
+      throw new UnauthorizedException('No SIWE message found');
+    }
 
-    if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
-      throw new UnauthorizedException('Invalid signature');
+    const siweMessage = new SiweMessage(stored);
+
+    const fields = await siweMessage.verify({
+      signature,
+      domain: this.domain,
+    });
+
+    if (fields.data.address.toLowerCase() !== address.toLowerCase()) {
+      throw new UnauthorizedException('Invalid address');
     }
 
     await this.redis.del(key);
