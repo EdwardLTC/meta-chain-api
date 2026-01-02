@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ethers } from 'ethers';
+import { ethers, getAddress } from 'ethers';
 import { RedisService } from '../redis/redis.service';
 import { randomBytes } from 'node:crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -27,7 +27,7 @@ export class AuthService {
 
     const message = new SiweMessage({
       domain: this.domain,
-      address: address,
+      address: getAddress(address),
       uri: 'https://meta-chain-api.indonesiacentral.cloudapp.azure.com',
       version: '1',
       chainId: 1,
@@ -57,7 +57,7 @@ export class AuthService {
       domain: this.domain,
     });
 
-    if (fields.data.address.toLowerCase() !== address.toLowerCase()) {
+    if (fields.data.address !== getAddress(address)) {
       throw new UnauthorizedException('Invalid address');
     }
 
