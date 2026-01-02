@@ -104,7 +104,7 @@ export class ListingsService {
     const marketplace = this.contracts.getContract('Marketplace');
 
     return marketplace.buyItem.populateTransaction(listing.onchainId, {
-      value: ethers.parseEther(listing.price.toString()),
+      value: listing.price,
     });
   }
 
