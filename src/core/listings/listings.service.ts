@@ -123,4 +123,18 @@ export class ListingsService {
 
     return marketplace.cancelListing.populateTransaction(listing.onchainId);
   }
+
+  public async historiesOfUser(userAddress: string) {
+    return this.dbService.listing.findMany({
+      where: {
+        OR: [{ buyerAddress: userAddress }, { sellerAddress: userAddress }],
+      },
+      include: {
+        token: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }
