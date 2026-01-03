@@ -40,7 +40,7 @@ export class ListingsController {
     return this.listingsService.cancelListing(id, userWallet);
   }
 
-  @Get('histories')
+  @Get('/me/histories')
   @HttpCode(HttpStatus.OK)
   public async getListingHistories(@User('walletAddress') userWallet: string) {
     return this.listingsService.historiesOfUser(userWallet);
