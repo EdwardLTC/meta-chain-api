@@ -106,7 +106,7 @@ model Listing {
   token   Token  @relation(fields: [tokenId], references: [id])
 
   sellerAddress String
-  price         BigInt
+  price         String
   status        ListingStatus @default(PENDING)
   expiresAt     DateTime?
   txData        Json
@@ -118,15 +118,15 @@ model Listing {
   paymentToken String?
   soldAt       DateTime?
 
-  marketFeeBps    BigInt?
-  marketFeeAmount BigInt?
+  marketFeeBps    String?
+  marketFeeAmount String?
 
   feeRecipient String?
 
   royaltyReceiver String?
-  royaltyAmount   BigInt?
+  royaltyAmount   String?
 
-  sellerProceeds BigInt?
+  sellerProceeds String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -145,4 +145,38 @@ model TokenLike {
 
   @@unique([userId, tokenId]) // user can like once
   @@map("token_likes")
+}
+
+model ChainCursor {
+  listenerId String   @unique
+  lastBlock  String
+  updatedAt  DateTime @updatedAt
+
+  @@map("chain_cursors")
+}
+
+model ProcessedLog {
+  listenerId String
+  txHash     String
+  logIndex   Int
+
+  @@id([listenerId, txHash, logIndex])
+  @@map("processed_logs")
+}
+
+model DeadLetterEvent {
+  id           String   @id @default(uuid())
+  listenerId   String
+  eventName    String
+  txHash       String
+  logIndex     Int
+  blockNumber  String
+  payload      Json
+  errorMessage String
+  retryCount   Int      @default(0)
+  resolved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@unique([listenerId, txHash, logIndex])
+  @@map("dead_letter_events")
 }

@@ -5,6 +5,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 import { ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { EnvironmentService } from '../../environment/environment.service';
+import * as runtime from '@prisma/client/runtime/client';
+import { PrismaClient } from 'generated/prisma/client.mjs';
 
 @Injectable()
 export class ListingsListener implements OnModuleInit, OnModuleDestroy {
@@ -14,6 +16,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   private readonly listedTopic: string;
   private readonly cancelledTopic: string;
   private readonly boughtTopic: string;
+  private readonly listenerId = 'ListingsListener';
 
   constructor(
     private contracts: ContractsService,
@@ -29,13 +32,50 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleInit() {
+    await this.replayMissedEvents();
     await this.setupGlobalListener();
-
-    this.logger.log('Listing listener initialized');
   }
 
   async onModuleDestroy() {
     await this.provider.destroy();
+  }
+
+  private async replayMissedEvents() {
+    const cursor = await this.prisma.chainCursor.findUnique({
+      where: {
+        listenerId: this.listenerId,
+      },
+    });
+
+    const latestBlock = await this.provider.getBlockNumber();
+
+    if (!cursor) {
+      await this.prisma.chainCursor.create({
+        data: {
+          listenerId: this.listenerId,
+          lastBlock: String(latestBlock),
+        },
+      });
+
+      this.logger.log(`[${this.listenerId}] Cursor initialized at block ${latestBlock}, skip replay`);
+      return;
+    }
+
+    const fromBlock = BigInt(cursor.lastBlock) + 1n;
+    if (fromBlock > BigInt(latestBlock)) return;
+
+    const logs = await this.provider.getLogs({
+      address: MARKETPLACE_ADDRESS,
+      fromBlock: fromBlock,
+      toBlock: latestBlock,
+      topics: [[this.listedTopic, this.cancelledTopic, this.boughtTopic]],
+    });
+
+    this.logger.log(`[${this.listenerId}] Replaying ${logs.length} logs from block ${fromBlock} → ${latestBlock}`);
+
+    for (const log of logs) {
+      await this.handleEvent(log);
+    }
   }
 
   private async setupGlobalListener() {
@@ -52,75 +92,128 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   }
 
   private async handleEvent(log: Log) {
+    const iface = new Interface(this.marketplaceABI);
+    const parsedLog = iface.parseLog(log);
+
+    if (!parsedLog) {
+      this.logger.warn(`Failed to parse log: ${log.transactionHash}`);
+      return;
+    }
+
     try {
-      const iface = new Interface(this.marketplaceABI);
-      const parsedLog = iface.parseLog(log);
+      const existed = await this.prisma.processedLog.findUnique({
+        where: {
+          listenerId_txHash_logIndex: {
+            listenerId: this.listenerId,
+            txHash: log.transactionHash,
+            logIndex: log.index,
+          },
+        },
+      });
 
-      if (!parsedLog) {
-        this.logger.warn(`Failed to parse log: ${log.transactionHash}`);
-        return;
-      }
+      if (existed) return;
 
-      switch (parsedLog.name) {
-        case 'Listed':
-          await this.handleListedEvent(parsedLog, log);
-          break;
+      await this.prisma.$transaction(async tx => {
+        switch (parsedLog.name) {
+          case 'Listed':
+            await this.handleListedEvent(parsedLog, log, tx);
+            break;
 
-        case 'Cancelled':
-          await this.handleCancelledEvent(parsedLog, log);
-          break;
+          case 'Cancelled':
+            await this.handleCancelledEvent(parsedLog, log, tx);
+            break;
 
-        case 'Bought':
-          await this.handleBoughtEvent(parsedLog, log);
-          break;
+          case 'Bought':
+            await this.handleBoughtEvent(parsedLog, log, tx);
+            break;
 
-        default:
-          this.logger.warn(`Unknown event: ${parsedLog.name}`);
-      }
+          default:
+            this.logger.warn(`Unknown event: ${parsedLog.name}`);
+        }
+        await tx.processedLog.create({
+          data: {
+            listenerId: this.listenerId,
+            txHash: log.transactionHash,
+            logIndex: log.index,
+          },
+        });
+
+        await tx.chainCursor.upsert({
+          where: {
+            listenerId: this.listenerId,
+          },
+          create: {
+            listenerId: this.listenerId,
+            lastBlock: String(log.blockNumber),
+          },
+          update: {
+            lastBlock: String(log.blockNumber),
+          },
+        });
+      });
     } catch (err: any) {
       this.logger.error(`Error handling event: ${err?.message ?? String(err)}`);
+
+      try {
+        await this.prisma.deadLetterEvent.upsert({
+          where: {
+            listenerId_txHash_logIndex: {
+              listenerId: this.listenerId,
+              txHash: log.transactionHash,
+              logIndex: log.index,
+            },
+          },
+          create: {
+            listenerId: this.listenerId,
+            eventName: parsedLog?.name ?? 'UNKNOWN',
+            txHash: log.transactionHash,
+            logIndex: log.index,
+            blockNumber: String(log.blockNumber),
+            payload: parsedLog?.args ?? {},
+            errorMessage: err?.message ?? String(err),
+          },
+          update: {
+            retryCount: { increment: 1 },
+            errorMessage: err?.message ?? String(err),
+          },
+        });
+      } catch (dlqErr) {
+        this.logger.error(`[${this.listenerId}] Failed to write DLQ for tx=${log.transactionHash}`, dlqErr);
+      }
     }
   }
 
-  private async handleListedEvent(parsedLog: LogDescription, log: Log) {
+  private async handleListedEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
     const [listingId, seller, nft, tokenId, price, paymentToken, transactionCode] = parsedLog.args;
 
     this.logger.log(
       `Listed Event - Listing ID: ${listingId}, Seller: ${seller}, NFT: ${nft}, Token ID: ${tokenId}, Price: ${price}, Payment Token: ${paymentToken}, Transaction Code: ${transactionCode}, TxHash: ${log.transactionHash}`,
     );
 
-    await this.prisma.listing
-      .update({
-        where: { id: transactionCode, status: ListingStatus.PENDING },
-        data: {
-          onchainId: listingId,
-          txHash: log.transactionHash,
-          status: ListingStatus.ACTIVE,
-        },
-      })
-      .catch(err => {
-        this.logger.error(`Prisma update failed for Listed ${transactionCode}: ${err?.message ?? String(err)}`);
-      });
+    await tx.listing.update({
+      where: { id: transactionCode, status: ListingStatus.PENDING },
+      data: {
+        onchainId: listingId,
+        txHash: log.transactionHash,
+        status: ListingStatus.ACTIVE,
+      },
+    });
   }
 
-  private async handleCancelledEvent(parsedLog: LogDescription, log: Log) {
+  private async handleCancelledEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
     const [listingId, seller] = parsedLog.args;
 
     this.logger.log(`Cancelled Event - Listing ID: ${listingId}, Seller: ${seller}, TxHash: ${log.transactionHash}`);
 
-    await this.prisma.listing
-      .update({
-        where: { onchainId: listingId, status: ListingStatus.ACTIVE },
-        data: {
-          status: ListingStatus.CANCELLED,
-        },
-      })
-      .catch(err => {
-        this.logger.error(`Prisma update failed for Cancelled Listing ID ${listingId}: ${err?.message ?? String(err)}`);
-      });
+    await tx.listing.update({
+      where: { onchainId: listingId, status: ListingStatus.ACTIVE },
+      data: {
+        status: ListingStatus.CANCELLED,
+      },
+    });
   }
 
-  private async handleBoughtEvent(parsedLog: LogDescription, log: Log) {
+  private async handleBoughtEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
     const [
       listingId,
       buyer,
@@ -139,31 +232,27 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
       `Bought Event - Listing ID: ${listingId}, Buyer: ${buyer}, Seller: ${seller}, Price: ${price}, Payment Token: ${paymentToken}, Market Fee Bps: ${marketFeeBps}, Market Fee Amount: ${marketFeeAmount}, Fee Recipient: ${feeRecipient}, Royalty Receiver: ${royaltyReceiver}, Royalty Amount: ${royaltyAmount}, Seller Proceeds: ${sellerProceeds}, TxHash: ${log.transactionHash}`,
     );
 
-    await this.prisma.listing
-      .update({
-        where: { onchainId: listingId, status: ListingStatus.ACTIVE },
-        data: {
-          status: ListingStatus.SOLD,
-          buyerAddress: buyer,
-          soldAt: new Date(),
-          marketFeeBps: marketFeeBps,
-          marketFeeAmount: marketFeeAmount,
-          feeRecipient: feeRecipient,
-          royaltyReceiver: royaltyReceiver,
-          royaltyAmount: royaltyAmount,
-          sellerProceeds: sellerProceeds,
-          token: {
-            update: {
-              ownerAddress: buyer,
-            },
+    await tx.listing.update({
+      where: { onchainId: listingId, status: ListingStatus.ACTIVE },
+      data: {
+        status: ListingStatus.SOLD,
+        buyerAddress: buyer,
+        soldAt: new Date(),
+        marketFeeBps: marketFeeBps,
+        marketFeeAmount: marketFeeAmount,
+        feeRecipient: feeRecipient,
+        royaltyReceiver: royaltyReceiver,
+        royaltyAmount: royaltyAmount,
+        sellerProceeds: sellerProceeds,
+        token: {
+          update: {
+            ownerAddress: buyer,
           },
         },
-        select: {
-          tokenId: true,
-        },
-      })
-      .catch(err => {
-        this.logger.error(`Prisma update failed for Bought Listing ID ${listingId}: ${err?.message ?? String(err)}`);
-      });
+      },
+      select: {
+        tokenId: true,
+      },
+    });
   }
 }
