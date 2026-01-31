@@ -263,12 +263,12 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
         status: ListingStatus.SOLD,
         buyerAddress: buyer,
         soldAt: new Date(),
-        marketFeeBps: marketFeeBps,
-        marketFeeAmount: marketFeeAmount,
+        marketFeeBps: String(marketFeeBps),
+        marketFeeAmount: String(marketFeeAmount),
         feeRecipient: feeRecipient,
         royaltyReceiver: royaltyReceiver,
-        royaltyAmount: royaltyAmount,
-        sellerProceeds: sellerProceeds,
+        royaltyAmount: String(royaltyAmount),
+        sellerProceeds: String(sellerProceeds),
         listingEvents: {
           create: {
             txReceipt: txReceipt?.toJSON(),
