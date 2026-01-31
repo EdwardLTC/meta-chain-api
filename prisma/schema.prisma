@@ -149,6 +149,7 @@ model ListingEventTracking {
   txHash      String
   logIndex    Int
   blockNumber String
+  txReceipt   Json
   payload     Json
   createdAt   DateTime         @default(now())
 

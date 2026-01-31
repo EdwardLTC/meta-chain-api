@@ -190,6 +190,8 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
       `Listed Event - Listing ID: ${listingId}, Seller: ${seller}, NFT: ${nft}, Token ID: ${tokenId}, Price: ${price}, Payment Token: ${paymentToken}, Transaction Code: ${transactionCode}, TxHash: ${log.transactionHash}`,
     );
 
+    const txReceipt = await this.provider.getTransactionReceipt(log.transactionHash);
+
     await tx.listing.update({
       where: { id: transactionCode, status: ListingStatus.PENDING },
       data: {
@@ -200,6 +202,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
           create: {
             eventName: ListingEventName.LISTED,
             txHash: log.transactionHash,
+            txReceipt: txReceipt?.toJSON(),
             logIndex: log.index,
             blockNumber: String(log.blockNumber),
             payload: parsedLog.args,
@@ -214,6 +217,8 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
 
     this.logger.log(`Cancelled Event - Listing ID: ${listingId}, Seller: ${seller}, TxHash: ${log.transactionHash}`);
 
+    const txReceipt = await this.provider.getTransactionReceipt(log.transactionHash);
+
     await tx.listing.update({
       where: { onchainId: listingId, status: ListingStatus.ACTIVE },
       data: {
@@ -223,6 +228,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
             eventName: ListingEventName.CANCELLED,
             txHash: log.transactionHash,
             logIndex: log.index,
+            txReceipt: txReceipt?.toJSON(),
             blockNumber: String(log.blockNumber),
             payload: parsedLog.args,
           },
@@ -249,6 +255,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     this.logger.log(
       `Bought Event - Listing ID: ${listingId}, Buyer: ${buyer}, Seller: ${seller}, Price: ${price}, Payment Token: ${paymentToken}, Market Fee Bps: ${marketFeeBps}, Market Fee Amount: ${marketFeeAmount}, Fee Recipient: ${feeRecipient}, Royalty Receiver: ${royaltyReceiver}, Royalty Amount: ${royaltyAmount}, Seller Proceeds: ${sellerProceeds}, TxHash: ${log.transactionHash}`,
     );
+    const txReceipt = await this.provider.getTransaction(log.transactionHash);
 
     await tx.listing.update({
       where: { onchainId: listingId, status: ListingStatus.ACTIVE },
@@ -264,6 +271,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
         sellerProceeds: sellerProceeds,
         listingEvents: {
           create: {
+            txReceipt: txReceipt?.toJSON(),
             eventName: ListingEventName.SOLD,
             txHash: log.transactionHash,
             logIndex: log.index,
@@ -276,9 +284,6 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
             ownerAddress: buyer,
           },
         },
-      },
-      select: {
-        tokenId: true,
       },
     });
   }
