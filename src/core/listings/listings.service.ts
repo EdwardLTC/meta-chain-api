@@ -76,6 +76,7 @@ export class ListingsService {
       },
       include: {
         token: true,
+        listingEvents: true,
       },
     });
   }
@@ -131,6 +132,7 @@ export class ListingsService {
       },
       include: {
         token: true,
+        listingEvents: true,
       },
       orderBy: {
         createdAt: 'desc',

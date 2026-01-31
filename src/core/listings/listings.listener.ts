@@ -3,7 +3,7 @@ import { Interface, InterfaceAbi, Log, LogDescription, WebSocketProvider } from 
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
-import { ListingStatus } from '../../../generated/prisma/enums.mjs';
+import { ListingEventName, ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { EnvironmentService } from '../../environment/environment.service';
 import * as runtime from '@prisma/client/runtime/client';
 import { PrismaClient } from 'generated/prisma/client.mjs';
@@ -196,6 +196,15 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
         onchainId: listingId,
         txHash: log.transactionHash,
         status: ListingStatus.ACTIVE,
+        listingEvents: {
+          create: {
+            eventName: ListingEventName.LISTED,
+            txHash: log.transactionHash,
+            logIndex: log.index,
+            blockNumber: String(log.blockNumber),
+            payload: parsedLog.args,
+          },
+        },
       },
     });
   }
@@ -209,6 +218,15 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
       where: { onchainId: listingId, status: ListingStatus.ACTIVE },
       data: {
         status: ListingStatus.CANCELLED,
+        listingEvents: {
+          create: {
+            eventName: ListingEventName.CANCELLED,
+            txHash: log.transactionHash,
+            logIndex: log.index,
+            blockNumber: String(log.blockNumber),
+            payload: parsedLog.args,
+          },
+        },
       },
     });
   }
@@ -244,6 +262,15 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
         royaltyReceiver: royaltyReceiver,
         royaltyAmount: royaltyAmount,
         sellerProceeds: sellerProceeds,
+        listingEvents: {
+          create: {
+            eventName: ListingEventName.SOLD,
+            txHash: log.transactionHash,
+            logIndex: log.index,
+            blockNumber: String(log.blockNumber),
+            payload: parsedLog.args,
+          },
+        },
         token: {
           update: {
             ownerAddress: buyer,

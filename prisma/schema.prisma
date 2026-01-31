@@ -128,10 +128,31 @@ model Listing {
 
   sellerProceeds String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  listingEvents ListingEventTracking[]
 
   @@map("listings")
+}
+
+enum ListingEventName {
+  LISTED
+  CANCELLED
+  SOLD
+}
+
+model ListingEventTracking {
+  id          String           @id @default(uuid())
+  listingId   String
+  listing     Listing          @relation(fields: [listingId], references: [id])
+  eventName   ListingEventName
+  txHash      String
+  logIndex    Int
+  blockNumber String
+  payload     Json
+  createdAt   DateTime         @default(now())
+
+  @@map("listing_event_tracking")
 }
 
 model TokenLike {
