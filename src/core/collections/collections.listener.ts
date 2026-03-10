@@ -7,7 +7,7 @@ import { TokensListener } from '../tokens/tokens.listener';
 import { EnvironmentService } from '../../environment/environment.service';
 import { Prisma } from '@prisma/client';
 
-const HEARTBEAT_INTERVAL_MS = 30_000;
+const HEARTBEAT_INTERVAL_MS = 1_000 * 60 * 10;
 const HEARTBEAT_TIMEOUT_MS = 10_000;
 
 @Injectable()

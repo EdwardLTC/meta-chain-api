@@ -8,7 +8,7 @@ import { EnvironmentService } from '../../environment/environment.service';
 import * as runtime from '@prisma/client/runtime/client';
 import { PrismaClient } from 'generated/prisma/client.mjs';
 
-const HEARTBEAT_INTERVAL_MS = 30_000;
+const HEARTBEAT_INTERVAL_MS = 1_000 * 60 * 10; // 10 minutes
 const HEARTBEAT_TIMEOUT_MS = 10_000;
 
 @Injectable()
