@@ -8,15 +8,20 @@ import { EnvironmentService } from '../../environment/environment.service';
 import * as runtime from '@prisma/client/runtime/client';
 import { PrismaClient } from 'generated/prisma/client.mjs';
 
+const HEARTBEAT_INTERVAL_MS = 30_000;
+const HEARTBEAT_TIMEOUT_MS = 10_000;
+
 @Injectable()
 export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(ListingsListener.name);
-  private readonly provider: WebSocketProvider;
+  private provider: WebSocketProvider;
   private readonly marketplaceABI: InterfaceAbi;
   private readonly listedTopic: string;
   private readonly cancelledTopic: string;
   private readonly boughtTopic: string;
   private readonly listenerId = 'ListingsListener';
+  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+  private isReconnecting = false;
 
   constructor(
     private contracts: ContractsService,
@@ -34,10 +39,67 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
     await this.replayMissedEvents();
     await this.setupGlobalListener();
+    this.startHeartbeat();
   }
 
   async onModuleDestroy() {
+    this.stopHeartbeat();
     await this.provider.destroy();
+  }
+
+  private startHeartbeat() {
+    this.stopHeartbeat();
+    this.heartbeatTimer = setInterval(async () => {
+      try {
+        await Promise.race([
+          this.provider.getBlockNumber(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Heartbeat timeout')), HEARTBEAT_TIMEOUT_MS)),
+        ]);
+      } catch (err) {
+        this.logger.warn(`[${this.listenerId}] Heartbeat failed: ${err}`);
+        await this.reconnect();
+      }
+    }, HEARTBEAT_INTERVAL_MS);
+  }
+
+  private stopHeartbeat() {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+  }
+
+  private async reconnect() {
+    if (this.isReconnecting) return;
+    this.isReconnecting = true;
+
+    this.logger.warn(`[${this.listenerId}] Reconnecting WebSocket...`);
+    this.stopHeartbeat();
+
+    try {
+      try {
+        await this.provider.removeAllListeners();
+        await this.provider.destroy();
+      } catch (e) {
+        this.logger.debug(`[${this.listenerId}] Error destroying old provider: ${e}`);
+      }
+
+      this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
+      await this.replayMissedEvents();
+      await this.setupGlobalListener();
+      this.startHeartbeat();
+      this.logger.log(`[${this.listenerId}] Reconnected successfully`);
+    } catch (err) {
+      this.logger.error(`[${this.listenerId}] Reconnect failed: ${err}`);
+      // Retry reconnect after a delay
+      setTimeout(async () => {
+        this.isReconnecting = false;
+        await this.reconnect();
+      }, 5_000);
+      return;
+    }
+
+    this.isReconnecting = false;
   }
 
   private async replayMissedEvents() {
