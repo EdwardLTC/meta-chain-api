@@ -51,16 +51,4 @@ export class ContractsService {
 
     return new Contract(info.address, info.abi, this.eth.getProvider());
   }
-
-  public getContractWs(name: string): Contract {
-    if (!this.deployments || !this.deployments[name]) {
-      throw new Error(`Contract ${name} not found in deployments`);
-    }
-    const info = this.deployments[name];
-    if (!info.abi || !info.address) {
-      throw new Error(`Contract ${name} is missing ABI or address`);
-    }
-
-    return new Contract(info.address, info.abi, this.eth.getWebSocketProvider());
-  }
 }
