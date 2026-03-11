@@ -1,251 +1,64 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { Interface, InterfaceAbi, Log, LogDescription, WebSocketProvider } from 'ethers';
+import { Injectable } from '@nestjs/common';
+import { InterfaceAbi, Log, LogDescription } from 'ethers';
 import { ContractsService } from '../../eth/contracts.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { MARKETPLACE_ADDRESS } from '../../ultils/constrain';
 import { ListingEventName, ListingStatus } from '../../../generated/prisma/enums.mjs';
 import { EnvironmentService } from '../../environment/environment.service';
-import * as runtime from '@prisma/client/runtime/client';
-import { PrismaClient } from 'generated/prisma/client.mjs';
-
-const HEARTBEAT_INTERVAL_MS = 1_000 * 60 * 10; // 10 minutes
-const HEARTBEAT_TIMEOUT_MS = 10_000;
+import { BaseChainListener, ListenerConfig, TxClient } from '../base-chain.listener';
 
 @Injectable()
-export class ListingsListener implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(ListingsListener.name);
-  private provider: WebSocketProvider;
+export class ListingsListener extends BaseChainListener {
   private readonly marketplaceABI: InterfaceAbi;
   private readonly listedTopic: string;
   private readonly cancelledTopic: string;
   private readonly boughtTopic: string;
-  private readonly listenerId = 'ListingsListener';
-  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
-  private isReconnecting = false;
 
   constructor(
     private contracts: ContractsService,
-    private prisma: PrismaService,
-    private environmentService: EnvironmentService,
+    prisma: PrismaService,
+    environmentService: EnvironmentService,
   ) {
+    super(prisma, environmentService);
+
     const marketplace = this.contracts.getContract('Marketplace');
     this.marketplaceABI = this.contracts.getAbi('Marketplace')!;
-    this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
     this.listedTopic = marketplace.interface.getEvent('Listed')!.topicHash;
     this.cancelledTopic = marketplace.interface.getEvent('Cancelled')!.topicHash;
     this.boughtTopic = marketplace.interface.getEvent('Bought')!.topicHash;
   }
 
-  async onModuleInit() {
-    await this.replayMissedEvents();
-    await this.setupGlobalListener();
-    this.startHeartbeat();
+  protected getConfig(): ListenerConfig {
+    return {
+      listenerId: 'ListingsListener',
+      abi: this.marketplaceABI,
+    };
   }
 
-  async onModuleDestroy() {
-    this.stopHeartbeat();
-    await this.provider.destroy();
-  }
-
-  private startHeartbeat() {
-    this.stopHeartbeat();
-    this.heartbeatTimer = setInterval(async () => {
-      try {
-        await Promise.race([
-          this.provider.getBlockNumber(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Heartbeat timeout')), HEARTBEAT_TIMEOUT_MS)),
-        ]);
-      } catch (err) {
-        this.logger.warn(`[${this.listenerId}] Heartbeat failed: ${err}`);
-        await this.reconnect();
-      }
-    }, HEARTBEAT_INTERVAL_MS);
-  }
-
-  private stopHeartbeat() {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
-    }
-  }
-
-  private async reconnect() {
-    if (this.isReconnecting) return;
-    this.isReconnecting = true;
-
-    this.logger.warn(`[${this.listenerId}] Reconnecting WebSocket...`);
-    this.stopHeartbeat();
-
-    try {
-      try {
-        await this.provider.removeAllListeners();
-        await this.provider.destroy();
-      } catch (e) {
-        this.logger.debug(`[${this.listenerId}] Error destroying old provider: ${e}`);
-      }
-
-      this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
-      await this.replayMissedEvents();
-      await this.setupGlobalListener();
-      this.startHeartbeat();
-      this.logger.log(`[${this.listenerId}] Reconnected successfully`);
-    } catch (err) {
-      this.logger.error(`[${this.listenerId}] Reconnect failed: ${err}`);
-      // Retry reconnect after a delay
-      setTimeout(async () => {
-        this.isReconnecting = false;
-        await this.reconnect();
-      }, 5_000);
-      return;
-    }
-
-    this.isReconnecting = false;
-  }
-
-  private async replayMissedEvents() {
-    const cursor = await this.prisma.chainCursor.findUnique({
-      where: {
-        listenerId: this.listenerId,
-      },
-    });
-
-    const latestBlock = await this.provider.getBlockNumber();
-
-    if (!cursor) {
-      await this.prisma.chainCursor.create({
-        data: {
-          listenerId: this.listenerId,
-          lastBlock: String(latestBlock),
-        },
-      });
-
-      this.logger.log(`[${this.listenerId}] Cursor initialized at block ${latestBlock}, skip replay`);
-      return;
-    }
-
-    const fromBlock = BigInt(cursor.lastBlock) + 1n;
-    if (fromBlock > BigInt(latestBlock)) return;
-
-    const logs = await this.provider.getLogs({
-      address: MARKETPLACE_ADDRESS,
-      fromBlock: fromBlock,
-      toBlock: latestBlock,
-      topics: [[this.listedTopic, this.cancelledTopic, this.boughtTopic]],
-    });
-
-    this.logger.log(`[${this.listenerId}] Replaying ${logs.length} logs from block ${fromBlock} → ${latestBlock}`);
-
-    for (const log of logs) {
-      await this.handleEvent(log);
-    }
-  }
-
-  private async setupGlobalListener() {
-    const filter = {
+  protected getFilter() {
+    return {
       address: MARKETPLACE_ADDRESS,
       topics: [[this.listedTopic, this.cancelledTopic, this.boughtTopic]],
     };
-
-    await this.provider.on(filter, async (log: Log) => {
-      await this.handleEvent(log);
-    });
-
-    this.logger.log('Global listener setup completed');
   }
 
-  private async handleEvent(log: Log) {
-    const iface = new Interface(this.marketplaceABI);
-    const parsedLog = iface.parseLog(log);
-
-    if (!parsedLog) {
-      this.logger.warn(`Failed to parse log: ${log.transactionHash}`);
-      return;
-    }
-
-    try {
-      const existed = await this.prisma.processedLog.findUnique({
-        where: {
-          listenerId_txHash_logIndex: {
-            listenerId: this.listenerId,
-            txHash: log.transactionHash,
-            logIndex: log.index,
-          },
-        },
-      });
-
-      if (existed) return;
-
-      await this.prisma.$transaction(async tx => {
-        switch (parsedLog.name) {
-          case 'Listed':
-            await this.handleListedEvent(parsedLog, log, tx);
-            break;
-
-          case 'Cancelled':
-            await this.handleCancelledEvent(parsedLog, log, tx);
-            break;
-
-          case 'Bought':
-            await this.handleBoughtEvent(parsedLog, log, tx);
-            break;
-
-          default:
-            this.logger.warn(`Unknown event: ${parsedLog.name}`);
-        }
-        await tx.processedLog.create({
-          data: {
-            listenerId: this.listenerId,
-            txHash: log.transactionHash,
-            logIndex: log.index,
-          },
-        });
-
-        await tx.chainCursor.upsert({
-          where: {
-            listenerId: this.listenerId,
-          },
-          create: {
-            listenerId: this.listenerId,
-            lastBlock: String(log.blockNumber),
-          },
-          update: {
-            lastBlock: String(log.blockNumber),
-          },
-        });
-      });
-    } catch (err: any) {
-      this.logger.error(`Error handling event: ${err?.message ?? String(err)}`);
-
-      try {
-        await this.prisma.deadLetterEvent.upsert({
-          where: {
-            listenerId_txHash_logIndex: {
-              listenerId: this.listenerId,
-              txHash: log.transactionHash,
-              logIndex: log.index,
-            },
-          },
-          create: {
-            listenerId: this.listenerId,
-            eventName: parsedLog?.name ?? 'UNKNOWN',
-            txHash: log.transactionHash,
-            logIndex: log.index,
-            blockNumber: String(log.blockNumber),
-            payload: parsedLog?.args ?? {},
-            errorMessage: err?.message ?? String(err),
-          },
-          update: {
-            retryCount: { increment: 1 },
-            errorMessage: err?.message ?? String(err),
-          },
-        });
-      } catch (dlqErr) {
-        this.logger.error(`[${this.listenerId}] Failed to write DLQ for tx=${log.transactionHash}`, dlqErr);
-      }
+  protected async dispatchEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
+    switch (parsedLog.name) {
+      case 'Listed':
+        await this.handleListedEvent(parsedLog, log, tx);
+        break;
+      case 'Cancelled':
+        await this.handleCancelledEvent(parsedLog, log, tx);
+        break;
+      case 'Bought':
+        await this.handleBoughtEvent(parsedLog, log, tx);
+        break;
+      default:
+        this.logger.warn(`Unknown event: ${parsedLog.name}`);
     }
   }
 
-  private async handleListedEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
+  private async handleListedEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
     const [listingId, seller, nft, tokenId, price, paymentToken, transactionCode] = parsedLog.args;
 
     this.logger.log(
@@ -274,7 +87,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  private async handleCancelledEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
+  private async handleCancelledEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
     const [listingId, seller] = parsedLog.args;
 
     this.logger.log(`Cancelled Event - Listing ID: ${listingId}, Seller: ${seller}, TxHash: ${log.transactionHash}`);
@@ -299,7 +112,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  private async handleBoughtEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
+  private async handleBoughtEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
     const [
       listingId,
       buyer,
@@ -317,6 +130,7 @@ export class ListingsListener implements OnModuleInit, OnModuleDestroy {
     this.logger.log(
       `Bought Event - Listing ID: ${listingId}, Buyer: ${buyer}, Seller: ${seller}, Price: ${price}, Payment Token: ${paymentToken}, Market Fee Bps: ${marketFeeBps}, Market Fee Amount: ${marketFeeAmount}, Fee Recipient: ${feeRecipient}, Royalty Receiver: ${royaltyReceiver}, Royalty Amount: ${royaltyAmount}, Seller Proceeds: ${sellerProceeds}, TxHash: ${log.transactionHash}`,
     );
+
     const txReceipt = await this.provider.getTransaction(log.transactionHash);
 
     await tx.listing.update({

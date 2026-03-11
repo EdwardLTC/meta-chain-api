@@ -128,7 +128,20 @@ export class ListingsService {
   public async historiesOfUser(userAddress: string) {
     return this.dbService.listing.findMany({
       where: {
-        OR: [{ buyerAddress: userAddress }, { sellerAddress: userAddress }],
+        OR: [
+          {
+            buyerAddress: {
+              equals: userAddress,
+              mode: 'insensitive',
+            },
+          },
+          {
+            sellerAddress: {
+              equals: userAddress,
+              mode: 'insensitive',
+            },
+          },
+        ],
       },
       include: {
         token: true,

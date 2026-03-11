@@ -1,54 +1,22 @@
-import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { id, Interface, Log, LogDescription, WebSocketProvider } from 'ethers';
+import { Injectable } from '@nestjs/common';
+import { id, Log, LogDescription } from 'ethers';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenStatus } from '../../../generated/prisma/enums.mjs';
 import { ABI } from './tokens.abi';
 import { EnvironmentService } from '../../environment/environment.service';
-import { PrismaClient } from '../../../generated/prisma/client.mjs';
-import * as runtime from '@prisma/client/runtime/client';
-
-const HEARTBEAT_INTERVAL_MS = 1_000 * 60 * 10;
-const HEARTBEAT_TIMEOUT_MS = 10_000;
+import { BaseChainListener, ListenerConfig, TxClient } from '../base-chain.listener';
 
 @Injectable()
-export class TokensListener implements OnModuleInit, OnModuleDestroy {
-  private readonly logger = new Logger(TokensListener.name);
+export class TokensListener extends BaseChainListener {
   private collectionAddresses: Set<string> = new Set();
-  private provider: WebSocketProvider;
   private readonly mintedEventTopic: string;
   private readonly royaltySetEventTopic: string;
-  private readonly listenerId = 'TokensListener';
-  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
-  private isReconnecting = false;
 
-  constructor(
-    private prisma: PrismaService,
-    private environmentService: EnvironmentService,
-  ) {
-    this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
+  constructor(prisma: PrismaService, environmentService: EnvironmentService) {
+    super(prisma, environmentService);
+
     this.mintedEventTopic = id('Minted(address,uint256,string,string)');
     this.royaltySetEventTopic = id('RoyaltySet(address,uint96,string)');
-  }
-
-  async onModuleInit() {
-    await this.replayMissedEvents();
-    const collections = await this.prisma.collection.findMany({
-      where: { contractAddress: { not: null } },
-    });
-
-    for (const col of collections) {
-      this.collectionAddresses.add(col.contractAddress!);
-    }
-
-    await this.setupGlobalListener();
-    this.startHeartbeat();
-
-    this.logger.log(`TokensListener initialized for ${this.collectionAddresses.size} collections`);
-  }
-
-  async onModuleDestroy() {
-    this.stopHeartbeat();
-    await this.provider.destroy();
   }
 
   public async addCollectionListener(collectionAddress: string) {
@@ -58,212 +26,51 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
     }
 
     this.collectionAddresses.add(collectionAddress);
-
-    await this.updateListenerFilter();
+    await this.refreshListener();
 
     this.logger.log(`Collection ${collectionAddress} added to global listener`);
   }
 
-  private startHeartbeat() {
-    this.stopHeartbeat();
-    this.heartbeatTimer = setInterval(async () => {
-      try {
-        await Promise.race([
-          this.provider.getBlockNumber(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Heartbeat timeout')), HEARTBEAT_TIMEOUT_MS)),
-        ]);
-      } catch (err) {
-        this.logger.warn(`[${this.listenerId}] Heartbeat failed: ${err}`);
-        await this.reconnect();
-      }
-    }, HEARTBEAT_INTERVAL_MS);
+  protected getConfig(): ListenerConfig {
+    return {
+      listenerId: 'TokensListener',
+      abi: ABI,
+    };
   }
 
-  private stopHeartbeat() {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
-    }
-  }
-
-  private async reconnect() {
-    if (this.isReconnecting) return;
-    this.isReconnecting = true;
-
-    this.logger.warn(`[${this.listenerId}] Reconnecting WebSocket...`);
-    this.stopHeartbeat();
-
-    try {
-      try {
-        await this.provider.removeAllListeners();
-        await this.provider.destroy();
-      } catch (e) {
-        this.logger.debug(`[${this.listenerId}] Error destroying old provider: ${e}`);
-      }
-
-      this.provider = new WebSocketProvider(this.environmentService.ProviderWsNodeUrl);
-      await this.replayMissedEvents();
-      await this.setupGlobalListener();
-      this.startHeartbeat();
-      this.logger.log(`[${this.listenerId}] Reconnected successfully`);
-    } catch (err) {
-      this.logger.error(`[${this.listenerId}] Reconnect failed: ${err}`);
-      setTimeout(async () => {
-        this.isReconnecting = false;
-        await this.reconnect();
-      }, 5_000);
-      return;
-    }
-
-    this.isReconnecting = false;
-  }
-
-  private async replayMissedEvents() {
-    const cursor = await this.prisma.chainCursor.findUnique({
-      where: { listenerId: this.listenerId },
-    });
-
-    const latestBlock = await this.provider.getBlockNumber();
-
-    if (!cursor) {
-      await this.prisma.chainCursor.create({
-        data: {
-          listenerId: this.listenerId,
-          lastBlock: String(latestBlock),
-        },
-      });
-
-      this.logger.log(`[${this.listenerId}] Cursor initialized at ${latestBlock}`);
-      return;
-    }
-
-    const fromBlock = BigInt(cursor.lastBlock) + 1n;
-    if (fromBlock > BigInt(latestBlock)) return;
-
-    const collections = await this.prisma.collection.findMany({
-      where: { contractAddress: { not: null } },
-      select: { contractAddress: true },
-    });
-
-    const addresses = collections.map(c => c.contractAddress!);
-    if (addresses.length === 0) return;
-
-    const logs = await this.provider.getLogs({
-      address: addresses,
-      fromBlock: fromBlock,
-      toBlock: latestBlock,
-      topics: [[this.mintedEventTopic, this.royaltySetEventTopic]],
-    });
-
-    this.logger.log(`[${this.listenerId}] Replaying ${logs.length} logs (${fromBlock} → ${latestBlock})`);
-
-    for (const log of logs) {
-      await this.handleEvent(log);
-    }
-  }
-
-  private async setupGlobalListener() {
-    const filter = {
+  protected getFilter() {
+    return {
       address: Array.from(this.collectionAddresses),
       topics: [[this.mintedEventTopic, this.royaltySetEventTopic]],
     };
+  }
 
-    await this.provider.on(filter, async (log: Log) => {
-      await this.handleEvent(log);
+  protected override async onBeforeStart() {
+    const collections = await this.prisma.collection.findMany({
+      where: { contractAddress: { not: null } },
     });
 
-    this.logger.log('Global listener setup completed');
-  }
-
-  private async handleEvent(log: Log) {
-    const iface = new Interface(ABI);
-    const parsedLog = iface.parseLog(log);
-
-    if (!parsedLog) {
-      this.logger.warn(`Failed to parse log: ${log.transactionHash}`);
-      return;
+    for (const col of collections) {
+      this.collectionAddresses.add(col.contractAddress!);
     }
 
-    try {
-      const existed = await this.prisma.processedLog.findUnique({
-        where: {
-          listenerId_txHash_logIndex: {
-            listenerId: this.listenerId,
-            txHash: log.transactionHash,
-            logIndex: log.index,
-          },
-        },
-      });
+    this.logger.log(`TokensListener initialized for ${this.collectionAddresses.size} collections`);
+  }
 
-      if (existed) return;
-
-      await this.prisma.$transaction(async tx => {
-        switch (parsedLog.name) {
-          case 'Minted':
-            await this.handleMintedEvent(parsedLog, log, tx);
-            break;
-
-          case 'RoyaltySet':
-            await this.handleRoyaltySet(parsedLog, tx);
-            break;
-
-          default:
-            this.logger.warn(`Unknown event: ${parsedLog.name}`);
-        }
-        await tx.processedLog.create({
-          data: {
-            listenerId: this.listenerId,
-            txHash: log.transactionHash,
-            logIndex: log.index,
-          },
-        });
-
-        await tx.chainCursor.upsert({
-          where: {
-            listenerId: this.listenerId,
-          },
-          create: {
-            listenerId: this.listenerId,
-            lastBlock: String(log.blockNumber),
-          },
-          update: {
-            lastBlock: String(log.blockNumber),
-          },
-        });
-      });
-    } catch (err: any) {
-      this.logger.error(`Error handling event: ${err?.message ?? String(err)}`);
-
-      try {
-        await this.prisma.deadLetterEvent.upsert({
-          where: {
-            listenerId_txHash_logIndex: {
-              listenerId: this.listenerId,
-              txHash: log.transactionHash,
-              logIndex: log.index,
-            },
-          },
-          create: {
-            listenerId: this.listenerId,
-            eventName: parsedLog?.name ?? 'UNKNOWN',
-            txHash: log.transactionHash,
-            logIndex: log.index,
-            blockNumber: String(log.blockNumber),
-            payload: parsedLog?.args ?? {},
-            errorMessage: err?.message ?? String(err),
-          },
-          update: {
-            retryCount: { increment: 1 },
-            errorMessage: err?.message ?? String(err),
-          },
-        });
-      } catch (dlqErr) {
-        this.logger.error(`[${this.listenerId}] Failed to write DLQ for tx=${log.transactionHash}`, dlqErr);
-      }
+  protected async dispatchEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
+    switch (parsedLog.name) {
+      case 'Minted':
+        await this.handleMintedEvent(parsedLog, log, tx);
+        break;
+      case 'RoyaltySet':
+        await this.handleRoyaltySet(parsedLog, tx);
+        break;
+      default:
+        this.logger.warn(`Unknown event: ${parsedLog.name}`);
     }
   }
 
-  private async handleMintedEvent(parsedLog: LogDescription, log: Log, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
+  private async handleMintedEvent(parsedLog: LogDescription, log: Log, tx: TxClient) {
     const { to, tokenId, uri, transactionCode } = parsedLog.args;
     this.logger.log(`Minted: to=${to}, tokenId=${tokenId}, uri=${uri}, txCode=${transactionCode}`);
 
@@ -277,7 +84,7 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  private async handleRoyaltySet(parsedLog: LogDescription, tx: Omit<PrismaClient, runtime.ITXClientDenyList>) {
+  private async handleRoyaltySet(parsedLog: LogDescription, tx: TxClient) {
     const { recipient, bps, transactionCode } = parsedLog.args;
     this.logger.log(`RoyaltySet: to=${recipient}, royaltyBps=${bps}, transactionCode=${transactionCode}`);
     await tx.collection.update({
@@ -286,10 +93,5 @@ export class TokensListener implements OnModuleInit, OnModuleDestroy {
         royaltyFeeBps: Number(bps),
       },
     });
-  }
-
-  private async updateListenerFilter() {
-    await this.provider.removeAllListeners();
-    await this.setupGlobalListener();
   }
 }
