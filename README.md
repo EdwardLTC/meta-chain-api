@@ -7,6 +7,7 @@ This README explains how to set up the project locally, run it in development an
 Quick links
 - Docs (Swagger): /docs (served by the running app)
 - Local hardhat deployments: /deployments/<network>.json (created by the deploy script)
+- Architecture (Mermaid): docs/architecture.md
 
 Requirements / prerequisites
 - Node.js 18+ (recommended) and npm
